@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Cloud.TextToSpeech.V1" Version="3.17.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
   </ItemGroup>
@@ -12,6 +13,7 @@
   <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Data\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -18,6 +18,20 @@ public class AppContextSeed
             await roleManager.CreateAsync(new IdentityRole("User"));
         }
         
-        
+        if (!userManager.Users.Any(x => x.UserName == "jimuelgaas@gmail.com"))
+        {
+            var user = new AppUser
+            {
+                UserName = "jimuelgaas@gmail.com",
+                Email = "jimuelgaas@gmail",
+                FirstName = "Jimuel",
+                LastName = "Gaas",
+                IsIdVerified = true,
+                Contact = "09386089484"
+            };
+
+            await userManager.CreateAsync(user, "Pa$$w0rd");
+            await userManager.AddToRoleAsync(user, "Staff");
+        }
     }
 }

@@ -3,13 +3,16 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 
-public class AnnouncementController(IUnitOfWork unit, UserManager<AppUser> userManager, IMapper mapper) : BaseApiController
+public class AnnouncementController(IUnitOfWork unit,
+    IMapper mapper,
+    ITtsService ttsService) : BaseApiController
 {
 
     [HttpGet("latest")]
@@ -62,16 +65,20 @@ public class AnnouncementController(IUnitOfWork unit, UserManager<AppUser> userM
         return Ok(dto);
     }
 
+    [Authorize(Roles = "Staff")]
     [HttpPost]
     public async Task<ActionResult> CreateAnnouncement(CreateAnnouncementDto dto)
     {
+        var audioUrl = await ttsService.GenerateSpeechAsync(dto.Message, dto.IsEmergency);
+
         var announcement = new Announcement
         {
             Title = dto.Title,
             Message = dto.Message,
             ScheduledAt = dto.ScheduledAt,
             ExpireAt = dto.ExpireAt,
-            IsEmergency = dto.IsEmergency
+            IsEmergency = dto.IsEmergency,
+            AudioUrl = audioUrl
         };
 
         unit.Repository<Announcement>().Add(announcement);
@@ -79,7 +86,7 @@ public class AnnouncementController(IUnitOfWork unit, UserManager<AppUser> userM
 
         var mapped = mapper.Map<AnnouncementResponseDto>(announcement);
 
-        return Ok(mapped);
+        return CreatedAtAction(nameof(GetAnnounceById), new { id = announcement.Id}, mapped);
     }
 
     [HttpPut("{id}/played")]
