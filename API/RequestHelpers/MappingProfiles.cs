@@ -8,6 +8,8 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
+        CreateMap<CreateAnnouncementDto, Announcement>();
+        
         CreateMap<Announcement, AnnouncementDto>()
             .ForMember(d => d.Title, o => o.MapFrom(s => s.Title))
             .ForMember(d => d.Message, o => o.MapFrom(s => s.Message))

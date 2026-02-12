@@ -3,6 +3,7 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -69,24 +70,17 @@ public class AnnouncementController(IUnitOfWork unit,
     [HttpPost]
     public async Task<ActionResult> CreateAnnouncement(CreateAnnouncementDto dto)
     {
-        var audioUrl = await ttsService.GenerateSpeechAsync(dto.Message, dto.IsEmergency);
+        var audioUrl = await ttsService.GenerateSpeechAsync(dto.Message, dto.IsEmergency, dto.LanguageCode);
 
-        var announcement = new Announcement
-        {
-            Title = dto.Title,
-            Message = dto.Message,
-            ScheduledAt = dto.ScheduledAt,
-            ExpireAt = dto.ExpireAt,
-            IsEmergency = dto.IsEmergency,
-            AudioUrl = audioUrl
-        };
+        var announcement = mapper.Map<Announcement>(dto);
+        announcement.AudioUrl = audioUrl;
 
         unit.Repository<Announcement>().Add(announcement);
         await unit.Complete();
 
-        var mapped = mapper.Map<AnnouncementResponseDto>(announcement);
-
-        return CreatedAtAction(nameof(GetAnnounceById), new { id = announcement.Id}, mapped);
+        return CreatedAtAction(nameof(GetAnnounceById), 
+            new { id = announcement.Id}, 
+            mapper.Map<AnnouncementDto>(announcement));
     }
 
     [HttpPut("{id}/played")]
