@@ -16,5 +16,8 @@ public class MappingProfiles : Profile
             .ForMember(d => d.ScheduledAt, o => o.MapFrom(s => s.ScheduledAt))
             .ForMember(d => d.ExpireAt, o => o.MapFrom(s => s.ExpireAt))
             .ForMember(d => d.AudioUrl, o => o.MapFrom(s => s.AudioUrl));
+
+        CreateMap<CertificateResponseDto, CreateCertificateDto>();
+        CreateMap<BarangayCertificate, CertificateResponseDto>();
     }
 }

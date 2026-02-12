@@ -8,6 +8,7 @@ namespace Infrastructure.Data;
 public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>(options)
 {
     public DbSet<Announcement> Announcements { get; set; }
+    public DbSet<BarangayCertificate> BarangayCertificates { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
