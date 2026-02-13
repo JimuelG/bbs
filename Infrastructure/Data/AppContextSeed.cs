@@ -13,9 +13,9 @@ public class AppContextSeed
         {
             await roleManager.CreateAsync(new IdentityRole("Staff"));
         }
-        if (!await roleManager.RoleExistsAsync("User"))
+        if (!await roleManager.RoleExistsAsync("Resident"))
         {
-            await roleManager.CreateAsync(new IdentityRole("User"));
+            await roleManager.CreateAsync(new IdentityRole("Resident"));
         }
         
         if (!userManager.Users.Any(x => x.UserName == "jimuelgaas@gmail.com"))

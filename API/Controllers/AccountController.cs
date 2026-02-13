@@ -102,7 +102,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Address = user.Address,
             IdUrl = user.IdUrl,
             IsIdVerified = user.IsIdVerified,
-            Role = roles.FirstOrDefault() ?? "User"
+            Role = roles.FirstOrDefault() ?? "Resident"
         });
     }
 

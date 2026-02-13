@@ -13,6 +13,15 @@ public class AnnouncementController(IUnitOfWork unit,
     IMapper mapper,
     ITtsService ttsService) : BaseApiController
 {
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<AnnouncementDto>>> GetAnnouncements()
+    {
+        var announcement = await unit.Repository<Announcement>().ListAllAsync();
+
+        if (announcement == null) return NoContent();
+
+        return Ok( mapper.Map<IReadOnlyList<AnnouncementDto>>(announcement));
+    }
 
     [HttpGet("latest")]
     public async Task<ActionResult<Announcement>> GetLatest()

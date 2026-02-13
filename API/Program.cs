@@ -27,7 +27,7 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
-
+builder.Services.AddScoped<ICertificatePdfService, CertificatePdfService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
