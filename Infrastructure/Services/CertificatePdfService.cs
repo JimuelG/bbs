@@ -30,7 +30,7 @@ public class CertificatePdfService : ICertificatePdfService
         var filePath = Path.Combine(_pdfFolder, fileName);
         var signaturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "signatures", "current.png");
 
-        var verificationUrl = $"{_baseUrl}/api/certificates/verify/{certificate.ReferenceNumber}";
+        var verificationUrl = $"{_baseUrl}/certificates/verify/{certificate.ReferenceNumber}";
 
         using var qrGeneratior = new QRCodeGenerator();
         using var qrData = qrGeneratior.CreateQrCode(verificationUrl, QRCodeGenerator.ECCLevel.Q);
