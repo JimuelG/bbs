@@ -89,4 +89,34 @@ public class CertificateController(IUnitOfWork unit,
             cert.ReferenceNumber 
         });
     }
+
+    [HttpGet("/certificates/verify/{referenceNumber}")]
+    public async Task<IActionResult> PublicVerify(string referenceNumber)
+    {
+        var cert = await unit.Repository<BarangayCertificate>()
+                        .GetEntityWithSpec(new CertificateByReferenceSpecification(referenceNumber));
+
+        if (cert == null)
+        {
+            return Content(@"
+                <html>
+                    <body style='font-family:Arial;text-align:center:padding:40px'>
+                        <h1 style='color:red'>INVALID CERTIFICATE</h1>
+                        <p>This certificate does not exist in our records.</p>
+                    </body>
+                </html>", "text/html");
+        }
+
+        return Content($@"
+            <html>
+                <body style='font-family:Arial;text-align:center;padding:40px'>
+                <h1 style='color:green'>VALID CERTIFICATE</h1>
+                <hr style='width:300px'/>
+                <p><strong>Name:</strong> {cert.FullName}</p>
+                <p><strong>Type:</strong> {cert.CertificateType}</p>
+                <p><strong>Issued:</strong> {cert.IssuedAt:MMMM dd, yyyy}</p>
+                <p><strong>Reference:</strong> {cert.ReferenceNumber}</p>
+                </body>
+            </html>", "text/html");
+    }
 }
