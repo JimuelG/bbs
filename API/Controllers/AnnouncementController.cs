@@ -73,9 +73,9 @@ public class AnnouncementController(IUnitOfWork unit,
         return Ok(dto);
     }
 
-    [Authorize(Roles = "Staff")]
+    // [Authorize(Roles = "Staff")]
     [HttpPost]
-    public async Task<ActionResult> CreateAnnouncement(CreateAnnouncementDto dto)
+    public async Task<ActionResult> CreateAnnouncement([FromBody] CreateAnnouncementDto dto)
     {
         var audioUrl = await ttsService.GenerateSpeechAsync(dto.Message, dto.IsEmergency, dto.LanguageCode);
 

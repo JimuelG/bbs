@@ -120,5 +120,27 @@ public class AccountController(SignInManager<AppUser> signInManager,
         return Ok( new { message = "Updated succefully" });
     }
 
-    
+    [HttpPatch("change-password/{userId}")]
+    public async Task<ActionResult> ChangePassword(string userId, ChangePasswordDto dto)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+
+        if (user == null) return NotFound("User not found");
+
+        var isOldPassword = await userManager.CheckPasswordAsync(user, dto.OldPassword);
+
+        if (!isOldPassword) return BadRequest("Incorrect old password");
+
+        if (!string.IsNullOrEmpty(dto.NewPassword))
+        {
+            var passwordChangeResult = await userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+            if (!passwordChangeResult.Succeeded) return BadRequest(passwordChangeResult);
+        }
+
+        var updateResult = await userManager.UpdateAsync(user);
+
+        if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
+
+        return Ok( new { message = "Password change successfully" });
+    }
 }

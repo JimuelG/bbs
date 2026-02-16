@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddCors();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
@@ -37,6 +38,13 @@ Environment.SetEnvironmentVariable(
 );
 
 var app = builder.Build();
+
+app.UseCors(x => x
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:4200", "https://localhost:4200")
+);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

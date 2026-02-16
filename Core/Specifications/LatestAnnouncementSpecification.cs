@@ -8,6 +8,7 @@ public class LatestAnnouncementSpecification : BaseSpecification<Announcement>
 {
     public LatestAnnouncementSpecification() : base(a => a.IsActive && !a.IsPlayed && a.ScheduledAt <= DateTime.UtcNow)
     {
+        AddOrderByDescending(a => a.Id);
     }
 
 }
