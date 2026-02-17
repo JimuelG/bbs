@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
 {
     public DbSet<Announcement> Announcements { get; set; }
     public DbSet<BarangayCertificate> BarangayCertificates { get; set; }
+    public DbSet<Resident> Residents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

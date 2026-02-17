@@ -1,0 +1,120 @@
+<div class="p-8 bg-slate-50 min-h-screen">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Resident Directory</h1>
+      <p class="text-slate-500 text-sm">Manage resident profiles, verify accounts, and view community demographics.</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <mat-icon class="absolute left-3 top-2.5 text-slate-400 text-sm">search</mat-icon>
+        <input type="text" placeholder="Find a resident..." 
+          class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none w-72 transition-all">
+      </div>
+      
+      <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
+        <mat-icon>person_add</mat-icon>
+        Add Resident
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div class="flex gap-2">
+      <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">All Puroks</button>
+      <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 text-blue-600 border-blue-200 bg-blue-50">Verified Only</button>
+      <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">Heads of Family</button>
+    </div>
+    
+    <div class="text-xs font-medium text-slate-400">
+      Showing <strong>450</strong> total residents
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50/50 border-b border-slate-100 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
+        <tr>
+          <th class="px-6 py-4">Full Name</th>
+          <th class="px-6 py-4">Purok</th>
+          <th class="px-6 py-4">Verification</th>
+          <th class="px-6 py-4">App Account</th>
+          <th class="px-6 py-4">Monthly Income</th>
+          <th class="px-6 py-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        <tr class="hover:bg-slate-50/50 transition-colors">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3">
+              <div class="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs border border-slate-200">
+                JD
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-slate-800">John Doe</span>
+                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-tight">ID: #RES-1004</span>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-slate-600">Purok 3</td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-1.5 text-green-600">
+              <mat-icon class="text-lg">verified</mat-icon>
+              <span class="text-xs font-bold uppercase">Verified</span>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <span class="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black uppercase">Active User</span>
+          </td>
+          <td class="px-6 py-4 text-sm font-medium text-slate-700">₱15,500.00</td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex justify-end gap-1">
+              <button title="View Profile" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button title="Edit" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <tr class="hover:bg-slate-50/50 transition-colors bg-amber-50/20">
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-3 text-slate-400">
+              <div class="h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center font-bold text-xs border border-dashed border-slate-300">
+                MS
+              </div>
+              <div class="flex flex-col">
+                <span class="font-bold text-slate-700 italic">Maria Santos</span>
+                <span class="text-[10px] uppercase font-bold tracking-tight">Pending Approval</span>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-sm text-slate-600">Purok 1</td>
+          <td class="px-6 py-4">
+            <div class="flex items-center gap-1.5 text-amber-500">
+              <mat-icon class="text-lg">hourglass_empty</mat-icon>
+              <span class="text-xs font-bold uppercase tracking-tighter">Needs Review</span>
+            </div>
+          </td>
+          <td class="px-6 py-4 text-slate-300 text-[10px] font-bold uppercase italic">No Account</td>
+          <td class="px-6 py-4 text-sm font-medium text-slate-700">₱8,200.00</td>
+          <td class="px-6 py-4 text-right">
+            <button class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm transition-all">
+              Verify Now
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/30 flex justify-between items-center text-xs text-slate-500 font-medium">
+      <span>Page 1 of 12</span>
+      <div class="flex gap-2">
+        <button class="px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 disabled:opacity-50" disabled>Previous</button>
+        <button class="px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50">Next</button>
+      </div>
+    </div>
+  </div>
+</div>

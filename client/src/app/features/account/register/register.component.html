@@ -1,1 +1,98 @@
-<p>register works!</p>
+<div class="min-h-screen flex items-center justify-center bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-slate-100">
+    
+    <div class="text-center">
+      <h2 class="text-3xl font-extrabold text-slate-900">Create Resident Account</h2>
+      <p class="mt-2 text-sm text-slate-500">Please provide your details to register with the Barangay system.</p>
+    </div>
+
+    <form class="mt-8 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Personal Information</h3>
+          
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">First Name</label>
+            <input formControlName="firstName" type="text" placeholder="John"
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Last Name</label>
+            <input formControlName="lastName" type="text" placeholder="Doe"
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Purok / Zone</label>
+            <select formControlName="purok" 
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white transition-all sm:text-sm">
+              <option value="">Select Purok</option>
+              <option value="Purok 1">Purok 1</option>
+              <option value="Purok 2">Purok 2</option>
+              <option value="Purok 3">Purok 3</option>
+              <option value="Purok 4">Purok 4</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Contact Number</label>
+            <input formControlName="phoneNumber" type="text" placeholder="09123456789"
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Account Credentials</h3>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Email Address</label>
+            <input formControlName="email" type="email" placeholder="john@example.com"
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Password</label>
+            <input formControlName="password" type="password" placeholder="••••••••"
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Valid ID (Image URL)</label>
+            <div class="mt-1 flex items-center gap-2">
+              <input formControlName="idUrl" type="text" placeholder="https://image-link.com"
+                class="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+              <button type="button" class="p-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200">
+                <mat-icon class="text-sm h-5 w-5">attach_file</mat-icon>
+              </button>
+            </div>
+            <p class="mt-1 text-[10px] text-slate-400">Upload an ID to get verified by Barangay Staff.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100">
+        <button type="submit" [disabled]="registerForm.invalid || loading"
+          class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all shadow-lg shadow-blue-200 disabled:opacity-50">
+          
+          @if (loading) {
+            <svg class="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          } @else {
+            Complete Registration
+          }
+        </button>
+        
+        <p class="mt-4 text-center text-sm text-slate-500">
+          Already a member? 
+          <a routerLink="/account/login" class="font-bold text-blue-600 hover:text-blue-500 underline decoration-2 underline-offset-4">
+            Sign in here
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

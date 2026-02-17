@@ -3,7 +3,6 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -26,11 +25,17 @@ public class AnnouncementController(IUnitOfWork unit,
     [HttpGet("latest")]
     public async Task<ActionResult<Announcement>> GetLatest()
     {
-        var spec = new LatestAnnouncementSpecification();
+        var phTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time"));
+
+        var spec = new LatestAnnouncementSpecification(phTime);
         var announcement = await unit.Repository<Announcement>().GetEntityWithSpec(spec);
             
         if (announcement == null) return NoContent();
 
+        announcement.IsPlayed = true;
+        unit.Repository<Announcement>().Update(announcement);
+        await unit.Complete();
+        
         var dto = new AnnouncementResponseDto
         {
             Id = announcement.Id,
@@ -58,7 +63,8 @@ public class AnnouncementController(IUnitOfWork unit,
     [HttpGet("display")]
     public async Task<ActionResult<DisplayAnnouncementDto>> GetDisplay()
     {
-        var spec = new LatestAnnouncementSpecification();
+        var phTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time"));
+        var spec = new LatestAnnouncementSpecification(phTime);
         var announcement = await unit.Repository<Announcement>().GetEntityWithSpec(spec); 
         if (announcement == null) return NoContent();
 
@@ -88,6 +94,14 @@ public class AnnouncementController(IUnitOfWork unit,
         return CreatedAtAction(nameof(GetAnnounceById), 
             new { id = announcement.Id}, 
             mapper.Map<AnnouncementDto>(announcement));
+    }
+
+    [HttpPost("preview")]
+    public async Task<ActionResult> PreviewAnnouncement([FromBody] PreviewDto dto)
+    {
+        var audioUrl = await ttsService.GenerateSpeechAsync(dto.Message, dto.IsEmergency, dto.LanguageCode);
+
+        return Ok(new { AudioUrl = audioUrl });
     }
 
     [HttpPut("{id}/played")]

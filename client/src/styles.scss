@@ -1,0 +1,31 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@import "tailwindcss";
+
+.cdk-overlay-pane {
+    .mat-mdc-dialog-container .mdc-dialog__surface {
+        background: transparent !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+}
+
+.cdk-overlay-dark-backdrop {
+    background: rgba(0,0,0,0.32);
+}
+
+.snack-error {
+    @include mat.snack-bar-overrides((
+        button-color: white,
+        container-color: red,
+        supporting-text-color: white
+    ));
+}
+
+.snack-success {
+    @include mat.snack-bar-overrides((
+        button-color: white,
+        container-color: green,
+        supporting-text-color: white
+    ));
+}

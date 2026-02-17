@@ -5,6 +5,7 @@ using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
@@ -23,12 +24,12 @@ public class AccountController(SignInManager<AppUser> signInManager,
         {
             Id = user.Id,
             Email = user.Email!,
-            FirstName = user.FirstName,
-            MiddleName = user.MiddleName,
-            LastName = user.LastName,
-            Address = user.Address,
-            Contact = user.Contact,
-            Role = roles.FirstOrDefault()!
+            FirstName = user.Resident?.FirstName ?? "N/A",
+            LastName = user.Resident?.LastName ?? "N/A",
+            PhoneNumber = user.PhoneNumber ?? "N/A",
+            Purok = user.Resident?.Purok ?? "N/A",
+            IsIdVerified = user.IsIdVerified,
+            Role = roles.FirstOrDefault() ?? "Resident"
         });
     }
 
@@ -36,17 +37,28 @@ public class AccountController(SignInManager<AppUser> signInManager,
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] RegisterDto registerDto)
     {
-        var user = new AppUser
+        if (await userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+        {
+            return BadRequest("Email is already taken.");
+        }
+
+        var residentProfile = new Resident
         {
             FirstName = registerDto.FirstName,
-            MiddleName = registerDto.MiddleName,
             LastName = registerDto.LastName,
-            Email = registerDto.Email,
+            Purok = registerDto.Purok,
+            IsHeadOfFamily = false,
+            MonthlyIncome = 0
+        };
+
+        var user = new AppUser
+        {
             UserName = registerDto.Email,
-            Address = registerDto.Address,
-            Contact = registerDto.Contact,
+            Email = registerDto.Email,
+            PhoneNumber = registerDto.PhoneNumber,
             IdUrl = registerDto.IdUrl,
-            IsIdVerified = false
+            IsIdVerified = false,
+            Resident = residentProfile
         };
 
         var result = await userManager.CreateAsync(user, registerDto.Password);
@@ -61,9 +73,9 @@ public class AccountController(SignInManager<AppUser> signInManager,
             return ValidationProblem();
         }
 
-        await userManager.AddToRoleAsync(user, "User");
+        await userManager.AddToRoleAsync(user, "Resident");
 
-        return Ok(new { message = "Registration successful" });
+        return Ok(new { message = "Registration successful. Please wait for ID verification." });
     }
 
     [Authorize]
@@ -83,7 +95,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
     // [Authorize(Roles = "Admin, Staff")]
     [HttpGet("user/{id}")]
-    public async Task<ActionResult<UserDto>> GetUserById(string id)
+    public async Task<ActionResult<UserInfoDto>> GetUserById(string id)
     {
         var user = await userManager.FindByIdAsync(id);
 
@@ -91,16 +103,14 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
         var roles = await userManager.GetRolesAsync(user);
 
-        return Ok (new UserDto
+        return Ok (new UserInfoDto
         {   
             Id = user.Id,
             Email = user.Email!,
-            FirstName = user.FirstName!,
-            MiddleName = user.MiddleName,
-            LastName = user.LastName,
-            Contact = user.Contact,
-            Address = user.Address,
-            IdUrl = user.IdUrl,
+            FirstName = user.Resident?.FirstName ?? "N/A",
+            LastName = user.Resident?.LastName ?? "N/A",
+            PhoneNumber = user.PhoneNumber ?? "N/A",
+            Purok = user.Resident?.Purok ?? "N/A",
             IsIdVerified = user.IsIdVerified,
             Role = roles.FirstOrDefault() ?? "Resident"
         });

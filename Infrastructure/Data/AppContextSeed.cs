@@ -20,18 +20,30 @@ public class AppContextSeed
         
         if (!userManager.Users.Any(x => x.UserName == "jimuelgaas@gmail.com"))
         {
+            var adminProfile = new Resident
+            {
+                FirstName = "Jimuel",
+                LastName = "Gaas",
+                Purok = "Zone 1",
+                IsHeadOfFamily = false,
+                MonthlyIncome = 0
+            };
+            
             var user = new AppUser
             {
                 UserName = "jimuelgaas@gmail.com",
                 Email = "jimuelgaas@gmail",
-                FirstName = "Jimuel",
-                LastName = "Gaas",
                 IsIdVerified = true,
-                Contact = "09386089484"
+                PhoneNumber = "09386089484",
+                Resident = adminProfile
             };
 
-            await userManager.CreateAsync(user, "Pa$$w0rd");
-            await userManager.AddToRoleAsync(user, "Staff");
+            var result = await userManager.CreateAsync(user, "Pa$$w0rd");
+
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "Staff");
+            }
         }
     }
 }

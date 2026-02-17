@@ -1,1 +1,74 @@
-<p>admin-certificates works!</p>
+<div class="p-8 bg-slate-50 min-h-screen">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Document Requests</h1>
+      <p class="text-slate-500 text-sm">Manage, approve, and print Barangay Certificates and Clearances.</p>
+    </div>
+
+    <div class="flex gap-3">
+      <div class="relative">
+        <mat-icon class="absolute left-3 top-2.5 text-slate-400 text-sm">search</mat-icon>
+        <input type="text" placeholder="Search resident..." 
+          class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none w-64 transition-all">
+      </div>
+      
+      <button (click)="openCertificateModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold shadow-md transition-all flex items-center gap-2 text-sm">
+        <mat-icon>add</mat-icon>
+        New Request
+      </button>
+    </div>
+  </div>
+
+  <div class="flex gap-4 mb-6">
+    <button class="px-4 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold uppercase tracking-wider">All</button>
+    <button class="px-4 py-1.5 rounded-full bg-white text-slate-500 border border-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-colors">Pending</button>
+    <button class="px-4 py-1.5 rounded-full bg-white text-slate-500 border border-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-colors">Released</button>
+  </div>
+
+  <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs uppercase font-bold">
+        <tr>
+          <th class="px-6 py-4">Resident Name</th>
+          <th class="px-6 py-4">Document Type</th>
+          <th class="px-6 py-4">Purpose</th>
+          <th class="px-6 py-4 text-center">Date Requested</th>
+          <th class="px-6 py-4 text-center">Status</th>
+          <th class="px-6 py-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <tr class="hover:bg-slate-50/50 transition-colors">
+          <td class="px-6 py-4">
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800">Juan Dela Cruz</span>
+              <span class="text-xs text-slate-400 font-medium">Zone 4, San Isidro</span>
+            </div>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-sm font-medium text-slate-700">Barangay Clearance</span>
+          </td>
+          <td class="px-6 py-4">
+            <span class="text-sm text-slate-500 italic">Job Application</span>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <span class="text-xs text-slate-600 italic">Feb 17, 2026</span>
+          </td>
+          <td class="px-6 py-4 text-center">
+            <span class="px-3 py-1 text-[10px] font-black uppercase rounded-full bg-amber-100 text-amber-700">Pending</span>
+          </td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex justify-end gap-2">
+              <button title="Print Certificate" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                <mat-icon>print</mat-icon>
+              </button>
+              <button title="Edit Details" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

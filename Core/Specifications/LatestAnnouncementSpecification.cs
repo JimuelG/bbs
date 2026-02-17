@@ -6,7 +6,7 @@ namespace Core.Specifications;
 
 public class LatestAnnouncementSpecification : BaseSpecification<Announcement>
 {
-    public LatestAnnouncementSpecification() : base(a => a.IsActive && !a.IsPlayed && a.ScheduledAt <= DateTime.UtcNow)
+    public LatestAnnouncementSpecification(DateTime currentTime) : base(a => a.IsActive && !a.IsPlayed && a.ScheduledAt <= currentTime)
     {
         AddOrderByDescending(a => a.Id);
     }
