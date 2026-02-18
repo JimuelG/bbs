@@ -9,4 +9,5 @@ public class CreateCertificateDto
     public CertificateType CertificateType { get; set; }
     public string Purpose { get; set; } = string.Empty;
     public decimal? Fee { get; set; }
+
 }

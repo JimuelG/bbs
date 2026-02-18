@@ -6,7 +6,6 @@ import { MatAnchor, MatButton } from "@angular/material/button";
 @Component({
   selector: 'app-header',
   imports: [
-    MatIcon,
     RouterLink,
     MatAnchor,
     MatButton

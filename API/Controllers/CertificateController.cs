@@ -13,8 +13,11 @@ public class CertificateController(IUnitOfWork unit,
     IMapper mapper, ICertificatePdfService pdfService) : BaseApiController
 {
     [HttpPost]
-    public async Task<ActionResult<CreateCertificateDto>> CreateCertificate(CreateCertificateDto dto)
+    public async Task<ActionResult<CreateCertificateDto>> CreateCertificate([FromBody] CreateCertificateDto dto)
     {
+        var phTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+            TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time"));
+
         var certificate = new BarangayCertificate
         {
             FullName = dto.FullName,
@@ -25,7 +28,7 @@ public class CertificateController(IUnitOfWork unit,
             IsPaid = true,
             IssuedAt = DateTime.UtcNow,
             IssuedBy = User.Identity?.Name ?? "System",
-            ReferenceNumber = $"BRGY-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}"
+            ReferenceNumber = $"BRGY-{phTime:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}"
         };
 
         var pdfUrl = await pdfService.GenerateCertificatePdfAsync(certificate);
@@ -37,13 +40,12 @@ public class CertificateController(IUnitOfWork unit,
 
         return Ok( new
         {   
-            mapped,
+            data = mapped,
             PdfUrl = pdfUrl
         });
-
     }
 
-    [Authorize(Roles = "Staff")]
+    // [Authorize(Roles = "Staff")]
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<CertificateResponseDto>>> GetCertificate()
     {

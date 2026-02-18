@@ -6,6 +6,7 @@ using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,25 @@ Environment.SetEnvironmentVariable(
     Path.Combine(Directory.GetCurrentDirectory(), "project-73902aa4-ac75-493d-b36-72b44044258a.json")
 );
 
+var rootPath = builder.Environment.ContentRootPath;
+var certFolder = Path.Combine(rootPath, "wwwroot", "certificates");
+
+if (!Directory.Exists(certFolder))
+{
+    Directory.CreateDirectory(certFolder);
+}
+
+
 var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(certFolder),
+    RequestPath = "/certificates" 
+});
 
 app.UseCors(x => x
     .AllowAnyHeader()
@@ -46,14 +65,13 @@ app.UseCors(x => x
     .WithOrigins("http://localhost:4200", "https://localhost:4200")
 );
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
+
+app.UseRouting();
 
 try
 {
