@@ -25,8 +25,14 @@ public class CertificateController(IUnitOfWork unit,
             CertificateType = dto.CertificateType,
             Purpose = dto.Purpose,
             Fee = dto.Fee,
+        
+            BirthDate = dto.BirthDate,
+            CivilStatus = dto.CivilStatus,
+            Purok = dto.Purok,
+            StayDuration = dto.StayDuration,
+
             IsPaid = true,
-            IssuedAt = DateTime.UtcNow,
+            IssuedAt = phTime,
             IssuedBy = User.Identity?.Name ?? "System",
             ReferenceNumber = $"BRGY-{phTime:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}"
         };

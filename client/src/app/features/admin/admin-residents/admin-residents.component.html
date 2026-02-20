@@ -22,12 +22,12 @@
   <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
     <div class="flex gap-2">
       <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">All Puroks</button>
-      <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 text-blue-600 border-blue-200 bg-blue-50">Verified Only</button>
+      <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">Verified Only</button>
       <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">Heads of Family</button>
     </div>
     
     <div class="text-xs font-medium text-slate-400">
-      Showing <strong>450</strong> total residents
+      Showing <strong>{{residents.length}}</strong> total residents
     </div>
   </div>
 
@@ -38,79 +38,72 @@
           <th class="px-6 py-4">Full Name</th>
           <th class="px-6 py-4">Purok</th>
           <th class="px-6 py-4">Verification</th>
-          <th class="px-6 py-4">App Account</th>
           <th class="px-6 py-4">Monthly Income</th>
           <th class="px-6 py-4 text-right">Actions</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-slate-50">
-        <tr class="hover:bg-slate-50/50 transition-colors">
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div class="h-9 w-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold text-xs border border-slate-200">
-                JD
+        @for (res of residents; track res.id) {
+          <tr class="hover:bg-slate-50/50 transition-colors" [class.bg-amber-50/20]="!res.isIdVerified">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div [class]="res.isIdVerified ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-600 border-amber-200'" 
+                     class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs border">
+                  {{res.firstName[0]}}{{res.lastName[0]}}
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-bold text-slate-800" [class.italic]="!res.isIdVerified">{{res.firstName}} {{res.lastName}}</span>
+                  <span class="text-[10px] text-slate-400 uppercase font-bold tracking-tight">
+                    {{ res.isIdVerified ? 'ID: #RES-' + res.id.slice(0,4) : 'Pending Approval' }}
+                  </span>
+                </div>
               </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-slate-800">John Doe</span>
-                <span class="text-[10px] text-slate-400 uppercase font-bold tracking-tight">ID: #RES-1004</span>
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-600">Purok {{res.purok}}</td>
+            <td class="px-6 py-4">
+              @if (res.isIdVerified) {
+                <div class="flex items-center gap-1.5 text-green-600">
+                  <mat-icon class="text-lg">verified</mat-icon>
+                  <span class="text-xs font-bold uppercase">Verified</span>
+                </div>
+              } @else {
+                <div class="flex items-center gap-1.5 text-amber-500">
+                  <mat-icon class="text-lg">hourglass_empty</mat-icon>
+                  <span class="text-xs font-bold uppercase tracking-tighter">Needs Review</span>
+                </div>
+              }
+            </td>
+            <td class="px-6 py-4 text-sm font-medium text-slate-700">
+              {{ res.monthlyIncome | currency:'PHP':'symbol-narrow' }}
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-1">
+                @if (!res.isIdVerified) {
+                  <button (click)="verifyResident(res.id)" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm transition-all mr-2">
+                    Verify Now
+                  </button>
+                }
+                <button (click)="viewId(res.appUserId!)" title="View ID Profile" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                <button title="Edit" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
+                  <mat-icon>edit</mat-icon>
+                </button>
               </div>
-            </div>
-          </td>
-          <td class="px-6 py-4 text-sm text-slate-600">Purok 3</td>
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-1.5 text-green-600">
-              <mat-icon class="text-lg">verified</mat-icon>
-              <span class="text-xs font-bold uppercase">Verified</span>
-            </div>
-          </td>
-          <td class="px-6 py-4">
-            <span class="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[10px] font-black uppercase">Active User</span>
-          </td>
-          <td class="px-6 py-4 text-sm font-medium text-slate-700">₱15,500.00</td>
-          <td class="px-6 py-4 text-right">
-            <div class="flex justify-end gap-1">
-              <button title="View Profile" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                <mat-icon>visibility</mat-icon>
-              </button>
-              <button title="Edit" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
-                <mat-icon>edit</mat-icon>
-              </button>
-            </div>
-          </td>
-        </tr>
-
-        <tr class="hover:bg-slate-50/50 transition-colors bg-amber-50/20">
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-3 text-slate-400">
-              <div class="h-9 w-9 rounded-full bg-slate-50 flex items-center justify-center font-bold text-xs border border-dashed border-slate-300">
-                MS
-              </div>
-              <div class="flex flex-col">
-                <span class="font-bold text-slate-700 italic">Maria Santos</span>
-                <span class="text-[10px] uppercase font-bold tracking-tight">Pending Approval</span>
-              </div>
-            </div>
-          </td>
-          <td class="px-6 py-4 text-sm text-slate-600">Purok 1</td>
-          <td class="px-6 py-4">
-            <div class="flex items-center gap-1.5 text-amber-500">
-              <mat-icon class="text-lg">hourglass_empty</mat-icon>
-              <span class="text-xs font-bold uppercase tracking-tighter">Needs Review</span>
-            </div>
-          </td>
-          <td class="px-6 py-4 text-slate-300 text-[10px] font-bold uppercase italic">No Account</td>
-          <td class="px-6 py-4 text-sm font-medium text-slate-700">₱8,200.00</td>
-          <td class="px-6 py-4 text-right">
-            <button class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm transition-all">
-              Verify Now
-            </button>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
     
+    @if (loading) {
+      <div class="p-12 text-center text-slate-400">Processing...</div>
+    } @else if (residents.length === 0) {
+      <div class="p-12 text-center text-slate-400">No residents found.</div>
+    }
+
     <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/30 flex justify-between items-center text-xs text-slate-500 font-medium">
-      <span>Page 1 of 12</span>
+      <span>Showing {{residents.length}} residents</span>
       <div class="flex gap-2">
         <button class="px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 disabled:opacity-50" disabled>Previous</button>
         <button class="px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50">Next</button>

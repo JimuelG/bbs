@@ -28,6 +28,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             LastName = user.Resident?.LastName ?? "N/A",
             PhoneNumber = user.PhoneNumber ?? "N/A",
             Purok = user.Resident?.Purok ?? "N/A",
+            IdUrl = user.IdUrl ?? "N/A",
             IsIdVerified = user.IsIdVerified,
             Role = roles.FirstOrDefault() ?? "Resident"
         });
@@ -78,6 +79,36 @@ public class AccountController(SignInManager<AppUser> signInManager,
         return Ok(new { message = "Registration successful. Please wait for ID verification." });
     }
 
+    // [Authorize(Roles = "Admin, Staff")]
+    [HttpGet("residents")]
+    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetResidents()
+    {
+        var users = await userManager.Users.Include(u => u.Resident)
+            .ToListAsync();
+
+        var userInfos = new List<UserInfoDto>();
+
+        foreach (var user in users)
+        {
+            var roles = await userManager.GetRolesAsync(user);
+
+            userInfos.Add(new UserInfoDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.Resident?.FirstName ?? "N/A",
+                LastName = user.Resident?.LastName ?? "N/A",
+                PhoneNumber = user.PhoneNumber ?? "N/A",
+                Purok = user.Resident?.Purok ?? "N/A",
+                IdUrl = user.IdUrl ?? "N/A",
+                IsIdVerified = user.IsIdVerified,
+                Role = roles.FirstOrDefault() ?? "Resident"
+            });
+        }
+
+        return Ok(userInfos);
+    }
+
     [Authorize]
     [HttpPost("logout")]
     public async Task<ActionResult> Logout()
@@ -116,7 +147,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
         });
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("verify/{id}")]
     public async Task<ActionResult> Verify(string id)
     {
         var user = await userManager.FindByIdAsync(id);
@@ -125,9 +156,11 @@ public class AccountController(SignInManager<AppUser> signInManager,
 
         user.IsIdVerified = true;
 
-        await unit.Complete();
+        var result = await userManager.UpdateAsync(user);
 
-        return Ok( new { message = "Updated succefully" });
+        if (!result.Succeeded) return BadRequest("Failed to update user status");
+
+        return Ok( new { message = "Updated successfully" });
     }
 
     [HttpPatch("change-password/{userId}")]

@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AccountService } from './core/services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  baseUrl = '';
   protected readonly title = signal('client');
 
 }

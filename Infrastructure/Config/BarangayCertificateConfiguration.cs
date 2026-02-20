@@ -14,6 +14,9 @@ public class BarangayCertificateConfiguration : IEntityTypeConfiguration<Baranga
         builder.Property(c => c.Fee).HasColumnType("decimal(18,2)");
         builder.Property(c => c.Purpose).IsRequired();
         builder.Property(c => c.IssuedBy).IsRequired();
-
+        builder.Property(c => c.BirthDate).IsRequired();
+        builder.Property(c => c.CivilStatus).IsRequired().HasMaxLength(20);
+        builder.Property(c => c.Purok).IsRequired().HasMaxLength(50);
+        builder.Property(c => c.StayDuration).HasMaxLength(100);
     }
 }

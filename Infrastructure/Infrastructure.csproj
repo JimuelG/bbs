@@ -15,7 +15,9 @@
   <ItemGroup>
     <Folder Include="Config\" />
     <Folder Include="Data\" />
+    <Folder Include="PdfLayouts\" />
     <Folder Include="Services\" />
+    <Folder Include="Services\Interface\" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -33,16 +33,16 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
       this.loading = true;
       this.accountService.login(this.loginForm.value).subscribe({
         next: () => {
+          this.accountService.getUserInfo().subscribe();
           this.router.navigateByUrl('/');
+          this.loading = false;
         },
         error: (err) => {
           this.loading = false
         }
       });
-    }
   }
 }

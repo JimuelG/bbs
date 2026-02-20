@@ -1,0 +1,35 @@
+<div class="announcement-container">
+  <div class="calendar-wrapper">
+    <mat-card>
+      <mat-calendar 
+        [selected]="selectedDate()" 
+        (selectedChange)="selectedDate.set($event)"
+        [dateClass]="dateClass">
+      </mat-calendar>
+    </mat-card>
+  </div>
+
+  <div class="detail-wrapper">
+    <h3>Announcements for {{ selectedDate() | date:'longDate' }}</h3>
+    
+    @if (selectedDayAnnouncements().length > 0) {
+      @for (item of selectedDayAnnouncements(); track item.id) {
+        <mat-card class="announcement-card">
+          <mat-card-header>
+            <div mat-card-avatar class="category-icon"></div>
+            <mat-card-title>{{ item.title }}</mat-card-title>
+            <mat-card-subtitle>{{ item.isEmergency }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>{{ item.message }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
+    } @else {
+      <div class="no-data">
+        <mat-icon>event_note</mat-icon>
+        <p>No announcements scheduled for this day.</p>
+      </div>
+    }
+  </div>
+</div>

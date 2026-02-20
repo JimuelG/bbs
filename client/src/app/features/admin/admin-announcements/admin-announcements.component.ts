@@ -6,13 +6,15 @@ import { AnnouncementsService } from '../../../core/services/announcements.servi
 import { Announcement } from '../../../shared/models/announcement';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-admin-announcements',
   imports: [
     MatIcon,
-    DatePipe
-  ],
+    DatePipe,
+    RouterLink
+],
   templateUrl: './admin-announcements.component.html',
   styleUrl: './admin-announcements.component.scss',
 })

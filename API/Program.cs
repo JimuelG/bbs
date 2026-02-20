@@ -17,11 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddCors();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
-builder.Services.AddScoped<ITtsService, GoogleTtsService>();
+builder.Services.AddCors();
 builder.Services.AddAuthentication();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
@@ -29,9 +27,20 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+builder.Services.AddScoped<ITtsService, GoogleTtsService>();
 builder.Services.AddScoped<ICertificatePdfService, CertificatePdfService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None; 
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Required for SameSite.None
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(7); // Keeps user logged in for a week
+    options.SlidingExpiration = true; 
+});
 
 Environment.SetEnvironmentVariable(
     "GOOGLE_APPLICATION_CREDENTIALS",
@@ -58,6 +67,8 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/certificates" 
 });
 
+app.UseRouting();
+
 app.UseCors(x => x
     .AllowAnyHeader()
     .AllowAnyMethod()
@@ -70,8 +81,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
+app.MapFallbackToController("Index", "Fallback");
 
-app.UseRouting();
 
 try
 {
