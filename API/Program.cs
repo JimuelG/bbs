@@ -6,6 +6,7 @@ using Infrastructure.Data;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +17,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddCors();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
-builder.Services.AddScoped<ITtsService, GoogleTtsService>();
+builder.Services.AddCors();
 builder.Services.AddAuthentication();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
@@ -28,16 +27,47 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+builder.Services.AddScoped<ITtsService, GoogleTtsService>();
 builder.Services.AddScoped<ICertificatePdfService, CertificatePdfService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.None; 
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Required for SameSite.None
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(7); // Keeps user logged in for a week
+    options.SlidingExpiration = true; 
+});
 
 Environment.SetEnvironmentVariable(
     "GOOGLE_APPLICATION_CREDENTIALS",
     Path.Combine(Directory.GetCurrentDirectory(), "project-73902aa4-ac75-493d-b36-72b44044258a.json")
 );
 
+var rootPath = builder.Environment.ContentRootPath;
+var certFolder = Path.Combine(rootPath, "wwwroot", "certificates");
+
+if (!Directory.Exists(certFolder))
+{
+    Directory.CreateDirectory(certFolder);
+}
+
+
 var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(certFolder),
+    RequestPath = "/certificates" 
+});
+
+app.UseRouting();
 
 app.UseCors(x => x
     .AllowAnyHeader()
@@ -46,14 +76,13 @@ app.UseCors(x => x
     .WithOrigins("http://localhost:4200", "https://localhost:4200")
 );
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();
+app.MapFallbackToController("Index", "Fallback");
+
 
 try
 {

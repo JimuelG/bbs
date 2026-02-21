@@ -4,6 +4,7 @@ export type User = {
     lastName: string,
     email: string,
     contact: string,
-    isVerified: boolean,
+    isIdVerified: boolean,
+    idUrl: string,
     role: string
 }

@@ -5,10 +5,18 @@
             <a href="">Home</a>
             <a href="">Contact</a>
         </nav>
-        <div class="flex gap-3 align-middle">
-            <button mat-flat-button routerLink="/account/login">
-                Sign in
-            </button>
-        </div>
+        @if (accountService.currentUser()) {
+            <div class="flex gap-3 align-middle">
+                <button (click)="logout()">
+                    Logout
+                </button>
+            </div>
+        } @else {
+            <div class="flex gap-3 align-middle">
+                <button mat-flat-button routerLink="/account/login">
+                    Sign in
+                </button>
+            </div>
+        }
     </div>
 </header>

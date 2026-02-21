@@ -2,9 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { User } from '../../shared/models/user';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { RegisterWithOtpRequest } from '../../shared/models/RegisterWithOtpRequest';
 import { ChangePassword } from '../../shared/models/changePassword';
+import { Resident } from '../../shared/models/residents';
 
 @Injectable({
   providedIn: 'root',
@@ -14,23 +15,33 @@ export class AccountService {
   private http = inject(HttpClient);
   currentUser = signal<User | null>(null);
 
-  login(payload: any) {
+  login(values: any) {
     let params = new HttpParams();
     params = params.append('useCookies', true);
 
-    return this.http.post<User>(`${this.baseUrl}login`, payload, {params});
+    return this.http.post<User>(`${this.baseUrl}login`, values, {params});
+  }
+
+  getUserInfo() {
+    return this.http.get<User>(`${this.baseUrl}account/user-info`).pipe(
+      map(user => {
+        this.currentUser.set(user);
+        console.log('User info retrieved:', user);
+        return user;
+      })
+    )
   }
 
   register(payload: RegisterWithOtpRequest): Observable<any> {
     return this.http.post(`${this.baseUrl}account/register`, payload);
   }
 
-  verifyUser(id: string): Observable<any> {
+  verifyResident(id: string): Observable<any> {
     return this.http.put(`${this.baseUrl}account/verify/${id}`, {});
   }
 
   changePassword(userId: string, payload: ChangePassword) {
-    return this.http.patch(`${this.baseUrl}account/change-password${userId}`, payload);
+    return this.http.patch(`${this.baseUrl}account/change-password/${userId}`, payload);
   }
 
   logout() {
@@ -39,5 +50,9 @@ export class AccountService {
 
   getAuthState() {
     return this.http.get<{isAuthenticated: boolean}>(`${this.baseUrl}account/auth-status`);
+  }
+
+  getAllResidents() {
+    return this.http.get<Resident[]>(`${this.baseUrl}account/residents`);
   }
 }
