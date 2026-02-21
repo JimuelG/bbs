@@ -1,10 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatCalendar, MatCalendarCellClassFunction } from '@angular/material/datepicker';
 import { MatIcon } from '@angular/material/icon';
 import { Announcement } from '../../../../shared/models/announcement';
 import { AnnouncementsService } from '../../../../core/services/announcements.service';
 import { DatePipe } from '@angular/common';
+import { SnackbarService } from '../../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-calendar',
@@ -13,21 +14,20 @@ import { DatePipe } from '@angular/common';
     MatCardModule,
     MatIcon,
     MatCalendar,
-    DatePipe
+    DatePipe,
   ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss',
 })
 export class CalendarComponent implements OnInit {
   private announcementService = inject(AnnouncementsService);
-  
-  // 1. Changed to signal for reactive updates
+  private snackbarService = inject(SnackbarService);
+
   announcements = signal<Announcement[]>([]);
-
+  previewing = false;
   selectedDate = signal<Date | null>(new Date());
+  @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
 
-  // 2. Computed signal will now reactively update when either 
-  // announcements() or selectedDate() changes
   selectedDayAnnouncements = computed(() => {
     const date = this.selectedDate();
     const list = this.announcements();
@@ -44,12 +44,16 @@ export class CalendarComponent implements OnInit {
 
   loadAnnouncements() {
     this.announcementService.getAllAnnouncements().subscribe({
-      next: data => this.announcements.set(data),
+      next: data => {
+        this.announcements.set(data);
+        if (this.calendar) {
+          this.calendar.updateTodaysDate();
+        }
+      }, 
       error: err => console.error('Could not load announcements', err)
     });
   }
 
-  // 3. Updated to access the signal correctly with ()
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
     if (view === 'month') {
       const hasData = this.announcements().some(a => 
@@ -58,5 +62,20 @@ export class CalendarComponent implements OnInit {
       return hasData ? 'has-announcement' : '';
     }
     return '';
+  }
+
+  onPreview(audioUrl: string, event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (audioUrl) {
+      this.previewing = true;
+      const audio = new Audio(`http://localhost:5001${audioUrl}`);
+      audio.play();
+      audio.onended = () => this.previewing = false;
+    } else {
+      this.snackbarService.error(`Failed to preview audio`);
+      this.previewing = false;
+    }
   }
 }

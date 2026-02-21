@@ -1,35 +1,75 @@
-<div class="announcement-container">
-  <div class="calendar-wrapper">
-    <mat-card>
+<div class="flex h-[calc(100vh-120px)] w-full gap-6 p-6 bg-gray-50 overflow-hidden font-sans">
+  
+  <div class="w-[400px] flex-shrink-0">
+    <mat-card class="h-full shadow-sm border border-gray-200 !rounded-2xl overflow-hidden">
       <mat-calendar 
         [selected]="selectedDate()" 
         (selectedChange)="selectedDate.set($event)"
-        [dateClass]="dateClass">
+        [dateClass]="dateClass"
+        class="w-full">
       </mat-calendar>
+      
+      <div class="p-4 border-t border-gray-100 mt-auto">
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <span class="w-3 h-3 rounded-full border-2 border-indigo-600 bg-indigo-50"></span>
+          <span>Day with announcements</span>
+        </div>
+      </div>
     </mat-card>
   </div>
 
-  <div class="detail-wrapper">
-    <h3>Announcements for {{ selectedDate() | date:'longDate' }}</h3>
-    
-    @if (selectedDayAnnouncements().length > 0) {
-      @for (item of selectedDayAnnouncements(); track item.id) {
-        <mat-card class="announcement-card">
-          <mat-card-header>
-            <div mat-card-avatar class="category-icon"></div>
-            <mat-card-title>{{ item.title }}</mat-card-title>
-            <mat-card-subtitle>{{ item.isEmergency }}</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <p>{{ item.message }}</p>
-          </mat-card-content>
-        </mat-card>
-      }
-    } @else {
-      <div class="no-data">
-        <mat-icon>event_note</mat-icon>
-        <p>No announcements scheduled for this day.</p>
+  <div class="flex-1 flex flex-col min-w-0">
+    <div class="mb-4 flex justify-between items-end">
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 tracking-tight">Daily Schedule</h2>
+        <p class="text-gray-500">{{ selectedDate() | date:'fullDate' }}</p>
       </div>
-    }
+      <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
+        + New Announcement
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
+      @if (selectedDayAnnouncements().length > 0) {
+        @for (item of selectedDayAnnouncements(); track item.id) {
+          <div class="group relative bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all border-l-4"
+               [class.border-l-red-500]="item.isEmergency"
+               [class.border-l-indigo-500]="!item.isEmergency">
+            
+            <div class="flex justify-between items-start">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-xs font-semibold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-600">
+                    {{ item.scheduledAt | date:'shortTime' }}
+                  </span>
+                  @if (item.isEmergency) {
+                    <span class="text-xs font-bold text-red-600 animate-pulse">● EMERGENCY</span>
+                  }
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">{{ item.title }}</h3>
+                <p class="text-gray-600 leading-relaxed text-sm line-clamp-3">{{ item.message }}</p>
+              </div>
+
+              <div class="flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button title="Play / Broadcast" (click)="onPreview(item.audioUrl, $event)" class="p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors">
+                  <mat-icon class="!w-5 !h-5 !text-[20px]">play_circle</mat-icon>
+                </button>
+                <button title="Edit" class="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors">
+                  <mat-icon class="!w-5 !h-5 !text-[20px]">edit</mat-icon>
+                </button>
+                <button title="Delete" class="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors">
+                  <mat-icon class="!w-5 !h-5 !text-[20px]">delete_outline</mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="h-64 flex flex-col items-center justify-center bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl">
+          <mat-icon class="text-gray-300 !w-12 !h-12 !text-[48px] mb-2">event_busy</mat-icon>
+          <p class="text-gray-400 font-medium">No announcements for this day</p>
+        </div>
+      }
+    </div>
   </div>
 </div>
