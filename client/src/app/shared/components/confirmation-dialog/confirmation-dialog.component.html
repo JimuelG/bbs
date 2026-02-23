@@ -1,0 +1,26 @@
+<div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+    
+    <div class="p-6 pb-0">
+        <h2 class="text-xl font-bold text-red-600 flex items-center gap-2">
+            <mat-icon>report_problem</mat-icon>
+            {{ data.title }}
+        </h2>
+    </div>
+
+    <mat-dialog-content class="p-6 text-slate-600">
+        <p class="text-sm font-medium">{{ data.message }}</p>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="p-4 bg-slate-50 border-t border-slate-100">
+        <button mat-button [mat-dialog-close]="false" 
+                class="text-slate-500 font-bold uppercase text-xs tracking-widest">
+            Cancel
+        </button>
+        <button mat-flat-button 
+                [mat-dialog-close]="true" 
+                cdkFocusInitial
+                class="!bg-red-500 !text-white hover:!bg-red-600 !rounded-lg !px-6 font-bold uppercase text-xs tracking-widest ml-2">
+            Confirm
+        </button>
+    </mat-dialog-actions>
+</div>

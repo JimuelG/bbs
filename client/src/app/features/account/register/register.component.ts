@@ -23,6 +23,7 @@ export class RegisterComponent {
 
   registerForm: FormGroup;
   loading = false;
+  selectedFile: File | null = null;
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -32,22 +33,49 @@ export class RegisterComponent {
       phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      idUrl: ['']
     })
   }
 
   onSubmit() {
     if (this.registerForm.valid) {
       this.loading = true;
+
+      const credentials = {
+        email: this.registerForm.value.email,
+        password: this.registerForm.value.password
+      };
+
       this.accountService.register(this.registerForm.value).subscribe({
         next: () => {
-          this.router.navigateByUrl('/login');
+          this.accountService.login(credentials).subscribe({
+            next: () => {
+              if (this.selectedFile) {
+              this.accountService.uploadIdCard(this.selectedFile).subscribe({
+                next: () => this.completeRegistration(),
+                error: () => this.completeRegistration()
+              });
+              } else {
+                this.completeRegistration();
+              }
+            }          
+          });
         },
         error: (err) => {
           this.loading = false;
-          
         }
-      })
+      });
+    }
+  }
+
+  private completeRegistration() {
+    this.loading = false;
+    this.router.navigateByUrl('/account/login');
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
     }
   }
 }

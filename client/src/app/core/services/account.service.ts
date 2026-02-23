@@ -36,6 +36,13 @@ export class AccountService {
     return this.http.post(`${this.baseUrl}account/register`, payload);
   }
 
+  uploadIdCard(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.baseUrl}account/upload-id-card`, formData);
+  }
+
   verifyResident(id: string): Observable<any> {
     return this.http.put(`${this.baseUrl}account/verify/${id}`, {});
   }

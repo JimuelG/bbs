@@ -1,1 +1,93 @@
-<p>admin-officials works!</p>
+<div class="p-8 bg-slate-50 min-h-screen">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Barangay Officials</h1>
+      <p class="text-slate-500 text-sm">Manage the organizational structure and official digital signatures.</p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button (click)="openOfficialModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
+        <mat-icon>person_add</mat-icon>
+        Add Official
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+    <div class="flex gap-2 text-xs font-medium text-slate-400 uppercase tracking-widest">
+      Active Administration
+    </div>
+    
+    <div class="text-xs font-medium text-slate-400">
+      Showing <strong>{{officials().length}}</strong> registered officials
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50/50 border-b border-slate-100 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
+        <tr>
+          <th class="px-6 py-4">Name & Position</th>
+          <th class="px-6 py-4">Rank</th>
+          <th class="px-6 py-4">Status</th>
+          <th class="px-6 py-4">Digital Signature</th>
+          <th class="px-6 py-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        @for (item of officials(); track item.id) {
+          <tr class="hover:bg-slate-50/50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-slate-100 border overflow-hidden">
+                  @if (item.officeImage) {
+                    <img [src]="baseUrl + item.officeImage" class="w-full h-full object-cover">
+                  } @else {
+                    <mat-icon class="text-slate-300 m-2">person</mat-icon>
+                  }
+                </div>
+                <div class="flex flex-col">
+                  <span class="font-bold text-slate-800 uppercase">{{item.firstName}} {{item.lastName}}</span>
+                  <span class="text-[10px] text-blue-600 font-black uppercase tracking-tighter">{{item.position}}</span>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-1 rounded">#{{item.rank}}</span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-1.5" [class]="item.isActive ? 'text-green-600' : 'text-slate-400'">
+                <mat-icon class="text-lg">{{item.isActive ? 'verified_user' : 'do_not_disturb_on'}}</mat-icon>
+                <span class="text-xs font-bold uppercase">{{item.isActive ? 'Active' : 'Inactive'}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              @if (item.signatureImage) {
+                <img [src]="baseUrl + item.signatureImage" class="h-8 opacity-75 hover:opacity-100 transition-opacity" title="Signature Uploaded">
+              } @else {
+                <span class="text-[10px] text-amber-500 font-bold uppercase italic">Missing Signature</span>
+              }
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-1">
+                <button (click)="openOfficialModal(item)" title="Edit Official" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button (click)="onDelete(item.id)" title="Delete" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    
+    @if (officials().length === 0) {
+      <div class="p-20 text-center flex flex-col items-center">
+        <mat-icon class="text-slate-200 !text-6xl !w-16 !h-16">group</mat-icon>
+        <p class="text-slate-400 mt-4">No officials registered yet.</p>
+      </div>
+    }
+  </div>
+</div>

@@ -19,5 +19,8 @@ public class MappingProfiles : Profile
 
         CreateMap<CertificateResponseDto, CreateCertificateDto>();
         CreateMap<BarangayCertificate, CertificateResponseDto>();
+        CreateMap<CreateOfficialDto, BarangayOfficial>();
+        CreateMap<UpdateOfficialDto, BarangayOfficial>();
+        CreateMap<BarangayOfficial, BarangayOfficialDto>();
     }
 }

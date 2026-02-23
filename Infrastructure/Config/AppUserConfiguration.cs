@@ -14,5 +14,6 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
             .HasForeignKey<AppUser>(u => u.ResidentId)
             .OnDelete(DeleteBehavior.SetNull);
         builder.Property(u => u.IdUrl).HasMaxLength(500);
+        
     }
 }

@@ -4,6 +4,8 @@ import { AccountService } from '../../../core/services/account.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { Resident } from '../../../shared/models/residents';
 import { CurrencyPipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { IdPreviewModalComponent } from '../../../shared/components/id-preview-modal/id-preview-modal.component';
 
 @Component({
   selector: 'app-admin-residents',
@@ -15,8 +17,10 @@ import { CurrencyPipe } from '@angular/common';
   styleUrl: './admin-residents.component.scss',
 })
 export class AdminResidentsComponent implements OnInit {
+  baseUrl = "http://localhost:5001";
   private accountService = inject(AccountService);
   private snackbarService = inject(SnackbarService);
+  private dialog = inject(MatDialog);
 
   residents: Resident[] = [];
   loading = false;
@@ -48,7 +52,19 @@ export class AdminResidentsComponent implements OnInit {
     });
   }
 
-  viewId(url: string) {
-    if (url) window.open(url, '_blank');
+  viewId(resident: Resident) {
+    const dialogRef = this.dialog.open(IdPreviewModalComponent, {
+      data: {
+        idUrl: `${this.baseUrl}/uploads/${resident}`,
+        name: `${resident.firstName} ${resident.lastName}`,
+        isVerified: resident.isIdVerified
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'verified') {
+        this.verifyResident(resident.id);
+      }
+    });
   }
 }

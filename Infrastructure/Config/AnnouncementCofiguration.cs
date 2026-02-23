@@ -11,5 +11,6 @@ public class AnnouncementCofiguration : IEntityTypeConfiguration<Announcement>
     {
         builder.Property(a => a.Title).HasMaxLength(150).IsRequired();
         builder.Property(a => a.Message).IsRequired();
+        builder.HasQueryFilter(a => !a.IsDeleted);
     }
 }

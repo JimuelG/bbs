@@ -18,5 +18,6 @@ public class BarangayCertificateConfiguration : IEntityTypeConfiguration<Baranga
         builder.Property(c => c.CivilStatus).IsRequired().HasMaxLength(20);
         builder.Property(c => c.Purok).IsRequired().HasMaxLength(50);
         builder.Property(c => c.StayDuration).HasMaxLength(100);
+        builder.HasQueryFilter(a => !a.IsDeleted);
     }
 }

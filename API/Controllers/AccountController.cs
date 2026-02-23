@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
 public class AccountController(SignInManager<AppUser> signInManager,
-    UserManager<AppUser> userManager, IUnitOfWork unit) : BaseApiController
+    UserManager<AppUser> userManager) : BaseApiController
 {
     [HttpGet("user-info")]
     public async Task<ActionResult> GetUserInfo()
@@ -185,5 +185,40 @@ public class AccountController(SignInManager<AppUser> signInManager,
         if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
 
         return Ok( new { message = "Password change successfully" });
+    }
+
+    [HttpPost("upload-id-card")]
+    public async Task<ActionResult> UploadIdCard([FromForm] IFormFile file)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null) return NotFound("User not found");
+
+        if (file == null || file.Length == 0) return BadRequest("No file uploaded");
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+        var extension = Path.GetExtension(file.FileName).ToLower();
+
+        if (!allowedExtensions.Contains(extension)) return BadRequest("Invalid file type. Only JPG and PNG are allowed.");
+
+        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "ids");
+
+        if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+
+        var fileName = $"{user.Id}_{Guid.NewGuid()}{extension}";
+        var filePath = Path.Combine(folderPath, fileName);
+
+        using var stream = new FileStream(filePath, FileMode.Create);
+        await file.CopyToAsync(stream);
+
+        var relativePath = $"/images/ids/{fileName}";
+
+        user.IdUrl = relativePath;
+        user.IsIdVerified = false;
+
+        var result = await userManager.UpdateAsync(user);
+
+        if (!result.Succeeded) return BadRequest("Failed to upload ID card");
+
+        return Ok(new { url = relativePath });
     }
 }

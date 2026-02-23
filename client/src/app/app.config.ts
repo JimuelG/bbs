@@ -22,7 +22,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => {
       const initService = inject(InitService);
       return lastValueFrom(initService.init()).finally(() => {
-        
       });
     })
   ]

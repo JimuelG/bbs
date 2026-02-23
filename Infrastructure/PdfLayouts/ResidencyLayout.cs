@@ -8,7 +8,7 @@ namespace Infrastructure.PdfLayouts;
 
 public class ResidencyLayout : ICertificateLayout
 {
-    public void Compose(IDocumentContainer container, BarangayCertificate certificate, string logoFolder)
+    public void Compose(IDocumentContainer container, BarangayCertificate certificate, string logoFolder, IReadOnlyList<BarangayOfficial> officials)
     {
         container.Page(page =>
         {
@@ -77,8 +77,9 @@ public class ResidencyLayout : ICertificateLayout
 
                    row.RelativeItem().AlignRight().Column(sigCol =>
                    {
-                       sigCol.Item().PaddingTop(32).AlignCenter().Text("HON. CARLITO R.MARIANO").Bold().Underline();
-                       sigCol.Item().AlignCenter().PaddingRight(15).Text("Punong Barangay").FontSize(10);
+                        var captain = officials.FirstOrDefault(x => x.Position == "Barangay Captain");
+                        sigCol.Item().PaddingTop(32).AlignCenter().Text($"HON. {captain?.FirstName} {captain?.MiddleName} {captain?.LastName}").Bold().Underline();
+                        sigCol.Item().AlignCenter().PaddingRight(15).Text("Barangay Captain").FontSize(10);
                    });
                 });
             });

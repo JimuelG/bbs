@@ -17,6 +17,32 @@ public class AppContextSeed
         {
             await roleManager.CreateAsync(new IdentityRole("Resident"));
         }
+
+        if (!context.BarangayOfficials.Any())
+        {
+            var officials = new List<BarangayOfficial>
+            {
+                new BarangayOfficial
+                {
+                    FirstName = "Carlito",
+                    LastName = "Mariano",
+                    MiddleName = "R.",
+                    Position = "Barangay Captain",
+                    Rank = 1
+                },
+                new BarangayOfficial
+                {
+                    FirstName = "Abegail", 
+                    LastName = "Valdoz", 
+                    MiddleName = "N.", 
+                    Position = "Barangay Secretary", 
+                    Rank = 2
+                }
+            };
+
+            context.BarangayOfficials.AddRange(officials);
+            await context.SaveChangesAsync();
+        }
         
         if (!userManager.Users.Any(x => x.UserName == "jimuelgaas@gmail.com"))
         {

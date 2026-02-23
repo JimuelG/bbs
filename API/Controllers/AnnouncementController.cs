@@ -118,4 +118,16 @@ public class AnnouncementController(IUnitOfWork unit,
         return NoContent();
     }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteAnnouncement(int id)
+    {
+        var announcement = await unit.Repository<Announcement>().GetByIdAsync(id);
+        if (announcement == null) return NotFound();
+
+        unit.Repository<Announcement>().Remove(announcement);
+        await unit.Complete();
+
+        return NoContent();
+    }
+
 }

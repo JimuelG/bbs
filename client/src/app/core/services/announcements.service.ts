@@ -22,4 +22,8 @@ export class AnnouncementsService {
   getAllAnnouncements() {
     return this.http.get<Announcement[]>(`${this.baseUrl}announcement`);
   }
+
+  deleteAnnouncement(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}announcement/${id}`);
+  }
 }

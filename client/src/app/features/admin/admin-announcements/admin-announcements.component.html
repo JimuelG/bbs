@@ -90,7 +90,7 @@
                 <button class="text-slate-400 hover:text-orange-500 transition-colors">
                   <mat-icon class="text-lg">edit</mat-icon>
                 </button>
-                <button class="text-slate-400 hover:text-red-600 transition-colors">
+                <button (click)="onDelete(announcement.id)" class="text-slate-400 hover:text-red-600 transition-colors">
                   <mat-icon class="text-lg">delete</mat-icon>
                 </button>
               </td>

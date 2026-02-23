@@ -20,5 +20,6 @@ public class ResidentConfiguration : IEntityTypeConfiguration<Resident>
             .WithOne(u => u.Resident)
             .HasForeignKey<Resident>(r => r.AppUserId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.HasQueryFilter(a => !a.IsDeleted);
     }
 }
