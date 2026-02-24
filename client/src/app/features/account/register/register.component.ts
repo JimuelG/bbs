@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatIcon } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
+import { of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -45,24 +46,17 @@ export class RegisterComponent {
         password: this.registerForm.value.password
       };
 
-      this.accountService.register(this.registerForm.value).subscribe({
-        next: () => {
-          this.accountService.login(credentials).subscribe({
-            next: () => {
-              if (this.selectedFile) {
-              this.accountService.uploadIdCard(this.selectedFile).subscribe({
-                next: () => this.completeRegistration(),
-                error: () => this.completeRegistration()
-              });
-              } else {
-                this.completeRegistration();
-              }
-            }          
-          });
-        },
-        error: (err) => {
-          this.loading = false;
-        }
+      this.accountService.register(this.registerForm.value).pipe(
+        switchMap(() => this.accountService.login(credentials)),
+        switchMap(() => {
+          if (this.selectedFile) {
+            return this.accountService.uploadIdCard(this.selectedFile);
+          }
+          return of(null);
+        })
+      ).subscribe({
+        next: () => this.completeRegistration(),
+        error: () => this.loading = false
       });
     }
   }

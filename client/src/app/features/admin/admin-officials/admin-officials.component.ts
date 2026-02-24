@@ -22,7 +22,7 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
   styleUrl: './admin-officials.component.scss',
 })
 export class AdminOfficialsComponent implements OnInit {
-  baseUrl = "http://localhost:5001";
+  baseUrl = "https://localhost:5001";
   private barangayOfficialService = inject(BarangayOfficialService);
   private dialog = inject(MatDialog);
   private snackbarService = inject(SnackbarService);

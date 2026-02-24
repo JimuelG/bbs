@@ -17,7 +17,7 @@ import { IdPreviewModalComponent } from '../../../shared/components/id-preview-m
   styleUrl: './admin-residents.component.scss',
 })
 export class AdminResidentsComponent implements OnInit {
-  baseUrl = "http://localhost:5001";
+  baseUrl = "https://localhost:5001";
   private accountService = inject(AccountService);
   private snackbarService = inject(SnackbarService);
   private dialog = inject(MatDialog);
@@ -55,7 +55,7 @@ export class AdminResidentsComponent implements OnInit {
   viewId(resident: Resident) {
     const dialogRef = this.dialog.open(IdPreviewModalComponent, {
       data: {
-        idUrl: `${this.baseUrl}/uploads/${resident}`,
+        idUrl: `${resident.idUrl}`,
         name: `${resident.firstName} ${resident.lastName}`,
         isVerified: resident.isIdVerified
       }

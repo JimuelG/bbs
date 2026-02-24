@@ -10,8 +10,8 @@
       </div>
 
       <div class="p-4 bg-slate-200 flex justify-center items-center min-h-[300px]">
-        @if (data.imageUrl) {
-          <img [src]="baseUrl + data.imageUrl" 
+        @if (data.idUrl && data.idUrl != "N/A") {
+          <img [src]="baseUrl + data.idUrl" 
                class="max-w-full max-h-[500px] rounded-lg shadow-md object-contain border-4 border-white"
                alt="Resident ID">
         } @else {

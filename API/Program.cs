@@ -20,7 +20,6 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddCors();
-builder.Services.AddAuthentication();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();

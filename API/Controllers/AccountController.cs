@@ -188,8 +188,10 @@ public class AccountController(SignInManager<AppUser> signInManager,
     }
 
     [HttpPost("upload-id-card")]
+    [Authorize]
     public async Task<ActionResult> UploadIdCard([FromForm] IFormFile file)
     {
+        
         var user = await userManager.GetUserAsync(User);
         if (user == null) return NotFound("User not found");
 

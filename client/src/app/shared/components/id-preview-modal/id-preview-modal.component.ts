@@ -13,5 +13,5 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class IdPreviewModalComponent {
   data = inject(MAT_DIALOG_DATA);
-  baseUrl = "http://localhost:5001";
+  baseUrl = "https://localhost:5001";
 }

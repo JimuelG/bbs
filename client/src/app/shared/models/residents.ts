@@ -6,6 +6,7 @@ export interface Resident {
     monthlyIncome: number;
     appUserId: string;
     email: string;
+    idUrl: string;
     isIdVerified: boolean;
     role: string;
 }
