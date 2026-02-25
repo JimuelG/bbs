@@ -1,4 +1,4 @@
-using System.Drawing;
+using System;
 using Core.Entities;
 using Infrastructure.Services.Interface;
 using QuestPDF.Fluent;
@@ -7,7 +7,7 @@ using QuestPDF.Infrastructure;
 
 namespace Infrastructure.PdfLayouts;
 
-public class ResidencyLayout : ICertificateLayout
+public class IndegencyLayout : ICertificateLayout
 {
     public void Compose(IDocumentContainer container, BarangayCertificate certificate, string logoFolder, IReadOnlyList<BarangayOfficial> officials)
     {
@@ -19,10 +19,11 @@ public class ResidencyLayout : ICertificateLayout
 
             page.Content().PaddingTop(30).Column(col =>
             {
-                col.Item().AlignCenter().PaddingBottom(30).Text("CERTIFICATE OF RESIDENCY")
+                col.Item().AlignCenter().PaddingBottom(30).Text("BARANGAY INDIGENCY")
                     .FontSize(16).Bold().FontFamily(Fonts.TimesNewRoman);
                 col.Item().PaddingBottom(10).Text("To Whom It May concern:");
-                col.Item().PaddingTop(10).Text(text =>
+
+                col.Item().PaddingBottom(10).Text(text =>
                 {
                     text.Justify();
 
@@ -35,27 +36,33 @@ public class ResidencyLayout : ICertificateLayout
                     text.Span($"{certificate.CivilStatus.ToLower()}").Bold();
                     text.Span(", is a bona fide resident of ");
                     text.Span($"Purok {certificate.Purok} Barangay Guevara, Lapaz, Tarlac.").Bold();
-
                 });
 
-                col.Item().PaddingTop(15).Text(text =>
-                {
-                    text.Justify();
-
-                    text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
-                    text.Span("Further certifies that the above-named persion has been staying in this barangay since ");
-                    text.Span(certificate.StayDuration ?? " birth").Bold();
-                    text.Span("."); 
-                });
-
-                col.Item().PaddingTop(15).Text(text =>
+                col.Item().PaddingBottom(10).Text(text =>
                 {
                     text.Justify();
                     
                     text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
-                    text.Span("This certification is issued upon request of above-named for ");
-                    text.Span(certificate.Purpose).Bold();
-                    text.Span(" and for whatever legal purpose it may serve.");
+                    text.Span("Further ");
+                    text.Span("CERTIFY ").Bold();
+                    text.Span("that he/ she known to me of good moral character and is a law abiding citizen. He/ She has no pending case nor derogatory record in this Barangay.");
+                });
+
+                col.Item().PaddingBottom(10).Text(text =>
+                {
+                    text.Justify();
+
+                    text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
+                    text.Span("This certification is being issued upon request of the above- mentioned name for ");
+                    text.Span($"{certificate.Purpose.ToUpper()}").Bold();
+                });
+
+                col.Item().PaddingBottom(10).Text(text =>
+                {
+                    text.Justify();
+
+                    text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
+                    text.Span("We are very grateful and thankful for the help you extend to her/his family.");
                 });
 
                 col.Item().PaddingTop(15).Text(text =>
@@ -71,6 +78,7 @@ public class ResidencyLayout : ICertificateLayout
                 });
 
                 col.Item().Element(c => SharedLayout.ComposeSignatures(c, officials));
+
             });
 
             page.Footer().Element(c => SharedLayout.ComposeFooter(c));

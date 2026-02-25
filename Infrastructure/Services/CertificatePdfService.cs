@@ -21,6 +21,8 @@ public class CertificatePdfService : ICertificatePdfService
     private readonly Dictionary<CertificateType, ICertificateLayout> _layouts = new()
     {
         { CertificateType.Residency, new ResidencyLayout() },
+        { CertificateType.Clearance, new ClearanceLayout() },
+        { CertificateType.Indigency, new IndegencyLayout() },
     };
     public CertificatePdfService(IConfiguration config, IUnitOfWork unit)
     {
