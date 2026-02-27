@@ -27,48 +27,51 @@
 
   <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden">
     <table class="w-full text-left">
+      
       <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs uppercase font-bold">
-        <tr>
-          <th class="px-6 py-4">Resident Name</th>
-          <th class="px-6 py-4">Document Type</th>
-          <th class="px-6 py-4">Purpose</th>
-          <th class="px-6 py-4 text-center">Date Requested</th>
-          <th class="px-6 py-4 text-center">Status</th>
-          <th class="px-6 py-4 text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-100">
-        <tr class="hover:bg-slate-50/50 transition-colors">
-          <td class="px-6 py-4">
-            <div class="flex flex-col">
-              <span class="font-bold text-slate-800">Juan Dela Cruz</span>
-              <span class="text-xs text-slate-400 font-medium">Zone 4, San Isidro</span>
-            </div>
-          </td>
-          <td class="px-6 py-4">
-            <span class="text-sm font-medium text-slate-700">Barangay Clearance</span>
-          </td>
-          <td class="px-6 py-4">
-            <span class="text-sm text-slate-500 italic">Job Application</span>
-          </td>
-          <td class="px-6 py-4 text-center">
-            <span class="text-xs text-slate-600 italic">Feb 17, 2026</span>
-          </td>
-          <td class="px-6 py-4 text-center">
-            <span class="px-3 py-1 text-[10px] font-black uppercase rounded-full bg-amber-100 text-amber-700">Pending</span>
-          </td>
-          <td class="px-6 py-4 text-right">
-            <div class="flex justify-end gap-2">
-              <button title="Print Certificate" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                <mat-icon>print</mat-icon>
-              </button>
-              <button title="Edit Details" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-                <mat-icon>edit</mat-icon>
-              </button>
+          <tr>
+            <th class="px-6 py-4">Resident Name</th>
+            <th class="px-6 py-4">Document Type</th>
+            <th class="px-6 py-4">Purpose</th>
+            <th class="px-6 py-4 text-center">Date Requested</th>
+            <th class="px-6 py-4 text-center">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        @for (cert of certificates; track cert.id) {
+        <tbody class="divide-y divide-slate-100">
+          <tr class="hover:bg-slate-50/50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="flex flex-col">
+                <span class="font-bold text-slate-800">{{cert.fullName}}</span>
+                <span class="text-xs text-slate-400 font-medium">{{cert.address}}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-medium text-slate-700">{{cert.certificateType}}</span>
+            </td>
+            <td class="px-6 py-4">
+              <span class="text-sm text-slate-500 italic">{{cert.purpose}}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-xs text-slate-600 italic">{{cert.issuedAt}}</span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="px-3 py-1 text-[10px] font-black uppercase rounded-full bg-amber-100 text-amber-700">{{cert.status ? cert.status : 'pending'}}</span>
+            </td>
+            <td class="px-6 py-4 text-right">
+              <div class="flex justify-end gap-2">
+                <button (click)="viewCert(cert.referenceNumber)" title="Print Certificate" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                  <mat-icon>print</mat-icon>
+                </button>
+                <button (click)="editCert(cert)" title="Edit Details" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                  <mat-icon>edit</mat-icon>
+                </button>
             </div>
           </td>
         </tr>
       </tbody>
+    }
     </table>
   </div>
 </div>

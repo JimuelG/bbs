@@ -54,7 +54,7 @@ public class IndegencyLayout : ICertificateLayout
 
                     text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
                     text.Span("This certification is being issued upon request of the above- mentioned name for ");
-                    text.Span($"{certificate.Purpose.ToUpper()}").Bold();
+                    text.Span($"{certificate.Purpose.ToUpper()}.").Bold();
                 });
 
                 col.Item().PaddingBottom(10).Text(text =>

@@ -31,7 +31,7 @@ export class AdminAnnouncementsComponent implements OnInit {
   
     if (audioUrl) {
       this.previewing = true;
-      const audio = new Audio(`http://localhost:5001${audioUrl}`);
+      const audio = new Audio(`https://localhost:5001${audioUrl}`);
       audio.play();
       audio.onended = () => this.previewing = false;
     } else {

@@ -1,10 +1,8 @@
-using System.Runtime.ConstrainedExecution;
 using API.DTOs;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -31,7 +29,7 @@ public class CertificateController(IUnitOfWork unit,
             Purok = dto.Purok,
             StayDuration = dto.StayDuration,
 
-            IsPaid = true,
+            IsPaid = false,
             IssuedAt = phTime,
             IssuedBy = User.Identity?.Name ?? "System",
             ReferenceNumber = $"BRGY-{phTime:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}"

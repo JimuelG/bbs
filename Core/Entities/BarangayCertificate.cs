@@ -1,4 +1,5 @@
 using Core.Enums;
+using Core.Models;
 
 namespace Core.Entities;
 
@@ -17,4 +18,5 @@ public class BarangayCertificate : BaseEntity
     public string IssuedBy { get; set; } = string.Empty;
     public decimal? Fee { get; set; }
     public bool IsPaid { get; set; }
+    public string Status { get; set; } = CertificateStatus.Pending;
 }

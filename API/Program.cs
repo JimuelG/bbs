@@ -43,7 +43,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 Environment.SetEnvironmentVariable(
     "GOOGLE_APPLICATION_CREDENTIALS",
-    Path.Combine(Directory.GetCurrentDirectory(), "project-73902aa4-ac75-493d-b36-72b44044258a.json")
+    Path.Combine(Directory.GetCurrentDirectory(), "project-73902aa4-ac75-493d-b36-3e5c71c8771a.json")
 );
 
 var rootPath = builder.Environment.ContentRootPath;

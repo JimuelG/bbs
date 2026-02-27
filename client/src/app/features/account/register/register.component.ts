@@ -63,7 +63,7 @@ export class RegisterComponent {
 
   private completeRegistration() {
     this.loading = false;
-    this.router.navigateByUrl('/account/login');
+    this.router.navigateByUrl('/');
   }
 
   onFileSelected(event: any) {
