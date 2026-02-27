@@ -1,22 +1,88 @@
-<header class="shadow-md p-3 w-full">
-    <div class="flex align-middle items-center justify-between max-w-screen mx-auto">
-        <img src="/images/logo.png" alt="app logo" class="max-h-16">
-        <nav class="flex gap-3 my-2 uppercase text-xl">
-            <a href="">Home</a>
-            <a href="">Contact</a>
-        </nav>
-        @if (accountService.currentUser()) {
-            <div class="flex gap-3 align-middle">
-                <button (click)="logout()">
-                    Logout
-                </button>
+<nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      
+      <div class="flex items-center">
+        <div class="flex-shrink-0 flex items-center gap-2">
+          <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-200">
+            <mat-icon class="text-white">account_balance</mat-icon>
+          </div>
+          <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+            e-Barangay
+          </span>
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center space-x-8">
+        <a routerLink="/home" routerLinkActive="text-blue-600 border-b-2 border-blue-600" 
+           class="text-sm font-semibold text-slate-600 hover:text-blue-600 px-1 py-5 transition-all">Home</a>
+        
+        <a routerLink="/announcements" routerLinkActive="text-blue-600 border-b-2 border-blue-600" 
+           class="text-sm font-semibold text-slate-600 hover:text-blue-600 px-1 py-5 transition-all">Announcements</a>
+        
+        <a routerLink="/request-certificates" routerLinkActive="text-blue-600 border-b-2 border-blue-600" 
+           class="text-sm font-semibold text-slate-600 hover:text-blue-600 px-1 py-5 transition-all">Request Certificates</a>
+      </div>
+
+     <div class="hidden md:flex items-center gap-4">
+        @if (!(accountService.currentUser())) {
+            <div class="flex items-center gap-2">
+            <a routerLink="/account/login" 
+                class="px-4 py-2 text-sm font-semibold text-slate-600 hover:text-blue-600 transition-all">
+                Login
+            </a>
+            <a routerLink="/account/register" 
+                class="px-5 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md shadow-blue-200 transition-all">
+                Sign Up
+            </a>
             </div>
-        } @else {
-            <div class="flex gap-3 align-middle">
-                <button mat-flat-button routerLink="/account/login">
-                    Sign in
-                </button>
+        } 
+        @else {
+            @if (accountService.currentUser(); as user) {
+            <button class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
+                <mat-icon>notifications</mat-icon>
+            </button>
+            
+            <div class="h-8 w-[1px] bg-slate-200"></div>
+            
+            <div class="flex items-center gap-3 cursor-pointer group" [matMenuTriggerFor]="profileMenu">
+                <div class="text-right">
+                <p class="text-xs font-medium text-slate-500">Welcome,</p>
+                <p class="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">
+                    {{user.firstName}} {{user.lastName}}
+                </p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-slate-100 border-2 border-white shadow-sm overflow-hidden">
+                <img [src]="user.idUrl || 'https://ui-avatars.com/api/?name=' + user.firstName + '+' + user.lastName + '&background=0D8ABC&color=fff'" 
+                    alt="avatar" class="object-cover w-full h-full">
+                </div>
             </div>
+
+            <mat-menu #profileMenu="matMenu" class="mt-2">
+                <button mat-menu-item (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+                </button>
+            </mat-menu>
+            }
         }
     </div>
-</header>
+
+      <div class="md:hidden flex items-center">
+        <button (click)="isMobileMenuOpen = !isMobileMenuOpen" class="text-slate-600 p-2">
+          <mat-icon>{{ isMobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  @if (isMobileMenuOpen) {
+    <div class="md:hidden bg-white border-b border-slate-200 animate-in slide-in-from-top duration-300">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <a routerLink="/home" (click)="isMobileMenuOpen = false" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Home</a>
+        <a routerLink="/announcements" (click)="isMobileMenuOpen = false" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Announcements</a>
+        <a routerLink="/request-certificates" (click)="isMobileMenuOpen = false" class="block px-3 py-3 rounded-md text-base font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600">Request Certificates</a>
+      </div>
+    </div>
+  }
+</nav>

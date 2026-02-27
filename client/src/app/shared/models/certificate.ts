@@ -1,5 +1,5 @@
 export interface Certificate {
-    id: string;
+    id: number;
     referenceNumber: string;
     fullName: string;
     address: string;

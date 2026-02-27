@@ -1,3 +1,4 @@
+using System.Runtime.ConstrainedExecution;
 using API.DTOs;
 using AutoMapper;
 using Core.Entities;
@@ -47,6 +48,39 @@ public class CertificateController(IUnitOfWork unit,
             data = mapped,
             PdfUrl = pdfUrl
         });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateCertificate(int id, [FromBody] CreateCertificateDto dto)
+    {
+        var certificate = await unit.Repository<BarangayCertificate>().GetByIdAsync(id);
+
+        if (certificate == null) return NotFound("Certificate not found.");
+
+        certificate.FullName = dto.FullName;
+        certificate.Address = dto.Address;
+        certificate.CertificateType = dto.CertificateType;
+        certificate.Purpose = dto.Purpose;
+        certificate.Fee = dto.Fee;
+        certificate.BirthDate = dto.BirthDate;
+        certificate.Purok = dto.Purok;
+        certificate.StayDuration = dto.StayDuration;
+
+        var pdfUrl = await pdfService.GenerateCertificatePdfAsync(certificate);
+
+        unit.Repository<BarangayCertificate>().Update(certificate);
+
+        if (await unit.Complete())
+        {
+            var mapped = mapper.Map<CertificateResponseDto>(certificate);
+            return Ok(new
+            {
+                data = mapped,
+                PdfUrl = pdfUrl
+            });
+        }
+
+        return BadRequest("Problem updating the certificate.");
     }
 
     // [Authorize(Roles = "Staff")]

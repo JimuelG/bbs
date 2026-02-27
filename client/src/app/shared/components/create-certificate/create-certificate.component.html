@@ -86,34 +86,31 @@
         Cancel
       </button>
       
-      @if (data) {
-        <a (click)="onEdit()"
-          class="flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md shadow-blue-200 disabled:opacity-50 transition-all">
-              @if (isEditing) {
-                <mat-icon class="text-lg">save</mat-icon>
-                Update Certificate
-              } @else {
-                <mat-icon class="text-lg">edit</mat-icon>
-                Edit Certificate
-              }
-        </a>
-      } @else {
-
-        <button type="submit" [disabled]="certificateForm.invalid || loading"
-          class="flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md shadow-blue-200 disabled:opacity-50 transition-all">
-          @if (loading) {
-            <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Processing...
-          } @else {
-            <mat-icon class="text-lg">check_circle</mat-icon>
-            Issue & Print
-          }
-        </button>
+      <button type="submit" 
+        [disabled]="certificateForm.invalid || loading"
+        (click)="data && !isEditing ? onEdit($event) : null"
+        class="flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md shadow-blue-200 disabled:opacity-50 transition-all">
         
-      }
+        @if (loading) {
+          <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Processing...
+        } @else {
+          <mat-icon class="text-lg">
+            {{ data ? (isEditing ? 'save' : 'edit') : 'check_circle' }}
+          </mat-icon>
+
+          <span>
+            @if (data) {
+              {{ isEditing ? 'Update Certificate' : 'Edit Certificate' }}
+            } @else {
+              Issue & Print
+            }
+          </span>
+        }
+      </button>
     </div>
   </form>
 </div>

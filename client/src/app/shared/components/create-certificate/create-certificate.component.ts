@@ -14,14 +14,13 @@ import { CdkVirtualScrollableElement } from "@angular/cdk/scrolling";
     MatIcon,
     ReactiveFormsModule,
     CommonModule,
-    CdkVirtualScrollableElement
 ],
   templateUrl: './create-certificate.component.html',
   styleUrl: './create-certificate.component.scss',
 })
 export class CreateCertificateComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private snackBar = inject(SnackbarService);
+  private snackbarService = inject(SnackbarService);
   private dialogRef = inject(MatDialogRef);
   private certificateService = inject(CertificatesService);
 
@@ -40,6 +39,7 @@ export class CreateCertificateComponent implements OnInit {
 
   constructor() {
     this.certificateForm = this.fb.group({
+      id: [''],
       fullName: ['', Validators.required],
       address: ['', Validators.required],
       certificateType: [0, [Validators.required, Validators.min(0)]],
@@ -56,28 +56,40 @@ export class CreateCertificateComponent implements OnInit {
     if (this.certificateForm.valid) {
       this.loading = true;
 
+      const formValue = this.certificateForm.getRawValue();
+
       const payload = {
-        ...this.certificateForm.value,
+        ...formValue,
         certificateType: Number(this.certificateForm.value.certificateType ?? 0),
         fee: Number(this.certificateForm.value.fee ?? 0)
       }
+     
+      const request$ = this.data?.id
+        ? this.certificateService.updateCertificate(this.data.id, payload)
+        : this.certificateService.createCertificate(payload);
 
-      this.certificateService.createCertificate(payload).subscribe({
+      request$.subscribe({
         next: (response) => {
           this.loading = false;
+
+          const action = this.data?.id ? 'updated' : 'issued';
+          this.snackbarService.success(`Certificate ${action} successfully!`);
+
           this.dialogRef.close(response);
         },
         error: (err) => {
           this.loading = false;
-          this.snackBar.error(`Certificate creation failed: ${err}`)
+          const action = this.data?.id ? 'updated' : 'creation';
+          this.snackbarService.error(`Certificate ${action} failed. Please check your inputs`);
         }
       })
     }
   }
 
-  onEdit() {
-    this.certificateForm.enable();
+  onEdit(event: Event): void {
+    event.preventDefault();
     this.isEditing = true;
+    this.certificateForm.enable();
   }
 
   onCancel(): void {

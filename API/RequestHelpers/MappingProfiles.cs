@@ -22,5 +22,12 @@ public class MappingProfiles : Profile
         CreateMap<CreateOfficialDto, BarangayOfficial>();
         CreateMap<UpdateOfficialDto, BarangayOfficial>();
         CreateMap<BarangayOfficial, BarangayOfficialDto>();
+        CreateMap<Resident, UserInfoDto>()
+            .ForMember(d => d.Id, o => o.MapFrom(s => s.AppUserId))
+            .ForMember(d => d.Email, o => o.MapFrom(s => s.AppUser!.Email))
+            .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.AppUser!.IdUrl))
+            .ForMember(d => d.IdUrl, o => o.MapFrom(s => s.AppUser!.IsIdVerified))
+            .ForMember(d => d.Role, o => o.Ignore());
+
     }
 }

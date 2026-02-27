@@ -6,11 +6,13 @@ import { CreateCertificateComponent } from '../../../shared/components/create-ce
 import { CertificatesService } from '../../../core/services/certificates.service';
 import { Certificate } from '../../../shared/models/certificate';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { CertificateTypePipe } from '../../../shared/pipes/certificate-type-pipe';
 
 @Component({
   selector: 'app-admin-certificates',
   imports: [
     MatIcon,
+    CertificateTypePipe
   ],
   templateUrl: './admin-certificates.component.html',
   styleUrl: './admin-certificates.component.scss',

@@ -19,4 +19,8 @@ export class CertificatesService {
   loadCertificates() {
     return this.http.get<Certificate[]>(`${this.baseUrl}certificate`);
   }
+
+  updateCertificate(id: number, data: any) {
+    return this.http.put(`${this.baseUrl}certificate/${id}`, data);
+  }
 }

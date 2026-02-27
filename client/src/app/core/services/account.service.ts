@@ -47,6 +47,10 @@ export class AccountService {
     return this.http.put(`${this.baseUrl}account/verify/${id}`, {});
   }
 
+  getVerifiedResident() {
+    return this.http.get<Resident[]>(`${this.baseUrl}account/residents/verified`)
+  }
+
   changePassword(userId: string, payload: ChangePassword) {
     return this.http.patch(`${this.baseUrl}account/change-password/${userId}`, payload);
   }

@@ -67,4 +67,12 @@ export class AdminResidentsComponent implements OnInit {
       }
     });
   }
+
+  verifiedResidents() {
+    this.accountService.getVerifiedResident().subscribe({
+      next: (data) => {
+        this.residents = data
+      }
+    })
+  }
 }

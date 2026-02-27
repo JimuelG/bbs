@@ -1,15 +1,19 @@
 import { Component, inject } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from "@angular/router";
-import { MatAnchor, MatButton } from "@angular/material/button";
 import { AccountService } from '../../core/services/account.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { AsyncPipe, CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-header',
   imports: [
     RouterLink,
-    MatAnchor,
-    MatButton
+    MatIconModule,
+    MatMenuModule,
+    CommonModule,
+    RouterLink,
+    AsyncPipe
 ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -17,6 +21,8 @@ import { AccountService } from '../../core/services/account.service';
 export class HeaderComponent {
   accountService = inject(AccountService);
   private router = inject(Router);
+
+  isMobileMenuOpen = false;
 
   logout() {
     this.accountService.logout().subscribe({

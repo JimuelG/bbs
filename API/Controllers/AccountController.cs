@@ -1,16 +1,19 @@
 using API.DTOs;
 using API.Extensions;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 
 namespace API.Controllers;
 
 public class AccountController(SignInManager<AppUser> signInManager,
-    UserManager<AppUser> userManager) : BaseApiController
+    UserManager<AppUser> userManager, IUnitOfWork unit, IMapper mapper) : BaseApiController
 {
     [HttpGet("user-info")]
     public async Task<ActionResult> GetUserInfo()
@@ -52,6 +55,11 @@ public class AccountController(SignInManager<AppUser> signInManager,
             MonthlyIncome = 0
         };
 
+        unit.Repository<Resident>().Add(residentProfile);
+
+        var saved = await unit.Complete();
+        if (!saved) return BadRequest("Problem creating resident profile.");
+
         var user = new AppUser
         {
             UserName = registerDto.Email,
@@ -59,6 +67,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             PhoneNumber = registerDto.PhoneNumber,
             IdUrl = registerDto.IdUrl,
             IsIdVerified = false,
+            ResidentId = residentProfile.Id,
             Resident = residentProfile
         };
 
@@ -107,6 +116,16 @@ public class AccountController(SignInManager<AppUser> signInManager,
         }
 
         return Ok(userInfos);
+    }
+
+    [HttpGet("residents/verified")]
+    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetVerifiedResidents()
+    {
+        var spec = new VerifiedResidentsWithUserSpecification();
+
+        var residents = await unit.Repository<Resident>().ListAsync(spec);
+
+        return Ok(mapper.Map<IEnumerable<UserInfoDto>>(residents));
     }
 
     [Authorize]
