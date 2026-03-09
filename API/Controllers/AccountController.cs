@@ -28,11 +28,13 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Id = user.Id,
             Email = user.Email!,
             FirstName = userInfo!.Resident?.FirstName ?? "N/A",
+            MiddleName = userInfo!.Resident?.MiddleName ?? "N/A",
             LastName = userInfo.Resident?.LastName ?? "N/A",
             PhoneNumber = user.PhoneNumber ?? "N/A",
             Purok = userInfo.Resident?.Purok ?? "N/A",
             IdUrl = user.IdUrl ?? "N/A",
             IsIdVerified = user.IsIdVerified,
+            ResidentId = userInfo!.Resident?.Id ?? 0,
             Role = roles.FirstOrDefault() ?? "Resident"
         });
     }
@@ -108,6 +110,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
                 Id = user.Id,
                 Email = user.Email!,
                 FirstName = user.Resident?.FirstName ?? "N/A",
+                MiddleName = user.Resident?.MiddleName ?? "N/A",
                 LastName = user.Resident?.LastName ?? "N/A",
                 PhoneNumber = user.PhoneNumber ?? "N/A",
                 Purok = user.Resident?.Purok ?? "N/A",
@@ -160,6 +163,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             Id = user.Id,
             Email = user.Email!,
             FirstName = user.Resident?.FirstName ?? "N/A",
+            MiddleName = user.Resident?.MiddleName ?? "N/A",
             LastName = user.Resident?.LastName ?? "N/A",
             PhoneNumber = user.PhoneNumber ?? "N/A",
             Purok = user.Resident?.Purok ?? "N/A",
@@ -243,5 +247,33 @@ public class AccountController(SignInManager<AppUser> signInManager,
         if (!result.Succeeded) return BadRequest("Failed to upload ID card");
 
         return Ok(new { url = relativePath });
+    }
+
+    [HttpPut("update-resident")]
+    public async Task<ActionResult> UpdateProfile(UpdateResidentDto dto)
+    {
+        var user = await userManager.Users.Include(u => u.Resident).FirstOrDefaultAsync(x => x.Email == User.GetEmail());
+
+        if (user == null) return NotFound("User not found");
+        if (user.Resident == null) return BadRequest("Resident profile not found");
+
+        user.Resident.FirstName = dto.FirstName;
+        user.Resident.MiddleName = dto.MiddleName;
+        user.Resident.LastName = dto.LastName;
+        user.Resident.Purok = dto.Purok;
+        user.Resident.PictureUrl = dto.PictureUrl;
+
+        user.PhoneNumber = dto.PhoneNumber;
+
+        unit.Repository<Resident>().Update(user.Resident);
+
+        var residentSaved = await unit.Complete();
+
+        var userUpdateResult = await userManager.UpdateAsync(user);
+
+        if (!userUpdateResult.Succeeded)
+            return BadRequest("Failed to update account information.");
+
+        return Ok(new { message = "Profile updated successfully" });
     }
 }

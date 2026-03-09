@@ -1,1 +1,90 @@
-<p>create-edit-resident works! {{data?.id}}</p>
+<div class="p-6 bg-white rounded-xl max-w-3xl max-h-[90vh] overflow-y-auto">
+  <div class="flex justify-between items-center border-b pb-4 mb-6">
+    <h2 class="text-xl font-bold text-gray-800">
+      {{ data ? 'Edit Resident Profile' : 'New Resident Registration' }}
+    </h2>
+    <button (click)="onCancel()" class="text-gray-400 hover:text-gray-600">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+
+  <form [formGroup]="residentForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    
+    <div class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+      <div class="relative mb-4">
+        @if (previewUrl) {
+          <img [src]="previewUrl" class="h-32 w-32 rounded-full object-cover border-4 border-white shadow-md">
+        } @else {
+          <div class="h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+            <span class="material-icons text-5xl">person</span>
+          </div>
+        }
+        <div class="absolute bottom-0 right-0 flex space-x-1">
+          <button type="button" (click)="fileInput.click()" class="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-lg">
+            <span class="material-icons text-sm">upload</span>
+          </button>
+          <button type="button" (click)="openCamera()" class="p-2 bg-green-600 text-white rounded-full hover:bg-green-700 shadow-lg">
+            <span class="material-icons text-sm">photo_camera</span>
+          </button>
+        </div>
+      </div>
+      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden">
+      <p class="text-xs text-gray-500 font-medium">Resident Profile Picture</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 uppercase mb-1">First Name</label>
+        <input type="text" formControlName="firstName" class="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 uppercase mb-1">Middle Name</label>
+        <input type="text" formControlName="middleName" class="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 uppercase mb-1">Last Name</label>
+        <input type="text" formControlName="lastName" class="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 uppercase mb-1">Birth Date</label>
+        <input type="date" formControlName="birthDate" class="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div class="flex flex-col">
+        <label class="text-xs font-bold text-gray-500 uppercase mb-1">Civil Status</label>
+        <select formControlName="civilStatus" class="p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Widowed">Widowed</option>
+          <option value="Separated">Separated</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="bg-blue-50 p-4 rounded-lg">
+      <h3 class="text-sm font-bold text-blue-800 mb-3 flex items-center">
+        <span class="material-icons text-sm mr-1">location_on</span> Address & Contact
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col">
+          <label class="text-xs font-bold text-blue-600 uppercase mb-1">Purok/Zone</label>
+          <input type="text" formControlName="purok" placeholder="e.g. Purok 1" class="p-2 border-blue-200 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div class="flex flex-col">
+          <label class="text-xs font-bold text-blue-600 uppercase mb-1">Mobile Number</label>
+          <input type="text" formControlName="phoneNumber" placeholder="09123456789" class="p-2 border-blue-200 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end space-x-3 pt-6 border-t">
+      <button type="button" (click)="onCancel()" class="px-6 py-2 text-gray-600 font-medium">Cancel</button>
+      <button type="submit" [disabled]="residentForm.invalid || loading" 
+              class="px-8 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-md transition disabled:opacity-50">
+        {{ loading ? 'Saving...' : 'Save Resident' }}
+      </button>
+    </div>
+  </form>
+</div>
