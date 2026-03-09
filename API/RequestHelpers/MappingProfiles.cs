@@ -28,6 +28,7 @@ public class MappingProfiles : Profile
             .ForMember(d => d.PhoneNumber, o => o.MapFrom(s => s.AppUser!.IdUrl))
             .ForMember(d => d.IdUrl, o => o.MapFrom(s => s.AppUser!.IsIdVerified))
             .ForMember(d => d.Role, o => o.Ignore());
-
+        CreateMap<Staff,StaffDto>();
+        CreateMap<CreateStaffDto, StaffDto>();
     }
 }

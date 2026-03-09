@@ -1,1 +1,55 @@
-<p>admin-staffs works!</p>
+<div class="container mx-auto p-6">
+    <div class="flex justify-between">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Barangay Staff Directory</h2>
+        <button (click)="openStaffModal()">
+            addx
+        </button>
+    </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for (staff of staffs; track staff.id) {
+
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+            
+            <div class="h-2 bg-blue-600"></div>
+            
+            <div class="p-6">
+                <div class="flex items-center space-x-4">
+                    <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-500">
+                        {{ staff.firstName[0] }}{{ staff.lastName[0] }}
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">
+                                {{ staff.firstName }} {{ staff.middleName }} {{ staff.lastName }}
+                            </h3>
+                            <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full font-semibold uppercase">
+                                {{ staff.position }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 space-y-2 text-sm text-gray-600">
+                        <div class="flex items-center">
+                            <span class="font-semibold w-24">Birth Date:</span>
+                            <span>{{ staff.birthDate | date:'mediumDate' }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="font-semibold w-24">Email:</span>
+                            <span class="text-blue-600 truncate">{{ staff.email || 'No email provided' }}</span>
+                        </div>
+                </div>
+
+                <div class="mt-6 flex space-x-2">
+                    <button (click)="onEdit(staff)" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-md text-sm font-medium">
+                        Edit Profile
+                    </button>
+                    <!-- <button (click)="onBroadcast(staff)" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md text-sm font-medium">
+                        Message
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    }
+  </div>
+</div>

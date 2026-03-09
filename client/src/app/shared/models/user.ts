@@ -1,9 +1,11 @@
 export type User = {
     id: string,
     firstName: string,
+    middleName?: string,
     lastName: string,
     email: string,
-    contact: string,
+    pictureUrl?: string,
+    phoneNumber: string,
     isIdVerified: boolean,
     idUrl: string,
     role: string

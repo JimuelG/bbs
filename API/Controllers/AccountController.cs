@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QuestPDF.Infrastructure;
 
 namespace API.Controllers;
 
@@ -21,16 +20,17 @@ public class AccountController(SignInManager<AppUser> signInManager,
         if (User.Identity?.IsAuthenticated == false) return NoContent();
 
         var user = await signInManager.UserManager.GetUserByEmail(User);
+        var userInfo = await userManager.Users.Include(u => u.Resident).FirstOrDefaultAsync(u => u.Email == user.Email);
         var roles = await userManager.GetRolesAsync(user);
 
         return Ok(new UserInfoDto
         {
             Id = user.Id,
             Email = user.Email!,
-            FirstName = user.Resident?.FirstName ?? "N/A",
-            LastName = user.Resident?.LastName ?? "N/A",
+            FirstName = userInfo!.Resident?.FirstName ?? "N/A",
+            LastName = userInfo.Resident?.LastName ?? "N/A",
             PhoneNumber = user.PhoneNumber ?? "N/A",
-            Purok = user.Resident?.Purok ?? "N/A",
+            Purok = userInfo.Resident?.Purok ?? "N/A",
             IdUrl = user.IdUrl ?? "N/A",
             IsIdVerified = user.IsIdVerified,
             Role = roles.FirstOrDefault() ?? "Resident"
@@ -49,8 +49,10 @@ public class AccountController(SignInManager<AppUser> signInManager,
         var residentProfile = new Resident
         {
             FirstName = registerDto.FirstName,
+            MiddleName = registerDto.MiddleName,
             LastName = registerDto.LastName,
             Purok = registerDto.Purok,
+            PictureUrl = registerDto.PictureUrl,
             IsHeadOfFamily = false,
             MonthlyIncome = 0
         };

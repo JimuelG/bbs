@@ -11,6 +11,7 @@ public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>
     public DbSet<BarangayCertificate> BarangayCertificates { get; set; }
     public DbSet<Resident> Residents { get; set; }
     public DbSet<BarangayOfficial> BarangayOfficials { get; set; }
+    public DbSet<Staff> Staffs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -13,7 +13,6 @@ import { AsyncPipe, CommonModule } from '@angular/common';
     MatMenuModule,
     CommonModule,
     RouterLink,
-    AsyncPipe
 ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
@@ -23,6 +22,7 @@ export class HeaderComponent {
   private router = inject(Router);
 
   isMobileMenuOpen = false;
+  baseUrl = "https://localhost:5001";
 
   logout() {
     this.accountService.logout().subscribe({

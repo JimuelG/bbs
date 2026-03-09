@@ -6,6 +6,7 @@ import { Resident } from '../../../shared/models/residents';
 import { CurrencyPipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { IdPreviewModalComponent } from '../../../shared/components/id-preview-modal/id-preview-modal.component';
+import { CreateEditResidentComponent } from '../../../shared/components/create-edit-resident/create-edit-resident.component';
 
 @Component({
   selector: 'app-admin-residents',
@@ -73,6 +74,14 @@ export class AdminResidentsComponent implements OnInit {
       next: (data) => {
         this.residents = data
       }
+    })
+  }
+
+  editResident(resident: Resident) {
+    const dialogRef = this.dialog.open(CreateEditResidentComponent, {
+      width: 'auto',
+      maxWidth: '95vw',
+      data: resident || null
     })
   }
 }

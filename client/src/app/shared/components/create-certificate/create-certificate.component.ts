@@ -6,7 +6,6 @@ import { MatIcon } from '@angular/material/icon';
 import { CertificatesService } from '../../../core/services/certificates.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { Certificate } from '../../models/certificate';
-import { CdkVirtualScrollableElement } from "@angular/cdk/scrolling";
 
 @Component({
   selector: 'app-create-certificate',

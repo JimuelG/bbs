@@ -15,6 +15,8 @@ import { authGuard } from './core/guards/auth-guard';
 import { AdminOfficialsComponent } from './features/admin/admin-officials/admin-officials.component';
 import { AdminStaffsComponent } from './features/admin/admin-staffs/admin-staffs.component';
 import { CalendarComponent } from './features/admin/admin-announcements/calendar/calendar.component';
+import { CertificatesComponent } from './features/certificates/certificates.component';
+import { MyProfileComponent } from './features/my-profile/my-profile.component';
 
 export const routes: Routes = [
     {
@@ -38,10 +40,12 @@ export const routes: Routes = [
         children: [
             {path: '', component: HomeComponent},
             // {path: 'certificates', component: HomeComponent},
-            {path: 'announcement', component: AnnouncementComponent, canActivate: [authGuard, verificationGuard]},
+            {path: 'announcements', component: AnnouncementComponent},
+            {path: 'request-certificates', component: CertificatesComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
             {path: 'account/verification-pending', component: VerificationStatusComponent},
+            {path: 'my-profile', component: MyProfileComponent},
             {path: '**', redirectTo: '', pathMatch: 'full'},
         ]
     }

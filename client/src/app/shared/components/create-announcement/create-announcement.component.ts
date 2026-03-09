@@ -51,7 +51,7 @@ export class CreateAnnouncementComponent {
 
       this.announcementService.previewAnnouncement(payload).subscribe({
         next: (res) => {
-          const audio = new Audio(`http://localhost:5001${res.audioUrl}`);
+          const audio = new Audio(`https://localhost:5001${res.audioUrl}`);
           audio.play();
           audio.onended = () => this.previewing = false;
         },
