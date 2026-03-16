@@ -1,8 +1,11 @@
 <div class="container mx-auto p-6">
-    <div class="flex justify-between">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Barangay Staff Directory</h2>
-        <button (click)="openStaffModal()">
-            addx
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Barangay Staff Directory</h2>
+        
+        <button (click)="openStaffModal()" 
+                class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-all active:scale-95">
+            <span class="material-icons text-sm">add</span>
+            <span>Add Staff</span>
         </button>
     </div>
 

@@ -21,6 +21,16 @@ public class BarangayOfficialController(IUnitOfWork unit, IMapper mapper) : Base
         return Ok(mapper.Map<IReadOnlyList<BarangayOfficial>, IReadOnlyList<BarangayOfficialDto>>(sorted));
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<BarangayOfficialDto>> GetBaarangayOfficial(int id)
+    {
+        var official = await unit.Repository<BarangayOfficial>().GetByIdAsync(id);
+
+        if (official == null) return NotFound();
+
+        return Ok(mapper.Map<BarangayOfficial, BarangayOfficialDto>(official));
+    }
+
     [HttpGet("active")]
     [AllowAnonymous]
     public async Task<ActionResult<IReadOnlyList<BarangayOfficialDto>>> GetActiveOfficials()

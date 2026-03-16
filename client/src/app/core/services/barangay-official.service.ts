@@ -14,6 +14,10 @@ export class BarangayOfficialService {
     return this.http.get<BarangayOfficial[]>(`${this.baseUrl}barangayofficial`);
   }
 
+  getOfficialById(id: number) {
+    return this.http.get<BarangayOfficial>(`${this.baseUrl}barangayofficial/${id}`);
+  }
+
   uploadImage(id: number, type: 'officials' | 'signature', file: File) {
     const formData = new FormData();
     formData.append('file', file);

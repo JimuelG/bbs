@@ -17,6 +17,8 @@ import { AdminStaffsComponent } from './features/admin/admin-staffs/admin-staffs
 import { CalendarComponent } from './features/admin/admin-announcements/calendar/calendar.component';
 import { CertificatesComponent } from './features/certificates/certificates.component';
 import { MyProfileComponent } from './features/my-profile/my-profile.component';
+import { AdminResidentsDetailComponent } from './features/admin/admin-residents/admin-residents-detail/admin-residents-detail.component';
+import { AdminOfficialsDetailsComponent } from './features/admin/admin-officials/admin-officials-details/admin-officials-details.component';
 
 export const routes: Routes = [
     {
@@ -29,7 +31,9 @@ export const routes: Routes = [
             {path: 'announcements/calendar', component: CalendarComponent},
             {path: 'certificates', component: AdminCertificatesComponent},
             {path: 'residents', component: AdminResidentsComponent},
+            {path: 'residents/:id', component: AdminResidentsDetailComponent},
             {path: 'barangay-officials', component: AdminOfficialsComponent},
+            {path: 'barangay-official/:id', component: AdminOfficialsDetailsComponent},
             {path: 'staffs', component: AdminStaffsComponent},
 
         ]

@@ -2,11 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Resident } from '../../models/residents';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-create-edit-resident',
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTooltip
   ],
   templateUrl: './create-edit-resident.component.html',
   styleUrl: './create-edit-resident.component.scss',

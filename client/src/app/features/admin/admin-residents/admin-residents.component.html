@@ -12,10 +12,10 @@
           class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none w-72 transition-all">
       </div>
       
-      <!-- <button class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
+      <button (click)="createResident()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
         <mat-icon>person_add</mat-icon>
         Add Resident
-      </button> -->
+      </button>
     </div>
   </div>
 
@@ -45,9 +45,9 @@
       <tbody class="divide-y divide-slate-50">
         @for (res of residents; track res.id) {
           <tr class="hover:bg-slate-50/50 transition-colors" [class.bg-amber-50/20]="!res.isIdVerified">
-            <td class="px-6 py-4">
+            <td routerLink="/admin/residents/{{res.id}}" class="px-6 py-4">
               <div class="flex items-center gap-3">
-                <div [class]="res.isIdVerified ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-600 border-amber-200'" 
+                <div  [class]="res.isIdVerified ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-600 border-amber-200'" 
                      class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs border">
                   {{res.firstName[0]}}{{res.lastName[0]}}
                 </div>

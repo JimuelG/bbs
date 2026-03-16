@@ -44,16 +44,48 @@ export class CreateEditStaffComponent implements OnInit {
     })
   }
 
-  onSubmit(): void {
-
+ onSubmit(): void {
+  if (this.staffForm.invalid) {
+    this.staffForm.markAllAsTouched();
+    return;
   }
+
+  this.loading = true;
+  const staffData = this.staffForm.value;
+
+  if (this.data && this.data.id) {
+    // Scenario: UPDATE EXISTING STAFF
+    this.staffService.updateStaff(this.data.id, staffData).subscribe({
+      next: (response: any) => {
+        this.snackbarService.success(response.message || 'Staff updated successfully');
+        this.dialogRef.close(true); // Return true to trigger list refresh
+      },
+      error: (err) => {
+        this.loading = false;
+        this.snackbarService.error('Failed to update staff member');
+      }
+    });
+  } else {
+    // Scenario: CREATE NEW STAFF
+    this.staffService.createStaff(staffData).subscribe({
+      next: (response: any) => {
+        this.snackbarService.success(response.message || 'Staff created successfully');
+        this.dialogRef.close(true);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.snackbarService.error('Failed to create staff member');
+      }
+    });
+  }
+}
 
   onCancel(): void {
     this.dialogRef.close();
   }
 
   onEnableEdit(): void {
-    this.staffForm.enable;
+    this.staffForm.enable();
   }
 
   onDelete(id: number) {

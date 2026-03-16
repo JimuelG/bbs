@@ -37,7 +37,7 @@
       <tbody class="divide-y divide-slate-50">
         @for (item of officials(); track item.id) {
           <tr class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4">
+            <td routerLink="/admin/barangay-official/{{item.id}}" class="px-6 py-4">
               <div class="flex items-center gap-3">
                 <div class="h-10 w-10 rounded-full bg-slate-100 border overflow-hidden">
                   @if (item.officeImage) {

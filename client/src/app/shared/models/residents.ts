@@ -3,6 +3,8 @@ export interface Resident {
     firstName: string;
     middleName?: string;
     lastName: string;
+    birthDate: string;
+    phoneNumber: number;
     purok: string;
     monthlyIncome: number;
     appUserId: string;

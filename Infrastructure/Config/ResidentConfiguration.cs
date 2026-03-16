@@ -10,6 +10,7 @@ public class ResidentConfiguration : IEntityTypeConfiguration<Resident>
     {
         builder.Property(r => r.FirstName).IsRequired().HasMaxLength(100);
         builder.Property(r => r.LastName).IsRequired().HasMaxLength(100);
+        builder.Property(r => r.BirthDate).IsRequired();
         builder.Property(r => r.Purok).IsRequired().HasMaxLength(50);
 
         builder.Property(r => r.MonthlyIncome)

@@ -10,28 +10,36 @@
 
   <form [formGroup]="residentForm" (ngSubmit)="onSubmit()" class="space-y-6">
     
-    <div class="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-      <div class="relative mb-4">
+    <div class="flex flex-col items-center justify-center p-6 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
+      <div class="relative mb-3">
         @if (previewUrl) {
-          <img [src]="previewUrl" class="h-32 w-32 rounded-full object-cover border-4 border-white shadow-md">
+          <img [src]="previewUrl" class="h-32 w-32 rounded-full object-cover border-4 border-white shadow-sm bg-white">
         } @else {
-          <div class="h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+          <div class="h-32 w-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 border-4 border-white shadow-sm">
             <span class="material-icons text-5xl">person</span>
           </div>
         }
-        <div class="absolute bottom-0 right-0 flex space-x-1">
-          <button type="button" (click)="fileInput.click()" class="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-lg">
-            <span class="material-icons text-sm">upload</span>
+
+        <div class="absolute -bottom-1 -right-1 flex gap-1.5">
+          <button type="button" 
+                  (click)="fileInput.click()" 
+                  matTooltip="Upload Photo"
+                  class="h-9 w-9 flex items-center justify-center bg-blue-600 text-white rounded-full hover:bg-blue-700 shadow-md transition-all active:scale-90">
+            <span class="material-icons text-lg">upload</span>
           </button>
-          <button type="button" (click)="openCamera()" class="p-2 bg-green-600 text-white rounded-full hover:bg-green-700 shadow-lg">
-            <span class="material-icons text-sm">photo_camera</span>
+
+          <button type="button" 
+                  (click)="openCamera()" 
+                  matTooltip="Take a Photo"
+                  class="h-9 w-9 flex items-center justify-center bg-green-600 text-white rounded-full hover:bg-green-700 shadow-md transition-all active:scale-90">
+            <span class="material-icons text-lg">photo_camera</span>
           </button>
         </div>
       </div>
-      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden">
-      <p class="text-xs text-gray-500 font-medium">Resident Profile Picture</p>
-    </div>
 
+      <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden">
+      <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider">Resident Profile Picture</p>
+    </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="flex flex-col">
         <label class="text-xs font-bold text-gray-500 uppercase mb-1">First Name</label>

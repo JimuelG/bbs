@@ -4,6 +4,10 @@ export interface BarangayOfficial {
   middleName: string;
   lastName: string;
   position: string;
+  pictureUrl: string;
+  phoneNumber: string;
+  purok: string;
+  email: string;
   rank: number;
   isActive: boolean;
   officeImage?: string;

@@ -10,13 +10,15 @@ import { OfficialAddEditModalComponent } from '../../../shared/components/offici
 import { environment } from '../../../../environments/environment.development';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SnackbarService } from '../../../core/services/snackbar.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin-officials',
   imports: [
     MatIcon,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    RouterLink
   ],
   templateUrl: './admin-officials.component.html',
   styleUrl: './admin-officials.component.scss',

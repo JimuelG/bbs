@@ -123,6 +123,35 @@ public class AccountController(SignInManager<AppUser> signInManager,
         return Ok(userInfos);
     }
 
+    [HttpGet("resident-details/{id}")]
+    public async Task<ActionResult<UserInfoDto>> GetResidentDetails(string id)
+    {
+        var user = await userManager.Users
+            .Include(u => u.Resident)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null) return NotFound("Resident not found");
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        return Ok(new UserInfoDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.Resident?.FirstName ?? "N/A",
+            MiddleName = user.Resident?.MiddleName ?? "N/A",
+            LastName = user.Resident?.LastName ?? "N/A",
+            BirthDate = user.Resident?.BirthDate ?? DateTime.MinValue,
+            PhoneNumber = user.PhoneNumber ?? "N/A",
+            Purok = user.Resident?.Purok ?? "N/A",
+            IdUrl = user.IdUrl ?? "N/A",
+            PictureUrl = user.Resident?.PictureUrl,
+            IsIdVerified = user.IsIdVerified,
+            ResidentId = user.Resident?.Id ?? 0,
+            Role = roles.FirstOrDefault() ?? "Resident"
+        });
+    }
+
     [HttpGet("residents/verified")]
     public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetVerifiedResidents()
     {

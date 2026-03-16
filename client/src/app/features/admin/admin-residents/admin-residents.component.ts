@@ -7,13 +7,15 @@ import { CurrencyPipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { IdPreviewModalComponent } from '../../../shared/components/id-preview-modal/id-preview-modal.component';
 import { CreateEditResidentComponent } from '../../../shared/components/create-edit-resident/create-edit-resident.component';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-admin-residents',
   imports: [
     MatIcon,
-    CurrencyPipe
-  ],
+    CurrencyPipe,
+    RouterLink
+],
   templateUrl: './admin-residents.component.html',
   styleUrl: './admin-residents.component.scss',
 })
@@ -82,6 +84,13 @@ export class AdminResidentsComponent implements OnInit {
       width: 'auto',
       maxWidth: '95vw',
       data: resident || null
+    })
+  }
+
+  createResident() {
+    const dialogRef = this.dialog.open(CreateEditResidentComponent, {
+      width: 'auto',
+      maxWidth: '95vw',
     })
   }
 }
