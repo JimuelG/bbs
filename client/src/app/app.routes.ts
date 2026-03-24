@@ -19,13 +19,19 @@ import { CertificatesComponent } from './features/certificates/certificates.comp
 import { MyProfileComponent } from './features/my-profile/my-profile.component';
 import { AdminResidentsDetailComponent } from './features/admin/admin-residents/admin-residents-detail/admin-residents-detail.component';
 import { AdminOfficialsDetailsComponent } from './features/admin/admin-officials/admin-officials-details/admin-officials-details.component';
+import { AdminLoginComponent } from './features/admin/admin-account/admin-login/admin-login.component';
+import { AdminRegisterComponent } from './features/admin/admin-account/admin-register/admin-register.component';
+import { adminAuthGuard } from './core/guards/admin-auth-guard';
 
 export const routes: Routes = [
+    {path: 'admin/login', component: AdminLoginComponent},
     {
         path: 'admin',
         component: AdminLayoutComponent,
+        canActivate: [adminAuthGuard],
         children: [
             {path: '', component: AdminDashboardComponent},
+            {path: 'register', component: AdminRegisterComponent},
             {path: 'dashboard', component: AdminDashboardComponent},
             {path: 'announcements', component: AdminAnnouncementsComponent},
             {path: 'announcements/calendar', component: CalendarComponent},

@@ -9,5 +9,6 @@ public class AnnouncementDto
     public bool IsEmergency { get; set; }
     public DateTime ExpireAt { get; set; }
     public DateTime ScheduledAt { get; set; }
-    public bool IsPlayed { get; set; }
+    public bool IsPlayed { get; set; }  
+    public bool ManualTriggerActive { get; set; }
 }

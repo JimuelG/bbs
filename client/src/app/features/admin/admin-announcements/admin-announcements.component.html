@@ -5,99 +5,184 @@
       <p class="text-slate-500 text-sm">Manage and schedule audio broadcasts for the BBS.</p>
     </div>
 
-    <div class="flex gap-2">
+    <div class="flex flex-wrap gap-3">
       <button routerLink="/admin/announcements/calendar"
-        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-lg shadow-blue-200 transition-all active:scale-95">
-      <mat-icon>calendar_month</mat-icon>
-        View Announcement Calendar
-    </button>
+        class="flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-xl font-semibold shadow-sm transition-all active:scale-95">
+        <mat-icon class="text-blue-600">calendar_month</mat-icon>
+        Calendar
+      </button>
       <button (click)="openAnnouncementModal()" 
-        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold shadow-lg shadow-blue-200 transition-all active:scale-95">
-      <mat-icon>add_circle</mat-icon>
-      Create New Announcement
-    </button>
-  </div>
+        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-200 transition-all active:scale-95">
+        <mat-icon>add_circle</mat-icon>
+        Create New
+      </button>
+    </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-    <div class="bg-white p-6 rounded-xl border border-slate-100 shadow-sm flex items-center gap-4">
-      <div class="bg-green-100 p-3 rounded-lg text-green-600">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+      <div class="bg-green-100 p-3 rounded-xl text-green-600">
         <mat-icon>record_voice_over</mat-icon>
       </div>
       <div>
-        <p class="text-sm text-slate-500 font-medium">Broadcasts Sent</p>
-        <h2 class="text-2xl font-bold text-slate-800">128</h2>
+        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Broadcasts Sent</p>
+        <h2 class="text-2xl font-black text-slate-800">128</h2>
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg border border-slate-100 shadow-sm flex items-center gap-4">
+    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
       <div class="bg-blue-100 p-3 rounded-xl text-blue-600">
         <mat-icon>schedule</mat-icon>
       </div>
       <div>
-        <p class="text-sm text-slate-500 font-medium">Scheduled</p>
-        <h2 class="text-2xl font-bold text-slate-800">3</h2>
+        <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Scheduled</p>
+        <h2 class="text-2xl font-black text-slate-800">3</h2>
       </div>
     </div>
 
-    <div class="bg-white p-6 rounded-lg border border-slate-100 shadow-sm flex items-center gap-4 text-red-600">
-      <div class="bg-red-100 p-3 rounded-xl">
+    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+      <div class="bg-red-100 p-3 rounded-xl text-red-600">
         <mat-icon>error_outline</mat-icon>
       </div>
       <div>
-        <p class="text-sm text-red-500 font-medium font-bold uppercase tracking-wider">Emergencies</p>
-        <h2 class="text-2xl font-bold">1</h2>
+        <p class="text-xs text-red-500 font-bold uppercase tracking-wider">Emergencies</p>
+        <h2 class="text-2xl font-black text-red-600">1</h2>
       </div>
     </div>
   </div>
 
-  <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-100 bg-white sticky top-0">
-      <h2 class="font-bold text-slate-800 uppercase text-xs tracking-widest">Recent Broadcast History</h2>
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    
+    <div class="px-6 py-4 border-b border-slate-100 flex flex-col md:flex-row justify-between gap-4 bg-white">
+      <div class="relative w-full md:w-96">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</mat-icon>
+        <input 
+          type="text" 
+          placeholder="Search by title or message..." 
+          (keyup.enter)="loadAnnouncements()"
+          [(ngModel)]="announcementParams.search"
+          class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+        />
+      </div>
+      
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-bold text-slate-400 uppercase">Sort by:</span>
+        <select 
+          [(ngModel)]="announcementParams.sort"
+          (change)="loadAnnouncements()"
+          class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="dateDesc">Newest First</option>
+          <option value="dateAsc">Oldest First</option>
+          <option value="titleAsc">Title (A-Z)</option>
+        </select>
+      </div>
     </div>
 
     <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-bold">
-          <tr>
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50/50 text-slate-500 text-[11px] uppercase font-black tracking-widest border-b border-slate-100">
             <th class="px-6 py-4">Status</th>
             <th class="px-6 py-4">Title & Message</th>
-            <th class="px-6 py-4">Scheduled For</th>
+            <th class="px-6 py-4">Scheduled Date</th>
             <th class="px-6 py-4 text-center">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
           @for (announcement of announcements; track announcement.id) {
-            <tr class="hover:bg-slate-50/50 transition-colors">
+            <tr class="group hover:bg-slate-50/80 transition-colors">
               <td class="px-6 py-4">
-                @if (announcement.isPlayed == true) {
-                  <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-green-100 text-green-700">Played</span>
+                @if (announcement.isPlayed) {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black uppercase rounded-lg bg-green-100 text-green-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Played
+                  </span>
                 } @else {
-                  <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-red-100 text-red-700">Not Played</span>
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-black uppercase rounded-lg bg-amber-100 text-amber-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Pending
+                  </span>
                 }
-                </td>
-              <td class="px-6 py-4 max-w-md">
-                <p class="font-bold text-slate-800">{{announcement.title}}</p>
-                <p class="text-sm text-slate-500 truncate">{{announcement.message}}</p>
               </td>
-              <td class="px-6 py-4 text-sm text-slate-600">
-                {{announcement.scheduledAt | date: 'medium'}}
+              <td class="px-6 py-4 max-w-xs md:max-w-md">
+                <p class="font-bold text-slate-800 text-sm">{{announcement.title}}</p>
+                <p class="text-xs text-slate-500 truncate mt-0.5">{{announcement.message}}</p>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-col">
+                  <span class="text-sm font-semibold text-slate-700">{{announcement.scheduledAt | date: 'mediumDate'}}</span>
+                  <span class="text-[10px] text-slate-400 font-medium">{{announcement.scheduledAt | date: 'shortTime'}}</span>
+                </div>
               </td>
               <td class="px-6 py-4 text-center">
-                <button class="text-slate-400 hover:text-blue-600 transition-colors mr-2">
-                  <mat-icon class="text-lg" (click)="onPreview(announcement.audioUrl)">play_circle</mat-icon>
-                </button>
-                <button class="text-slate-400 hover:text-orange-500 transition-colors">
-                  <mat-icon class="text-lg">edit</mat-icon>
-                </button>
-                <button (click)="onDelete(announcement.id)" class="text-slate-400 hover:text-red-600 transition-colors">
-                  <mat-icon class="text-lg">delete</mat-icon>
-                </button>
+                <div class="flex items-center justify-center gap-1">
+                  
+                  <button (click)="onTriggerRPi(announcement.id)" 
+                    class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all" 
+                    title="Broadcast Now (RPi)">
+                    <mat-icon class="text-xl">podcasts</mat-icon> </button>
+
+                  <button (click)="onPreview(announcement.audioUrl)" 
+                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all" 
+                    title="Preview Locally">
+                    <mat-icon class="text-xl">play_circle</mat-icon>
+                  </button>
+
+                  </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="px-6 py-12 text-center">
+                <mat-icon class="text-4xl text-slate-200 mb-2">subtitles_off</mat-icon>
+                <p class="text-slate-400 font-medium">No announcements found matching your criteria.</p>
               </td>
             </tr>
           }
-          </tbody>
+        </tbody>
       </table>
+    </div>
+
+    <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="text-[13px] text-slate-500 font-medium">
+        Showing 
+        <span class="text-slate-900 font-bold">{{ (announcementParams.pageIndex - 1) * announcementParams.pageSize + 1 }}</span> 
+        to 
+        <span class="text-slate-900 font-bold">
+          {{ mathMin(announcementParams.pageIndex * announcementParams.pageSize, totalCount) }}
+        </span> 
+        of 
+        <span class="text-slate-900 font-bold">{{ totalCount }}</span> entries
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1">
+          <button 
+            [disabled]="announcementParams.pageIndex === 1"
+            (click)="updatePage(announcementParams.pageIndex - 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          <div class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-100">
+            {{ announcementParams.pageIndex }}
+          </div>
+
+          <button 
+            [disabled]="announcementParams.pageIndex * announcementParams.pageSize >= totalCount"
+            (click)="updatePage(announcementParams.pageIndex + 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <div class="h-8 w-px bg-slate-200 mx-1"></div>
+        <select 
+          (change)="onPageSizeChange($event)"
+          class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+          @for (size of pageSizeOPtions; track size) {
+            <option [value]="size">{{ size }} / page</option>
+          }
+        </select>
+      </div>
     </div>
   </div>
 </div>

@@ -21,6 +21,7 @@
     <Folder Include="DTOs\" />
     <Folder Include="Extensions\" />
     <Folder Include="RequestHelpers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

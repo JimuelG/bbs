@@ -44,27 +44,27 @@ public class AppContextSeed
             await context.SaveChangesAsync();
         }
         
-        if (!userManager.Users.Any(x => x.UserName == "jimuelgaas@gmail.com"))
+        if (!userManager.Users.Any(x => x.UserName == "dayriesmariano5@gmail.com"))
         {
             var adminProfile = new Resident
             {
-                FirstName = "Jimuel",
-                LastName = "Gaas",
-                Purok = "Zone 1",
+                FirstName = "Dayries",
+                LastName = "Mariano",
+                Purok = "Purok 2",
                 IsHeadOfFamily = false,
                 MonthlyIncome = 0
             };
             
             var user = new AppUser
             {
-                UserName = "jimuelgaas@gmail.com",
-                Email = "jimuelgaas@gmail",
+                UserName = "dayriesmariano5@gmail.com",
+                Email = "dayriesmariano5@gmail.com",
                 IsIdVerified = true,
-                PhoneNumber = "09386089484",
+                PhoneNumber = "09123456789",
                 Resident = adminProfile
             };
 
-            var result = await userManager.CreateAsync(user, "Pa$$w0rd");
+            var result = await userManager.CreateAsync(user, "Password1!");
 
             if (result.Succeeded)
             {

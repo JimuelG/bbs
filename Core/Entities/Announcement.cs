@@ -12,4 +12,5 @@ public class Announcement : BaseEntity
     public bool IsEmergency { get; set; }
     public bool IsActive { get; set; } = true;
     public bool IsPlayed { get; set; } = false;
+    public bool ManualTriggerActive { get; set; } = false;
 }

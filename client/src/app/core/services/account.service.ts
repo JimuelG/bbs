@@ -26,7 +26,6 @@ export class AccountService {
     return this.http.get<User>(`${this.baseUrl}account/user-info`).pipe(
       map(user => {
         this.currentUser.set(user);
-        console.log('User info retrieved:', user);
         return user;
       })
     )
@@ -69,5 +68,11 @@ export class AccountService {
 
   getAllResidents() {
     return this.http.get<Resident[]>(`${this.baseUrl}account/residents`);
+  }
+
+  adminLogin(credentials: {email: string; password: string;}) {
+    return this.http.post(`${this.baseUrl}login?useCookies=true`, credentials, {
+      withCredentials: true
+    })
   }
 }

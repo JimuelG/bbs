@@ -5,16 +5,21 @@ import { MatIcon } from '@angular/material/icon';
 import { AnnouncementsService } from '../../../core/services/announcements.service';
 import { Announcement } from '../../../shared/models/announcement';
 import { SnackbarService } from '../../../core/services/snackbar.service';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from "@angular/router";
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { Pagination } from '../../../shared/models/pagination';
+import { AnnouncementParams } from '../../../shared/models/announcementParams';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-announcements',
   imports: [
     MatIcon,
     DatePipe,
-    RouterLink
+    RouterLink,
+    CommonModule,
+    FormsModule
 ],
   templateUrl: './admin-announcements.component.html',
   styleUrl: './admin-announcements.component.scss',
@@ -25,6 +30,10 @@ export class AdminAnnouncementsComponent implements OnInit {
   private announcementService = inject(AnnouncementsService);
 
   announcements: Announcement[] = [];
+  announcementPagination?: Pagination<Announcement>;
+  announcementParams = new AnnouncementParams();
+  totalCount = 0;
+  pageSizeOPtions = [10,20,30];
   previewing = false;
 
   onPreview(audioUrl: string): void {
@@ -45,9 +54,45 @@ export class AdminAnnouncementsComponent implements OnInit {
   }
 
   loadAnnouncements() {
-    this.announcementService.getAllAnnouncements().subscribe({
-      next: (data) => {
-        this.announcements = data
+    this.announcementService.getAllAnnouncements(this.announcementParams).subscribe({
+      next: (response) => {
+        this.announcementPagination = response;
+        this.announcements = response.data;
+        this.totalCount = response.count;
+      }
+    })
+  }
+
+  onPageChange(event: any) {
+    this.announcementParams.pageIndex = event.pageIndex + 1;
+    this.announcementParams.pageSize = event.pageSize;
+    this.loadAnnouncements();
+  }
+
+  updatePage(newPageIndex: number) {
+    this.announcementParams.pageIndex = newPageIndex;
+    this.loadAnnouncements();
+  }
+
+  onPageSizeChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.announcementParams.pageSize = parseInt(select.value);
+    this.announcementParams.pageIndex = 1;
+    this.loadAnnouncements();
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  onTriggerRPi(id: number)  {
+    this.announcementService.triggerManual(id).subscribe({
+      next: () => {
+        this.snackbarService.success('Broadcast signal sent! RPi is responding...');
+        this.loadAnnouncements();
+      },
+      error: (err) => {
+        this.snackbarService.error('Failed to communicate with the broadcast system');
       }
     })
   }

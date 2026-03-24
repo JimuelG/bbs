@@ -6,6 +6,8 @@ import { Announcement } from '../../../../shared/models/announcement';
 import { AnnouncementsService } from '../../../../core/services/announcements.service';
 import { DatePipe } from '@angular/common';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateAnnouncementComponent } from '../../../../shared/components/create-announcement/create-announcement.component';
 
 @Component({
   selector: 'app-calendar',
@@ -22,6 +24,7 @@ import { SnackbarService } from '../../../../core/services/snackbar.service';
 export class CalendarComponent implements OnInit {
   private announcementService = inject(AnnouncementsService);
   private snackbarService = inject(SnackbarService);
+  private dialog = inject(MatDialog);
 
   announcements = signal<Announcement[]>([]);
   previewing = false;
@@ -43,15 +46,15 @@ export class CalendarComponent implements OnInit {
   }
 
   loadAnnouncements() {
-    this.announcementService.getAllAnnouncements().subscribe({
-      next: data => {
-        this.announcements.set(data);
-        if (this.calendar) {
-          this.calendar.updateTodaysDate();
-        }
-      }, 
-      error: err => console.error('Could not load announcements', err)
-    });
+    // this.announcementService.getAllAnnouncements().subscribe({
+    //   next: data => {
+    //     this.announcements.set(data);
+    //     if (this.calendar) {
+    //       this.calendar.updateTodaysDate();
+    //     }
+    //   }, 
+    //   error: err => console.error('Could not load announcements', err)
+    // });
   }
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
@@ -78,4 +81,17 @@ export class CalendarComponent implements OnInit {
       this.previewing = false;
     }
   }
+
+    openAnnouncementModal(): void {
+      const dialogRef = this.dialog.open(CreateAnnouncementComponent, {
+        width: 'auto',
+        maxWidth: '95vw',
+        panelClass: 'custom-dialog-container',
+        disableClose: true
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) this.loadAnnouncements();
+      });
+    }
 }

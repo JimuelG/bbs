@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.RequestHelpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -13,13 +14,27 @@ public class AnnouncementController(IUnitOfWork unit,
     ITtsService ttsService) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<AnnouncementDto>>> GetAnnouncements()
+    public async Task<ActionResult<IReadOnlyList<AnnouncementDto>>> GetAnnouncements([FromQuery] AnnouncementSpecParams specParams)
     {
-        var announcement = await unit.Repository<Announcement>().ListAllAsync();
+        var spec = new AnnouncementSpecification(specParams);
+        var countSpec = new AnnouncementSpecification(specParams);
 
-        if (announcement == null) return NoContent();
+        var totalItems = await unit.Repository<Announcement>().CountAsync(countSpec);
+        var announcements = await unit.Repository<Announcement>().ListAsync(spec);
 
-        return Ok( mapper.Map<IReadOnlyList<AnnouncementDto>>(announcement));
+        if (announcements == null || announcements.Count == 0)
+        {
+            return Ok(new List<Announcement>());
+        }
+
+        var data = mapper.Map<IReadOnlyList<Announcement>, IReadOnlyList<AnnouncementDto>>(announcements);
+
+        return Ok(new Pagination<AnnouncementDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
     }
 
     [HttpGet("latest")]
@@ -47,6 +62,57 @@ public class AnnouncementController(IUnitOfWork unit,
 
         return Ok(dto);
     }
+
+    [HttpPost("trigger/{id}")]
+    public async Task<IActionResult> TriggerManual(int id)
+    {
+        var announcement = await unit.Repository<Announcement>().GetByIdAsync(id);
+        if (announcement == null) return NotFound();
+
+        var spec = new AnnouncementManualTriggerSpecification();
+
+        var pending = await unit.Repository<Announcement>().ListAsync(spec);
+
+        foreach (var item in pending)
+        {
+            item.ManualTriggerActive = false;
+        }
+
+        announcement.ManualTriggerActive = true;
+        announcement.IsPlayed = false;
+
+        if (await unit.Complete())
+        {
+            return Ok(new { message = "Manual trigger activated for RPi"});
+        }
+        
+        return BadRequest("Problem activating manual trigger");
+        
+    }
+
+    [HttpGet("manual-trigger")]
+    public async Task<ActionResult<Announcement>> GetManualTrigger()
+    {
+        var spec = new AnnouncementManualTriggerSpecification();
+
+        var announcement = await unit.Repository<Announcement>().GetEntityWithSpec(spec);
+
+        if (announcement == null) return NoContent();
+
+        announcement.ManualTriggerActive = false;
+
+        unit.Repository<Announcement>().Update(announcement);
+
+        await unit.Complete();
+
+        return Ok(announcement);
+    }
+
+    // [HttpGet("latest-emergency")]
+    // public async Task<ActionResult> EmergencyTrigger()
+    // {
+    //     return Ok(new { message = "Emergency Triggered"});
+    // }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<AnnouncementDto>> GetAnnounceById(int id)
@@ -128,6 +194,28 @@ public class AnnouncementController(IUnitOfWork unit,
         await unit.Complete();
 
         return NoContent();
+    }
+
+    [HttpPost("hearthbeat")]
+    public async Task<IActionResult> Ping()
+    {
+        var statusList = await unit.Repository<RPiStatus>().ListAllAsync();
+        var status = statusList.FirstOrDefault();
+
+        if (status == null)
+        {
+            status = new RPiStatus { LastSeen = DateTime.UtcNow };
+            unit.Repository<RPiStatus>().Add(status);
+        }
+        else
+        {
+            status.LastSeen = DateTime.UtcNow;
+            unit.Repository<RPiStatus>().Update(status);
+        }
+
+        if (await unit.Complete()) return Ok();
+
+        return BadRequest("Failed to update heartbeat");
     }
 
 }

@@ -24,7 +24,7 @@
         <h2 class="text-2xl font-bold text-gray-800 tracking-tight">Daily Schedule</h2>
         <p class="text-gray-500">{{ selectedDate() | date:'fullDate' }}</p>
       </div>
-      <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
+      <button (click)="openAnnouncementModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
         + New Announcement
       </button>
     </div>
