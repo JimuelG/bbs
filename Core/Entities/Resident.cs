@@ -7,7 +7,7 @@ public class Resident : BaseEntity
     public string LastName { get; set; } = string.Empty;
     public DateTime BirthDate { get; set; }
     public string? PictureUrl { get; set; }
-    public int PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
     public string Purok { get; set; } = string.Empty;
     public bool IsHeadOfFamily { get; set; }
     public decimal MonthlyIncome { get; set; }

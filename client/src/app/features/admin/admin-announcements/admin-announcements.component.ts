@@ -35,6 +35,7 @@ export class AdminAnnouncementsComponent implements OnInit {
   totalCount = 0;
   pageSizeOPtions = [10,20,30];
   previewing = false;
+  rpiStatus?: { isOnline: boolean, lastSeen: Date};
 
   onPreview(audioUrl: string): void {
   
@@ -132,5 +133,11 @@ export class AdminAnnouncementsComponent implements OnInit {
         });
       }
     });
+  }
+
+  checkStatus() {
+    this.announcementService.getRPiStatus().subscribe(status => {
+      this.rpiStatus = status;
+    })
   }
 }

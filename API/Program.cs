@@ -1,3 +1,4 @@
+using API.Services;
 using Core.Entities;
 using Core.Interfaces;
 using FluentValidation;
@@ -29,6 +30,8 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<ITtsService, GoogleTtsService>();
 builder.Services.AddScoped<ICertificatePdfService, CertificatePdfService>();
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<FailoverService>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

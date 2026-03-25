@@ -44,4 +44,8 @@ export class AnnouncementsService {
   triggerManual(id: number): Observable<any> {
     return this.http.post(`${this.baseUrl}announcement/trigger/${id}`, {});
   }
+
+  getRPiStatus(): Observable<{isOnline: boolean, lastSeen: Date}> {
+    return this.http.get<{isOnline: boolean, lastSeen: Date}>(`${this.baseUrl}announcement/rpi-status`);
+  }
 }

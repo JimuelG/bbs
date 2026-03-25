@@ -196,7 +196,7 @@ public class AnnouncementController(IUnitOfWork unit,
         return NoContent();
     }
 
-    [HttpPost("hearthbeat")]
+    [HttpPost("heartbeat")]
     public async Task<IActionResult> Ping()
     {
         var statusList = await unit.Repository<RPiStatus>().ListAllAsync();
@@ -213,9 +213,33 @@ public class AnnouncementController(IUnitOfWork unit,
             unit.Repository<RPiStatus>().Update(status);
         }
 
-        if (await unit.Complete()) return Ok();
+        await unit.Complete();
+        return Ok();
+    }
 
-        return BadRequest("Failed to update heartbeat");
+    [HttpGet("rpi-status")]
+    public async Task<ActionResult<object>> GetRPiStatus()
+    {
+        var statuses = await unit.Repository<RPiStatus>().ListAllAsync();
+        var rpi = statuses.FirstOrDefault();
+
+        if (rpi == null) return Ok(new { isOnline = false, lastSeen = (DateTime?)null });
+
+        var diff = DateTime.UtcNow - rpi.LastSeen;
+        var isOnline = Math.Abs(diff.TotalSeconds) < 90;
+
+        var now = DateTime.UtcNow;
+        var last = rpi.LastSeen;
+        var secondsGap = (now - last).TotalSeconds;
+
+        // Check your terminal/console to see these values
+        Console.WriteLine($"Current UTC: {now}, RPi LastSeen: {last}, Gap: {secondsGap}");
+
+        return Ok(new
+        {
+            isOnline = isOnline,
+            lastSeen = rpi.LastSeen
+        });
     }
 
 }
