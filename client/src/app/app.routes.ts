@@ -22,6 +22,7 @@ import { AdminOfficialsDetailsComponent } from './features/admin/admin-officials
 import { AdminLoginComponent } from './features/admin/admin-account/admin-login/admin-login.component';
 import { AdminRegisterComponent } from './features/admin/admin-account/admin-register/admin-register.component';
 import { adminAuthGuard } from './core/guards/admin-auth-guard';
+import { ClearanceComponent } from './features/certificates/clearance/clearance.component';
 
 export const routes: Routes = [
     {path: 'admin/login', component: AdminLoginComponent},
@@ -52,6 +53,7 @@ export const routes: Routes = [
             // {path: 'certificates', component: HomeComponent},
             {path: 'announcements', component: AnnouncementComponent},
             {path: 'request-certificates', component: CertificatesComponent, canActivate: [authGuard, verificationGuard]},
+            {path: 'request-certificates/:id', component: ClearanceComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
             {path: 'account/verification-pending', component: VerificationStatusComponent},

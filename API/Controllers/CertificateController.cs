@@ -35,19 +35,31 @@ public class CertificateController(IUnitOfWork unit,
             ReferenceNumber = $"BRGY-{phTime:yyyyMMdd}-{Guid.NewGuid().ToString()[..6].ToUpper()}"
         };
 
+        unit.Repository<BarangayCertificate>().Add(certificate);
+
+        if (await unit.Complete())
+        {  
+            var mapped = mapper.Map<CertificateResponseDto>(certificate);
+            return Ok( new{  data = mapped });
+        }
+
+        return BadRequest("Problem creating the certificate.");
+    }
+
+
+    [HttpGet("{referenceNumber}/generate-pdf")]
+    public async Task<ActionResult> GeneratePdf(string referenceNumber)
+    {   
+        var spec = new CertificateByReferenceSpecification(referenceNumber);
+        var certificate = await unit.Repository<BarangayCertificate>().GetEntityWithSpec(spec);
+
+        if (certificate == null) return NotFound("Certificate not found.");
+
         var pdfUrl = await pdfService.GenerateCertificatePdfAsync(certificate);
 
-        unit.Repository<BarangayCertificate>().Add(certificate);
-        await unit.Complete();
-
-        var mapped = mapper.Map<CertificateResponseDto>(certificate);
-
-        return Ok( new
-        {   
-            data = mapped,
-            PdfUrl = pdfUrl
-        });
+        return Ok(new { PdfUrl = pdfUrl });
     }
+
 
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateCertificate(int id, [FromBody] CreateCertificateDto dto)

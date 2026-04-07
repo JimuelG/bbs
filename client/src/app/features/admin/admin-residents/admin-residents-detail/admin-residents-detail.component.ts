@@ -24,6 +24,7 @@ export class AdminResidentsDetailComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackbarService = inject(SnackbarService);
 
+  baseUrl = "https://localhost:5001";
 
   resident: Resident | null = null;
 

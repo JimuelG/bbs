@@ -13,5 +13,4 @@ export interface Certificate {
     issuedAt: string;
     issuedBy: string;
     status: string;
-
 }

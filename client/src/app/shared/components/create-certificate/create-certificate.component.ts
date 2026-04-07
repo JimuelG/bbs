@@ -31,7 +31,21 @@ export class CreateCertificateComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.data) {
-      this.certificateForm.patchValue(this.data);
+
+      const patchData = { ...this.data };
+
+      if (patchData.birthDate) {
+
+        const dateObj = new Date(patchData.birthDate);
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+      
+      patchData.birthDate = `${year}-${month}-${day}`;
+      }
+
+      this.certificateForm.patchValue(patchData);
       this.certificateForm.disable();
     }
   }

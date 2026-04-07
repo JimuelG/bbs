@@ -52,6 +52,7 @@ export class AdminAnnouncementsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAnnouncements();
+    this.checkStatus();
   }
 
   loadAnnouncements() {
@@ -136,8 +137,11 @@ export class AdminAnnouncementsComponent implements OnInit {
   }
 
   checkStatus() {
-    this.announcementService.getRPiStatus().subscribe(status => {
-      this.rpiStatus = status;
+    this.announcementService.getRPiStatus().subscribe({
+      next: (status) => {
+        this.rpiStatus = status;
+      },
+      error: (err) => console.error('Could not fetch RPi status', err)
     })
   }
 }

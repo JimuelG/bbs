@@ -3,7 +3,6 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Certificate } from '../../shared/models/certificate';
-import { CreateCertificate } from '../../shared/models/createCertificate';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +13,14 @@ export class CertificatesService {
 
   createCertificate(payload: any): Observable<any> {
     return this.http.post<Certificate>(`${this.baseUrl}certificate`, payload);
+  }
+
+  generateCertificatePdf(referenceNumber: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}certificate/${referenceNumber}/generate-pdf`, { responseType: 'blob' });
+  }
+
+  printCertificate(id: number) {
+    return this.http.get(`${this.baseUrl}certificate/${id}/generate-pdf`);
   }
 
   loadCertificates() {

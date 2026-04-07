@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CertificateInfo } from '../../shared/models/certificateInfo';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-certificates',
@@ -8,11 +9,13 @@ import { CertificateInfo } from '../../shared/models/certificateInfo';
   styleUrl: './certificates.component.scss',
 })
 export class CertificatesComponent {
+  private router = inject(Router);
+
   certificates: CertificateInfo[] = [
       { 
         type: 1, name: 'Barangay Clearance', isOpen: false,
         description: 'Used for employment, business permits, or legal transactions.',
-        requirements: ['Valid ID', 'Recent Cedula'] 
+        requirements: ['Valid ID'] 
       },
       { 
         type: 2, name: 'Certificate of Residency', isOpen: false,
@@ -42,6 +45,13 @@ export class CertificatesComponent {
   }
 
   onRequest(cert: CertificateInfo) {
-    console.log('Requesting', cert.name);
+    switch (cert.type) {
+      case 1:
+        this.router.navigate(['/request-certificates/', cert.type]);
+        break;
+      default:
+        this.router.navigate(['/request-certificates']);
+        break;
+    }
   }
 }

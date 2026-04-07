@@ -38,13 +38,33 @@ export class AdminCertificatesComponent implements OnInit {
   }
 
   viewCert(ref: string) {
-    window.open(`${this.apiUrl}/certificates/${ref}.pdf`, '_blank');
 
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-      data: {
-        title: 'A',
-        message: 'Did you print the certificate?'
+    this.certificateService.generateCertificatePdf(ref).subscribe({
+      next: (pdfBlob) => {
+        const url = this.apiUrl + `/certificates/${ref}.pdf`;
+        window.open(url, '_blank');
+        // Clean up the URL object after opening
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 100);
+      }
+    });
+
+  }
+
+  printCert(cert: Certificate) {
+    this.certificateService.generateCertificatePdf(cert.referenceNumber).subscribe({
+      next: (pdfBlob) => {  
+        const url = this.apiUrl + `/certificates/${cert.referenceNumber}.pdf`;
+        const printWindow = window.open(url, '_blank');
+        printWindow?.addEventListener('load', () => {
+          printWindow.focus();
+          printWindow.print();
+        }); 
+        // Clean up the URL object after opening
+        setTimeout(() => {
+          window.URL.revokeObjectURL(url);
+        }, 100);
       }
     });
   }
