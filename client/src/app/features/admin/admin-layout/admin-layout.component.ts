@@ -45,7 +45,7 @@ export class AdminLayoutComponent implements OnInit{
   navLinks = [
     { path: '/admin/dashboard', icon: 'dashboard', label: 'Dashboard' },
     { path: '/admin/barangay-officials', icon: 'gavel', label: 'Barangay Officials' },
-    { path: '/admin/staffs', icon: 'groups', label: 'Barangay Staffs' },
+    // { path: '/admin/staffs', icon: 'groups', label: 'Barangay Staffs' },
     { path: '/admin/residents', icon: 'group', label: 'Residents' },
     { path: '/admin/announcements', icon: 'campaign', label: 'Announcements'},
     { path: '/admin/certificates', icon: 'description', label: 'Certificates' },
