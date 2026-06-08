@@ -8,7 +8,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 WINDOWS_IP = "10.179.125.128"
 BASE_URL = f"https://{WINDOWS_IP}:5001/api/announcement"
 
-print(f"BBS Listener Active. Pointing to {BASE_URL")
+print(f"BBS Listener Active. Pointing to {BASE_URL}")
 
 def play_audio(data):
   try:
@@ -50,7 +50,7 @@ while True:
 
         manual = requests.get(f"{BASE_URL}/manual-trigger", verify=False, timeout=3)
         if manual.status_code == 200:
-            play_audio(manual_json())
+            play_audio(manual.json())
             continue
 
         scheduled = requests.get(f"{BASE_URL}/latest", verify=False, timeout=3)

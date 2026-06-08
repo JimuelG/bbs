@@ -29,7 +29,7 @@ public class GoogleTtsService : ITtsService
                             ? voiceMapping[languageCode]
                             : "fil-PH-Wavenet-A";
 
-        var speakingRate = isEmergency ? 1.2 : 1.0;
+        var speakingRate = isEmergency ? 1.0 : .8;
 
         var hasInput = $"{text}-{languageCode}-{selectedVoice}-{speakingRate}";
         var fileName = GenerateHash(hasInput) + ".mp3";

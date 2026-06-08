@@ -23,6 +23,9 @@ import { AdminLoginComponent } from './features/admin/admin-account/admin-login/
 import { AdminRegisterComponent } from './features/admin/admin-account/admin-register/admin-register.component';
 import { adminAuthGuard } from './core/guards/admin-auth-guard';
 import { ClearanceComponent } from './features/certificates/clearance/clearance.component';
+import { ConcernComponent } from './features/concern/concern.component';
+import { AdminConcernsComponent } from './features/admin/admin-concerns/admin-concerns.component';
+import { AdminConcernsDetailsComponent } from './features/admin/admin-concerns-details/admin-concerns-details.component';
 
 export const routes: Routes = [
     {path: 'admin/login', component: AdminLoginComponent},
@@ -41,8 +44,9 @@ export const routes: Routes = [
             {path: 'residents/:id', component: AdminResidentsDetailComponent},
             {path: 'barangay-officials', component: AdminOfficialsComponent},
             {path: 'barangay-official/:id', component: AdminOfficialsDetailsComponent},
+            {path: 'concerns', component: AdminConcernsComponent},
+            {path: 'concerns/:id', component: AdminConcernsDetailsComponent},
             {path: 'staffs', component: AdminStaffsComponent},
-
         ]
     },
     {
@@ -54,6 +58,7 @@ export const routes: Routes = [
             {path: 'announcements', component: AnnouncementComponent},
             {path: 'request-certificates', component: CertificatesComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'request-certificates/:id', component: ClearanceComponent, canActivate: [authGuard, verificationGuard]},
+            {path: 'report-concern', component: ConcernComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
             {path: 'account/verification-pending', component: VerificationStatusComponent},

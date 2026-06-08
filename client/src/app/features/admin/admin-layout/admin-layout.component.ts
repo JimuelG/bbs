@@ -49,5 +49,6 @@ export class AdminLayoutComponent implements OnInit{
     { path: '/admin/residents', icon: 'group', label: 'Residents' },
     { path: '/admin/announcements', icon: 'campaign', label: 'Announcements'},
     { path: '/admin/certificates', icon: 'description', label: 'Certificates' },
+    { path: '/admin/concerns', icon: 'report_problem', label: 'Concerns' },
   ];
 }

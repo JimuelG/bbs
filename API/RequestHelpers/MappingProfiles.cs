@@ -1,6 +1,7 @@
 using API.DTOs;
 using AutoMapper;
 using Core.Entities;
+using Core.Enums;
 
 namespace API.RequestHelpers;
 
@@ -30,5 +31,14 @@ public class MappingProfiles : Profile
             .ForMember(d => d.Role, o => o.Ignore());
         CreateMap<Staff,StaffDto>();
         CreateMap<CreateStaffDto, StaffDto>();
+
+        CreateMap<Concern, ConcernDto>()
+            .ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString()))
+            .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
+            .ForMember(d => d.ReporterName, o => o.MapFrom(s => $"{s.Resident.FirstName} {s.Resident.FirstName} {s.Resident.LastName}"))
+            .ForMember(d => d.AssignedOfficialName, o => o.MapFrom(s => s.AssignedOfficial != null ? $"{s.AssignedOfficial.FirstName} {s.AssignedOfficial.LastName}" : null));
+
+        CreateMap<CreateConcernDto, Concern>()
+            .ForMember(d => d.Type, o => o.MapFrom(s => Enum.Parse<ConcernType>(s.Type)));
     }
 }
