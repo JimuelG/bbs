@@ -11,11 +11,11 @@ export class BarangayOfficialService {
   private http = inject(HttpClient);
 
   getBarangayOfficials() {
-    return this.http.get<BarangayOfficial[]>(`${this.baseUrl}barangayofficial`);
+    return this.http.get<BarangayOfficial[]>(`${this.baseUrl}/barangayofficial`);
   }
 
   getOfficialById(id: number) {
-    return this.http.get<BarangayOfficial>(`${this.baseUrl}barangayofficial/${id}`);
+    return this.http.get<BarangayOfficial>(`${this.baseUrl}/barangayofficial/${id}`);
   }
 
   uploadImage(id: number, type: 'officials' | 'signature', file: File) {
@@ -25,18 +25,18 @@ export class BarangayOfficialService {
     const uploadType = type === 'signature' ? 'signature' : 'officials';
 
     return this.http.post<BarangayOfficial>(
-      `${this.baseUrl}barangayofficial/${id}/upload-image?type=${uploadType}`, formData);
+      `${this.baseUrl}/barangayofficial/${id}/upload-image?type=${uploadType}`, formData);
   }
 
   createOfficial(official: any) {
-    return this.http.post<BarangayOfficial>(`${this.baseUrl}barangayofficial`, official);
+    return this.http.post<BarangayOfficial>(`${this.baseUrl}/barangayofficial`, official);
   }
 
   updateOfficial(id: number, official: any) {
-    return this.http.put<void>(`${this.baseUrl}barangayofficial/${id}`, official);
+    return this.http.put<void>(`${this.baseUrl}/barangayofficial/${id}`, official);
   }
 
   deleteOfficial(id: number) {
-    return this.http.delete<void>(`${this.baseUrl}barangayofficial/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/barangayofficial/${id}`);
   } 
 }

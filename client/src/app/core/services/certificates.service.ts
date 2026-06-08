@@ -12,22 +12,22 @@ export class CertificatesService {
   private http = inject(HttpClient);
 
   createCertificate(payload: any): Observable<any> {
-    return this.http.post<Certificate>(`${this.baseUrl}certificate`, payload);
+    return this.http.post<Certificate>(`${this.baseUrl}/certificate`, payload);
   }
 
   generateCertificatePdf(referenceNumber: string): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}certificate/${referenceNumber}/generate-pdf`, { responseType: 'blob' });
+    return this.http.get(`${this.baseUrl}/certificate/${referenceNumber}/generate-pdf`, { responseType: 'blob' });
   }
 
   printCertificate(id: number) {
-    return this.http.get(`${this.baseUrl}certificate/${id}/generate-pdf`);
+    return this.http.get(`${this.baseUrl}/certificate/${id}/generate-pdf`);
   }
 
   loadCertificates() {
-    return this.http.get<Certificate[]>(`${this.baseUrl}certificate`);
+    return this.http.get<Certificate[]>(`${this.baseUrl}/certificate`);
   }
 
   updateCertificate(id: number, data: any) {
-    return this.http.put(`${this.baseUrl}certificate/${id}`, data);
+    return this.http.put(`${this.baseUrl}/certificate/${id}`, data);
   }
 }

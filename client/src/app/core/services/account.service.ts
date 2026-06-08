@@ -19,11 +19,11 @@ export class AccountService {
     let params = new HttpParams();
     params = params.append('useCookies', true);
 
-    return this.http.post<User>(`${this.baseUrl}login`, values, {params});
+    return this.http.post<User>(`${this.baseUrl}/login`, values, {params});
   }
 
   getUserInfo() {
-    return this.http.get<User>(`${this.baseUrl}account/user-info`).pipe(
+    return this.http.get<User>(`${this.baseUrl}/account/user-info`).pipe(
       map(user => {
         this.currentUser.set(user);
         return user;
@@ -32,46 +32,46 @@ export class AccountService {
   }
 
   register(payload: RegisterWithOtpRequest): Observable<any> {
-    return this.http.post(`${this.baseUrl}account/register`, payload);
+    return this.http.post(`${this.baseUrl}/account/register`, payload);
   }
 
   uploadIdCard(file: File) {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post(`${this.baseUrl}account/upload-id-card`, formData);
+    return this.http.post(`${this.baseUrl}/account/upload-id-card`, formData);
   }
 
   verifyResident(id: string): Observable<any> {
-    return this.http.put(`${this.baseUrl}account/verify/${id}`, {});
+    return this.http.put(`${this.baseUrl}/account/verify/${id}`, {});
   }
 
   getVerifiedResident() {
-    return this.http.get<Resident[]>(`${this.baseUrl}account/residents/verified`)
+    return this.http.get<Resident[]>(`${this.baseUrl}/account/residents/verified`)
   }
 
   getResidentDetails(id: string) {
-    return this.http.get<Resident>(`${this.baseUrl}account/resident-details/${id}`);
+    return this.http.get<Resident>(`${this.baseUrl}/account/resident-details/${id}`);
   }
 
   changePassword(userId: string, payload: ChangePassword) {
-    return this.http.patch(`${this.baseUrl}account/change-password/${userId}`, payload);
+    return this.http.patch(`${this.baseUrl}/account/change-password/${userId}`, payload);
   }
 
   logout() {
-    return this.http.post(`${this.baseUrl}account/logout`, {})
+    return this.http.post(`${this.baseUrl}/account/logout`, {})
   }
 
   getAuthState() {
-    return this.http.get<{isAuthenticated: boolean}>(`${this.baseUrl}account/auth-status`);
+    return this.http.get<{isAuthenticated: boolean}>(`${this.baseUrl}/account/auth-status`);
   }
 
   getAllResidents() {
-    return this.http.get<Resident[]>(`${this.baseUrl}account/residents`);
+    return this.http.get<Resident[]>(`${this.baseUrl}/account/residents`);
   }
 
   adminLogin(credentials: {email: string; password: string;}) {
-    return this.http.post(`${this.baseUrl}login?useCookies=true`, credentials, {
+    return this.http.post(`${this.baseUrl}/login?useCookies=true`, credentials, {
       withCredentials: true
     })
   }

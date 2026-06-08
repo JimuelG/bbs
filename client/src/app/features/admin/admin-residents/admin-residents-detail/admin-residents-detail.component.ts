@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateEditResidentComponent } from '../../../../shared/components/create-edit-resident/create-edit-resident.component';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
+import { environment } from '../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-admin-residents-detail',
@@ -24,7 +25,7 @@ export class AdminResidentsDetailComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackbarService = inject(SnackbarService);
 
-  baseUrl = "https://localhost:5001";
+  baseApiUrl = environment.apiUrl;
 
   resident: Resident | null = null;
 

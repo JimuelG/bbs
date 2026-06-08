@@ -11,6 +11,7 @@ import { ConfirmationDialogComponent } from '../../../shared/components/confirma
 import { Pagination } from '../../../shared/models/pagination';
 import { AnnouncementParams } from '../../../shared/models/announcementParams';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-admin-announcements',
@@ -36,12 +37,13 @@ export class AdminAnnouncementsComponent implements OnInit {
   pageSizeOPtions = [10,20,30];
   previewing = false;
   rpiStatus?: { isOnline: boolean, lastSeen: Date};
+  baseApiUrl = environment.apiUrl;
 
   onPreview(audioUrl: string): void {
   
     if (audioUrl) {
       this.previewing = true;
-      const audio = new Audio(`https://localhost:5001${audioUrl}`);
+      const audio = new Audio(`${this.baseApiUrl}${audioUrl}`);
       audio.play();
       audio.onended = () => this.previewing = false;
     } else {

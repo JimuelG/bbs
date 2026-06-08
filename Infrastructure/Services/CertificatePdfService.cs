@@ -56,6 +56,6 @@ public class CertificatePdfService : ICertificatePdfService
             }).GeneratePdf(filePath);
         });
 
-        return $"/certificates/{fileName}";
+        return $"/api/certificates/{fileName}";
     }
 }

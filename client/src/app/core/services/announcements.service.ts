@@ -14,11 +14,11 @@ export class AnnouncementsService {
   private http = inject(HttpClient);
 
   createAnnouncement(payload: any): Observable<any> {
-    return this.http.post<Announcement>(`${this.baseUrl}announcement`, payload);
+    return this.http.post<Announcement>(`${this.baseUrl}/announcement`, payload);
   }
 
   previewAnnouncement(payload: any): Observable<{audioUrl: string}> {
-    return this.http.post<{audioUrl: string}>(`${this.baseUrl}announcement/preview`, payload);
+    return this.http.post<{audioUrl: string}>(`${this.baseUrl}/announcement/preview`, payload);
   }
 
   getAllAnnouncements(announcementParams: AnnouncementParams) {
@@ -34,18 +34,18 @@ export class AnnouncementsService {
       params = params.append('search', announcementParams.search);
     }
 
-    return this.http.get<Pagination<Announcement>>(`${this.baseUrl}announcement`, { params });
+    return this.http.get<Pagination<Announcement>>(`${this.baseUrl}/announcement`, { params });
   }
 
   deleteAnnouncement(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}announcement/${id}`);
+    return this.http.delete(`${this.baseUrl}/announcement/${id}`);
   }
 
   triggerManual(id: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}announcement/trigger/${id}`, {});
+    return this.http.post(`${this.baseUrl}/announcement/trigger/${id}`, {});
   }
 
   getRPiStatus(): Observable<{isOnline: boolean, lastSeen: Date}> {
-    return this.http.get<{isOnline: boolean, lastSeen: Date}>(`${this.baseUrl}announcement/rpi-status`);
+    return this.http.get<{isOnline: boolean, lastSeen: Date}>(`${this.baseUrl}/announcement/rpi-status`);
   }
 }

@@ -6,6 +6,7 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-create-announcement',
@@ -27,7 +28,7 @@ export class CreateAnnouncementComponent {
   announcementForm: FormGroup;
   loading = false;
   previewing = false;
-
+  baseApiUrl = environment.apiUrl;
 
   constructor() {
     this.announcementForm = this.fb.group({
@@ -51,7 +52,7 @@ export class CreateAnnouncementComponent {
 
       this.announcementService.previewAnnouncement(payload).subscribe({
         next: (res) => {
-          const audio = new Audio(`https://localhost:5001${res.audioUrl}`);
+          const audio = new Audio(`${this.baseApiUrl}${res.audioUrl}`);
           audio.play();
           audio.onended = () => this.previewing = false;
         },

@@ -11,19 +11,19 @@ export class StaffService {
   private http = inject(HttpClient);
 
   getStaffs() {
-    return this.http.get<Staff[]>(`${this.baseUrl}staff`);
+    return this.http.get<Staff[]>(`${this.baseUrl}/staff`);
   }
 
   createStaff(dto: any) {
-    return this.http.post(`${this.baseUrl}staff`, dto);
+    return this.http.post(`${this.baseUrl}/staff`, dto);
   }
 
   updateStaff(id: number, dto: any) {
-    return this.http.put(`${this.baseUrl}staff/${id}`, dto);
+    return this.http.put(`${this.baseUrl}/staff/${id}`, dto);
   }
 
   deleteStaff(id: number) {
-    return this.http.delete(`${this.baseUrl}staff/${id}`);
+    return this.http.delete(`${this.baseUrl}/staff/${id}`);
   }
 
   

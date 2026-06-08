@@ -8,19 +8,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { IdPreviewModalComponent } from '../../../shared/components/id-preview-modal/id-preview-modal.component';
 import { CreateEditResidentComponent } from '../../../shared/components/create-edit-resident/create-edit-resident.component';
 import { RouterLink } from "@angular/router";
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-admin-residents',
   imports: [
     MatIcon,
-    CurrencyPipe,
     RouterLink
 ],
   templateUrl: './admin-residents.component.html',
   styleUrl: './admin-residents.component.scss',
 })
 export class AdminResidentsComponent implements OnInit {
-  baseUrl = "https://localhost:5001";
+  baseUrl = environment.apiUrl;
   private accountService = inject(AccountService);
   private snackbarService = inject(SnackbarService);
   private dialog = inject(MatDialog);

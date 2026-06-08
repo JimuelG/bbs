@@ -4,6 +4,7 @@ import { Router, RouterLink } from "@angular/router";
 import { AccountService } from '../../core/services/account.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-header',
@@ -22,7 +23,7 @@ export class HeaderComponent {
   private router = inject(Router);
 
   isMobileMenuOpen = false;
-  baseUrl = "https://localhost:5001";
+  baseApiUrl = environment.apiUrl;
 
   logout() {
     this.accountService.logout().subscribe({

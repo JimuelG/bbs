@@ -66,7 +66,7 @@ app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(certFolder),
-    RequestPath = "/certificates" 
+    RequestPath = "/api/certificates" 
 });
 
 app.UseRouting();
@@ -80,6 +80,7 @@ app.UseCors(x => x
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseDefaultFiles();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<AppUser>();

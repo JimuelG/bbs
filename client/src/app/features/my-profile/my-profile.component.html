@@ -62,7 +62,7 @@
         </h2>
         @if (user?.idUrl) {
           <div class="rounded-lg border-2 border-dashed border-gray-200 p-2 overflow-hidden">
-             <img [src]="baseUrl + user?.idUrl" alt="Resident ID" class="w-full h-auto rounded-md max-h-64 object-contain bg-gray-50">
+             <img [src]="baseApiUrl + user?.idUrl" alt="Resident ID" class="w-full h-auto rounded-md max-h-64 object-contain bg-gray-50">
           </div>
         } @else {
           <div class="p-8 text-center bg-gray-50 rounded-lg">

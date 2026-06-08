@@ -11,24 +11,24 @@ export class ConcernService {
   private baseUrl = environment.apiUrl;
 
   createConcern(dto: any) {
-    return this.http.post<{ message: string, id: number }>(`${this.baseUrl}concerns`, dto);
+    return this.http.post<{ message: string, id: number }>(`${this.baseUrl}/concerns`, dto);
   }
 
   uploadPhoto(concernId: number, file: File) {
     const formData = new FormData();
     formData.append('photo', file);
-    return this.http.post(`${this.baseUrl}concerns/${concernId}/upload-photo`, formData);
+    return this.http.post(`${this.baseUrl}/concerns/${concernId}/upload-photo`, formData);
   }
 
   getConcerns() {
-    return this.http.get<Concern[]>(`${this.baseUrl}concerns`);
+    return this.http.get<Concern[]>(`${this.baseUrl}/concerns`);
   }
 
   getConcern(id: number | string) {
-    return this.http.get<Concern>(`${this.baseUrl}concerns/${id}`);
+    return this.http.get<Concern>(`${this.baseUrl}/concerns/${id}`);
   }
 
   updateConcern(id: number, dto: any) {
-    return this.http.put(`${this.baseUrl}concerns/${id}`, dto);
+    return this.http.put(`${this.baseUrl}/concerns/${id}`, dto);
   }
 }

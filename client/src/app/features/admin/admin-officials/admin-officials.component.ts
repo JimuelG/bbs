@@ -24,7 +24,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './admin-officials.component.scss',
 })
 export class AdminOfficialsComponent implements OnInit {
-  baseUrl = "https://localhost:5001";
+  baseUrl = environment.apiUrl;
   private barangayOfficialService = inject(BarangayOfficialService);
   private dialog = inject(MatDialog);
   private snackbarService = inject(SnackbarService);

@@ -41,7 +41,7 @@
             @if (concern.photoUrl) {
               <div>
                 <span class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Attached Evidence</span>
-                <img [src]="'https://localhost:5001' + concern.photoUrl" class="w-full max-h-96 object-cover rounded-xl border-2 border-slate-100">
+                <img [src]="baseApiUrl + concern.photoUrl" class="w-full max-h-96 object-cover rounded-xl border-2 border-slate-100">
               </div>
             }
           </div>

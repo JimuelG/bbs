@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-id-preview-modal',
@@ -13,5 +14,5 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class IdPreviewModalComponent {
   data = inject(MAT_DIALOG_DATA);
-  baseUrl = "https://localhost:5001";
+  baseApiUrl = environment.apiUrl;
 }

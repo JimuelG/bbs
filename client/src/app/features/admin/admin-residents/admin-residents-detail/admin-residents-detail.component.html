@@ -96,7 +96,7 @@
         <div class="p-6 bg-slate-50/30">
           @if (resident?.idUrl && resident?.idUrl !== 'N/A') {
             <div class="group relative rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-white">
-              <img [src]="baseUrl + resident?.idUrl" class="w-full h-auto max-h-[400px] object-contain">
+              <img [src]="baseApiUrl + resident?.idUrl" class="w-full h-auto max-h-[400px] object-contain">
               <!-- <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
                  <a [href]="resident?.idUrl" target="_blank" class="bg-white text-slate-900 px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2 shadow-lg scale-90 group-hover:scale-100 transition-transform">
                    <mat-icon class="text-sm">open_in_new</mat-icon> Preview ID

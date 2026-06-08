@@ -3,6 +3,7 @@ import { AccountService } from '../../core/services/account.service';
 import { User } from '../../shared/models/user';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordComponent } from '../../shared/components/change-password/change-password.component';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-my-profile',
@@ -14,7 +15,7 @@ export class MyProfileComponent implements OnInit {
   private accountService = inject(AccountService);
   private dialog = inject(MatDialog);
   user: User | null = null;
-  baseUrl = 'https://localhost:5001';
+  baseApiUrl = environment.apiUrl;
 
   ngOnInit(): void {
     this.loadUserProfile();

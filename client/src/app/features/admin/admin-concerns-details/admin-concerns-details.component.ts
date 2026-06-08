@@ -6,12 +6,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConcernService } from '../../../core/services/concern.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { Concern } from '../../../shared/models/concern';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-admin-concerns-details',
   imports: [
     CommonModule,
-    DatePipe,
     RouterLink,
     MatIconModule,
     ReactiveFormsModule
@@ -30,6 +30,7 @@ export class AdminConcernsDetailsComponent implements OnInit {
   updateForm!: FormGroup;
   officials: any[] = [];
   loading = false;
+  baseApiUrl = environment.apiUrl;
 
   ngOnInit() {
     this.initForm();

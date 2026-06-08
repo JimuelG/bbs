@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { SnackbarService } from '../../../../core/services/snackbar.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateAnnouncementComponent } from '../../../../shared/components/create-announcement/create-announcement.component';
+import { environment } from '../../../../../environments/environment.development';
 
 @Component({
   selector: 'app-calendar',
@@ -30,6 +31,7 @@ export class CalendarComponent implements OnInit {
   previewing = false;
   selectedDate = signal<Date | null>(new Date());
   @ViewChild(MatCalendar) calendar!: MatCalendar<Date>;
+  baseApiUrl = environment.apiUrl;
 
   selectedDayAnnouncements = computed(() => {
     const date = this.selectedDate();
@@ -73,7 +75,7 @@ export class CalendarComponent implements OnInit {
 
     if (audioUrl) {
       this.previewing = true;
-      const audio = new Audio(`http://localhost:5001${audioUrl}`);
+      const audio = new Audio(`${this.baseApiUrl}${audioUrl}`);
       audio.play();
       audio.onended = () => this.previewing = false;
     } else {
