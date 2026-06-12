@@ -62,7 +62,7 @@ export const routes: Routes = [
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
             {path: 'account/verification-pending', component: VerificationStatusComponent},
-            {path: 'my-profile', component: MyProfileComponent},
+            {path: 'my-profile', component: MyProfileComponent, canActivate:[authGuard]},
             {path: '**', redirectTo: '', pathMatch: 'full'},
         ]
     }

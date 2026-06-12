@@ -10,6 +10,7 @@ public class Resident : BaseEntity
     public string PhoneNumber { get; set; } = string.Empty;
     public string Purok { get; set; } = string.Empty;
     public bool IsHeadOfFamily { get; set; }
+    public string CivilStatus { get; set; } = string.Empty;
     public decimal MonthlyIncome { get; set; }
     public string? AppUserId { get; set; }
     public AppUser? AppUser { get; set; }

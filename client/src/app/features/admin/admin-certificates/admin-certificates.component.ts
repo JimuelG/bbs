@@ -8,6 +8,8 @@ import { Certificate } from '../../../shared/models/certificate';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { CertificateTypePipe } from '../../../shared/pipes/certificate-type-pipe';
 import { environment } from '../../../../environments/environment.development';
+import { Pagination } from '../../../shared/models/pagination';
+import { CertificateParams } from '../../../shared/models/certificateParams';
 
 @Component({
   selector: 'app-admin-certificates',
@@ -24,6 +26,10 @@ export class AdminCertificatesComponent implements OnInit {
   private certificateService = inject(CertificatesService);
 
   certificates: Certificate[] = [];
+  certificatePagination?: Pagination<Certificate>;
+  certificateParams = new CertificateParams();
+  totalCount = 0;
+  pageSizeOptions = [10,20,30];
   baseApiUrl = environment.apiUrl;
 
   ngOnInit(): void {
@@ -31,11 +37,34 @@ export class AdminCertificatesComponent implements OnInit {
   }
   
   loadCertificates() {
-    this.certificateService.loadCertificates().subscribe({
-      next: (result) => {
-        this.certificates = result;
+    this.certificateService.getAllCertificates(this.certificateParams).subscribe({
+      next: (response) => {
+        this.certificatePagination = response;
+        this.certificates = response.data;
+        this.totalCount = response.count;
       }
-    });
+    })
+  }
+
+  onPageChange(event: any) {
+    this.certificateParams.pageIndex = event.pageIndex + 1;
+    this.certificateParams.pageSize = event.pageSize;
+    this.loadCertificates();
+  }
+
+  updatePage(newPageIndex: number) {
+    this.certificateParams.pageIndex = newPageIndex;
+    this.loadCertificates();
+  }
+
+  onPageSizeChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.certificateParams.pageSize = parseInt(select.value);
+    this.loadCertificates();
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
   }
 
   viewCert(ref: string) {

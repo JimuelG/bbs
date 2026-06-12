@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Certificate } from '../../shared/models/certificate';
+import { CertificateParams } from '../../shared/models/certificateParams';
+import { Pagination } from '../../shared/models/pagination';
 
 @Injectable({
   providedIn: 'root',
@@ -23,8 +25,20 @@ export class CertificatesService {
     return this.http.get(`${this.baseUrl}/certificate/${id}/generate-pdf`);
   }
 
-  loadCertificates() {
-    return this.http.get<Certificate[]>(`${this.baseUrl}/certificate`);
+  getAllCertificates(certificateParams: CertificateParams) {
+    let params = new HttpParams()
+      .set('pageSize', certificateParams.pageSize)
+      .set('pageIndex', certificateParams.pageIndex);
+
+    if (certificateParams.sort) {
+      params = params.append('sort', certificateParams.sort);
+    }
+
+    if (certificateParams.search) {
+      params = params.append('search', certificateParams.search);
+    }
+
+    return this.http.get<Pagination<Certificate>>(`${this.baseUrl}/certificate`, { params });
   }
 
   updateCertificate(id: number, data: any) {

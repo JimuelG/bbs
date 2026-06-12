@@ -5,7 +5,6 @@ namespace Infrastructure.Data;
 
 public class AppContextSeed
 {
-
     public static async Task SeedAsync(AppDbContext context,
         UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
     {
@@ -22,16 +21,14 @@ public class AppContextSeed
         {
             var officials = new List<BarangayOfficial>
             {
-                new BarangayOfficial
-                {
+                new() {
                     FirstName = "Carlito",
                     LastName = "Mariano",
                     MiddleName = "R.",
                     Position = "Barangay Captain",
                     Rank = 1
                 },
-                new BarangayOfficial
-                {
+                new() {
                     FirstName = "Abegail", 
                     LastName = "Valdoz", 
                     MiddleName = "N.", 
@@ -71,5 +68,6 @@ public class AppContextSeed
                 await userManager.AddToRoleAsync(user, "Staff");
             }
         }
+
     }
 }

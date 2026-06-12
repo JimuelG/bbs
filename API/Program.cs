@@ -1,14 +1,18 @@
+using API.Extensions;
 using API.Services;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -27,9 +31,14 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<ITtsService, GoogleTtsService>();
 builder.Services.AddScoped<ICertificatePdfService, CertificatePdfService>();
+builder.Services.Configure<SemaphoreOptions>(
+    builder.Configuration.GetSection(SemaphoreOptions.SectionName));
+builder.Services.AddHttpClient<ISmsService, SemaphoreSmsService>();
 builder.Services.AddHttpClient();
 builder.Services.AddHostedService<FailoverService>();
 
@@ -49,25 +58,12 @@ Environment.SetEnvironmentVariable(
     Path.Combine(Directory.GetCurrentDirectory(), "project-73902aa4-ac75-493d-b36-72b44044258a.json")
 );
 
-var rootPath = builder.Environment.ContentRootPath;
-var certFolder = Path.Combine(rootPath, "wwwroot", "certificates");
-
-if (!Directory.Exists(certFolder))
-{
-    Directory.CreateDirectory(certFolder);
-}
-
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
 
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(certFolder),
-    RequestPath = "/api/certificates" 
-});
+app.UseCustomStaticFiles(builder.Environment.ContentRootPath);
 
 app.UseRouting();
 

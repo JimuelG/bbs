@@ -48,4 +48,8 @@ export class AnnouncementsService {
   getRPiStatus(): Observable<{isOnline: boolean, lastSeen: Date}> {
     return this.http.get<{isOnline: boolean, lastSeen: Date}>(`${this.baseUrl}/announcement/rpi-status`);
   }
+
+  sendSmsBroadcast(announcement: Announcement) {
+    return this.http.post(`${this.baseUrl}/announcement/sms-broadcast`, announcement);
+  }
 }

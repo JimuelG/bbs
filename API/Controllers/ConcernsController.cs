@@ -89,7 +89,7 @@ public class ConcernsController(IUnitOfWork unit, IMapper mapper) : BaseApiContr
     }
 
     [HttpPost("{id}/upload-photo")]
-    public async Task<ActionResult> UploadPhoto(int id, IFormFile file)
+    public async Task<ActionResult> UploadPhoto(int id, [FromForm] IFormFile file)
     {
         var concern = await unit.Repository<Concern>().GetByIdAsync(id);
         if (concern == null) return NotFound("Concern not found");

@@ -9,6 +9,7 @@ public class UserInfoDto
     public string? MiddleName { get; set; }
     public DateTime BirthDate { get; set; }
     public string LastName { get; set; } = string.Empty;
+    public string CivilStatus { get; set; } = string.Empty;
     public string Purok { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string? PictureUrl { get; set; }

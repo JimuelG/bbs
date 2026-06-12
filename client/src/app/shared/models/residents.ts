@@ -7,6 +7,7 @@ export interface Resident {
     phoneNumber: number;
     purok: string;
     monthlyIncome: number;
+    civilStatus: string;
     appUserId: string;
     email: string;
     idUrl: string;

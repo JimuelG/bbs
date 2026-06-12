@@ -4,10 +4,13 @@ import { User } from '../../shared/models/user';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangePasswordComponent } from '../../shared/components/change-password/change-password.component';
 import { environment } from '../../../environments/environment.development';
+import { UpperCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-my-profile',
-  imports: [],
+  imports: [
+    UpperCasePipe
+  ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
 })
@@ -29,11 +32,13 @@ export class MyProfileComponent implements OnInit {
   openChangePasswordDialog(): void {
     const dialogRef = this.dialog.open(ChangePasswordComponent, {
       width: 'auto',
-      maxWidth: '80vw'
+      maxWidth: '80vw',
+      data: this.user
     })
 
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
+        this.accountService.logout();
         this.loadUserProfile();
       }
     })

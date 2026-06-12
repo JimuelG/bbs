@@ -34,6 +34,7 @@
           </button>
           @if (!data.isVerified) {
             <button [mat-dialog-close]="'verify'" 
+                    (click)="verifyResident(data.id)"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
               <mat-icon>verified</mat-icon>
               Verify Now

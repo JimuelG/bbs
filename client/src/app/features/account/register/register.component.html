@@ -10,7 +10,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <div class="space-y-4">
-          <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Personal Information</h3>
+          <h3 class="text-xs font-bold text-blue-600 tracking-widest uppercase mb-4">Personal Information</h3>
           
           <div>
             <label class="block text-sm font-semibold text-slate-700">First Name</label>
@@ -19,9 +19,29 @@
           </div>
 
           <div>
+            <label class="block text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <span>Middle Name</span>
+              <span class="text-xs font-normal text-slate-400">(Optional)</span>
+            </label>
+            <input formControlName="middleName" type="text" placeholder="Santos"
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+
+          <div>
             <label class="block text-sm font-semibold text-slate-700">Last Name</label>
             <input formControlName="lastName" type="text" placeholder="Doe"
               class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all sm:text-sm">
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-slate-700">Civil Status</label>
+            <select formControlName="civilStatus" 
+              class="mt-1 block w-full px-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none bg-white transition-all sm:text-sm">
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Widowed">Widowed</option>
+              <option value="Separated">Separated</option>
+            </select>
           </div>
 
           <div>
@@ -44,7 +64,7 @@
         </div>
 
         <div class="space-y-4">
-          <h3 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">Account Credentials</h3>
+          <h3 class="text-xs font-bold text-blue-600 tracking-widest uppercase mb-4">Account Credentials</h3>
 
           <div>
             <label class="block text-sm font-semibold text-slate-700">Email Address</label>

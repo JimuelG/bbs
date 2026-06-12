@@ -21,7 +21,7 @@
     </span>
     @if (rpiStatus?.lastSeen) {
       <span class="text-[10px] text-slate-400">
-        Last Signal: {{ rpiStatus?.lastSeen | date: 'shortTime' }}
+        Last Signal: {{ rpiStatus!.lastSeen | date: 'shortTime' }}
       </span>
     }
   </div>
@@ -133,22 +133,34 @@
                   <span class="text-sm font-semibold text-slate-700">{{announcement.scheduledAt | date: 'mediumDate'}}</span>
                   <span class="text-[10px] text-slate-400 font-medium">{{announcement.scheduledAt | date: 'shortTime'}}</span>
                 </div>
-              </td>
               <td class="px-6 py-4 text-center">
                 <div class="flex items-center justify-center gap-1">
                   
+                  <button (click)="onSendSms(announcement)" 
+                    class="p-2 text-purple-500 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-all" 
+                    title="Send SMS Broadcast">
+                    <mat-icon class="text-xl">sms</mat-icon> 
+                  </button>
+
                   <button (click)="onTriggerRPi(announcement.id)" 
                     class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all" 
                     title="Broadcast Now (RPi)">
-                    <mat-icon class="text-xl">podcasts</mat-icon> </button>
-
-                  <button (click)="onPreview(announcement.audioUrl)" 
-                    class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all" 
-                    title="Preview Locally">
-                    <mat-icon class="text-xl">play_circle</mat-icon>
+                    <mat-icon class="text-xl">podcasts</mat-icon> 
                   </button>
 
-                  </div>
+                  <button (click)="onPreview(announcement.audioUrl)" 
+                    class="p-2 rounded-lg transition-all"
+                    [ngClass]="{
+                      'text-red-500 hover:text-red-700 hover:bg-red-50': playingAudioUrl === announcement.audioUrl,
+                      'text-slate-400 hover:text-emerald-600 hover:bg-emerald-50': playingAudioUrl !== announcement.audioUrl
+                    }"
+                    [title]="playingAudioUrl === announcement.audioUrl ? 'Stop Preview' : 'Preview Locally'">
+                    <mat-icon class="text-xl">
+                      {{ playingAudioUrl === announcement.audioUrl ? 'stop_circle' : 'play_circle' }}
+                    </mat-icon>
+                  </button>
+                  
+                </div>
               </td>
             </tr>
           } @empty {

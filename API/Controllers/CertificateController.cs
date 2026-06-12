@@ -1,4 +1,6 @@
+using System.Runtime.ConstrainedExecution;
 using API.DTOs;
+using API.RequestHelpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -96,13 +98,27 @@ public class CertificateController(IUnitOfWork unit,
 
     // [Authorize(Roles = "Staff")]
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<CertificateResponseDto>>> GetCertificate()
+    public async Task<ActionResult<IReadOnlyList<CertificateResponseDto>>> GetCertificate([FromQuery] CertificateSpecParams specParams)
     {
-        var certificate = await unit.Repository<BarangayCertificate>().ListAllAsync();
+        var spec = new CertificateSpecification(specParams);
+        var countSpec = new CertificateSpecification(specParams);
 
-        if (certificate == null) return NotFound("No Certificate found");
+        var totalItems = await unit.Repository<BarangayCertificate>().CountAsync(countSpec);
+        var certificate = await unit.Repository<BarangayCertificate>().ListAsync(spec);
 
-        return Ok(mapper.Map<IReadOnlyList<CertificateResponseDto>>(certificate));
+        if (certificate == null || certificate.Count == 0)
+        {
+            return Ok(new List<BarangayCertificate>());
+        }
+
+        var data = mapper.Map<IReadOnlyList<BarangayCertificate>, IReadOnlyList<CertificateResponseDto>>(certificate);
+
+        return Ok(new Pagination<CertificateResponseDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
     }
 
     [HttpPost("upload-signature")]

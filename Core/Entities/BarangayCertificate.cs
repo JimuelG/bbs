@@ -14,6 +14,7 @@ public class BarangayCertificate : BaseEntity
     public string Purok { get; set; } = string.Empty;
     public string StayDuration { get; set; } = string.Empty;
     public string Purpose { get; set; } = string.Empty;
+    public DateTime RequestDate { get; set; } = DateTime.UtcNow;
     public DateTime IssuedAt { get; set; }
     public string IssuedBy { get; set; } = string.Empty;
     public decimal? Fee { get; set; }

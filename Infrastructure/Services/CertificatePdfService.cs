@@ -27,7 +27,7 @@ public class CertificatePdfService : ICertificatePdfService
     public CertificatePdfService(IConfiguration config, IUnitOfWork unit)
     {
         _pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "certificates");
-        _logoFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images/logo");
+        _logoFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images/logos");
 
         if (!Directory.Exists(_pdfFolder)) Directory.CreateDirectory(_pdfFolder);
         

@@ -10,6 +10,7 @@ export interface Certificate {
     civilStatus: string;
     purok: string;
     stayDuration: string;
+    requestDate: string;
     issuedAt: string;
     issuedBy: string;
     status: string;

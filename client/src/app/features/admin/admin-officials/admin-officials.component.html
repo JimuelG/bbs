@@ -41,7 +41,7 @@
               <div class="flex items-center gap-3">
                 <div class="h-10 w-10 rounded-full bg-slate-100 border overflow-hidden">
                   @if (item.officeImage) {
-                    <img [src]="baseUrl + item.officeImage" class="w-full h-full object-cover">
+                    <img [src]="baseApiUrl + item.officeImage" class="w-full h-full object-cover">
                   } @else {
                     <mat-icon class="text-slate-300 m-2">person</mat-icon>
                   }
@@ -63,7 +63,7 @@
             </td>
             <td class="px-6 py-4">
               @if (item.signatureImage) {
-                <img [src]="baseUrl + item.signatureImage" class="h-8 opacity-75 hover:opacity-100 transition-opacity" title="Signature Uploaded">
+                <img [src]="baseApiUrl + item.signatureImage" class="h-8 opacity-75 hover:opacity-100 transition-opacity" title="Signature Uploaded">
               } @else {
                 <span class="text-[10px] text-amber-500 font-bold uppercase italic">Missing Signature</span>
               }

@@ -3,11 +3,17 @@
     <div class="h-32 bg-gradient-to-r from-blue-600 to-blue-400"></div>
     <div class="px-8 pb-8">
       <div class="relative flex justify-between items-end -mt-12 mb-6">
-        <div class="p-1 bg-white rounded-full">
-          <div class="h-24 w-24 rounded-full bg-gray-200 flex items-center justify-center text-3xl font-bold text-gray-500 border-4 border-white">
-            {{ user?.firstName?.[0] }}{{ user?.lastName?.[0] }}
+          <div class="p-1 bg-white rounded-full">
+            @if (user?.pictureUrl) {
+              <img [src]="baseApiUrl + user!.pictureUrl" 
+                  alt="Profile Picture" 
+                  class="h-24 w-24 rounded-full object-cover border-4 border-white shadow-sm">
+            } @else {
+              <div class="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center text-3xl font-bold text-blue-600 border-4 border-white">
+                {{ user?.firstName?.[0] | uppercase }}{{ user?.lastName?.[0] | uppercase }}
+              </div>
+            }
           </div>
-        </div>
         
         @if (user?.isIdVerified) {
           <div class="flex items-center space-x-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold border border-green-200">

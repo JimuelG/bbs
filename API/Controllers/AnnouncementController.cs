@@ -4,14 +4,19 @@ using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
+using Infrastructure.Services.Interface;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 
 public class AnnouncementController(IUnitOfWork unit,
     IMapper mapper,
-    ITtsService ttsService) : BaseApiController
+    ITtsService ttsService,
+    ISmsService smsService,
+    UserManager<AppUser> userManager) : BaseApiController
 {
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<AnnouncementDto>>> GetAnnouncements([FromQuery] AnnouncementSpecParams specParams)
@@ -240,6 +245,29 @@ public class AnnouncementController(IUnitOfWork unit,
             isOnline = isOnline,
             lastSeen = rpi.LastSeen
         });
+    }
+
+    [HttpPost("sms-broadcast")]
+    public async Task<IActionResult> SmsBroadcastAnnouncement([FromBody] AnnouncementDto dto)
+    {
+        var residentNumber = await userManager.Users
+            .Where(u => u.IsIdVerified && !string.IsNullOrWhiteSpace(u.PhoneNumber))
+            .Select(u => u.PhoneNumber!)
+            .ToListAsync();
+
+        if (!residentNumber.Any())
+        {
+            return BadRequest(new { message = "No verified residents with valid contact numbers were found."});
+        }
+
+        var isSent = await smsService.SendAnnouncementAsync(residentNumber, dto.Message);
+
+        if (!isSent)
+        {
+            return StatusCode(500, new { message = "An error occured while sending the SMS broadcast." });
+        }
+
+        return Ok(new { message = $"SMS announcement successfully broadcasted to {residentNumber.Count} residents." });
     }
 
 }

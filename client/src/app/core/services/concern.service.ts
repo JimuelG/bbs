@@ -16,7 +16,7 @@ export class ConcernService {
 
   uploadPhoto(concernId: number, file: File) {
     const formData = new FormData();
-    formData.append('photo', file);
+    formData.append('file', file);
     return this.http.post(`${this.baseUrl}/concerns/${concernId}/upload-photo`, formData);
   }
 

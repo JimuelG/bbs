@@ -13,6 +13,7 @@ public class RegisterDto
     [Required]
     public string Email { get; set; } = string.Empty;
     [Required]
+    public string CivilStatus { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public string? PictureUrl { get; set; }
     [Required]

@@ -8,16 +8,19 @@ export const verificationGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const user = accountService.currentUser();
 
-  console.log('Current user in guard:', user);
+  if (!user) {
+    router.navigate(['/account/login']);
+    return false;
+  }
 
-  if (user) {
-    const verified = user.isIdVerified;
-    const isAdmin = user.role?.includes('Admin') || user.role === 'Admin';
-    if (isAdmin || verified) {
-      return true;
-    } 
+  const verified = user.isIdVerified;
+  const isAdmin = user.role?.includes('Admin') || user.role === 'Admin';
+
+  if (isAdmin || verified) {
+    return true;
   }
 
   router.navigate(['/account/verification-pending']);
   return false;
+
 };

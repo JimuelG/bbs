@@ -16,6 +16,7 @@ public class CertificateResponseDto
     public string Purok { get; set; } = string.Empty;
     public string StayDuration { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public DateTime RequestDate { get; set; }
     public DateTime IssuedAt { get; set; }
     public bool IsPaid { get; set; }
 }

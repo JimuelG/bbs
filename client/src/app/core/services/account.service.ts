@@ -6,6 +6,7 @@ import { map, Observable } from 'rxjs';
 import { RegisterWithOtpRequest } from '../../shared/models/RegisterWithOtpRequest';
 import { ChangePassword } from '../../shared/models/changePassword';
 import { Resident } from '../../shared/models/residents';
+import { RegisterAccount } from '../../shared/models/registerAccount';
 
 @Injectable({
   providedIn: 'root',
@@ -31,15 +32,26 @@ export class AccountService {
     )
   }
 
-  register(payload: RegisterWithOtpRequest): Observable<any> {
+  register(payload: RegisterAccount): Observable<any> {
     return this.http.post(`${this.baseUrl}/account/register`, payload);
   }
 
-  uploadIdCard(file: File) {
+  uploadIdCard(email: string,file: File) {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post(`${this.baseUrl}/account/upload-id-card`, formData);
+    return this.http.post(`${this.baseUrl}/account/upload-id-card/${email}`, formData);
+  }
+
+  uploadProfilePicture(email: string,file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.baseUrl}/account/upload-profile-picture/${email}`, formData);
+  }
+
+  updateResident(userId: string, residentData: any) {
+    return this.http.put(`${this.baseUrl}/account/update-resident/${userId}`, residentData);
   }
 
   verifyResident(id: string): Observable<any> {

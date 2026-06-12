@@ -39,16 +39,39 @@ export class AdminAnnouncementsComponent implements OnInit {
   rpiStatus?: { isOnline: boolean, lastSeen: Date};
   baseApiUrl = environment.apiUrl;
 
+  playingAudioUrl: string | null = null;
+  currentAudio: HTMLAudioElement | null = null;
+
   onPreview(audioUrl: string): void {
-  
-    if (audioUrl) {
-      this.previewing = true;
-      const audio = new Audio(`${this.baseApiUrl}${audioUrl}`);
-      audio.play();
-      audio.onended = () => this.previewing = false;
-    } else {
-      this.snackbarService.error(`Failed to preview audio`);
+    if (!audioUrl) {
+      this.snackbarService.error('Failed to preview audio');
       this.previewing = false;
+      return;
+    }
+
+    const fullUrl = `${this.baseApiUrl}${audioUrl}`;
+
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
+
+      if (this.playingAudioUrl === audioUrl) {
+        this.previewing = false;
+        this.currentAudio = null;
+        this.playingAudioUrl = null;
+        return;
+      }
+    }
+
+    this.previewing = true;
+    this.playingAudioUrl = audioUrl;
+    this.currentAudio = new Audio(fullUrl);
+    this.currentAudio.play();
+
+    this.currentAudio.onended = () => {
+      this.previewing = false;
+      this.currentAudio = null;
+      this.playingAudioUrl = null;
     }
   }
 
@@ -144,6 +167,29 @@ export class AdminAnnouncementsComponent implements OnInit {
         this.rpiStatus = status;
       },
       error: (err) => console.error('Could not fetch RPi status', err)
+    })
+  }
+
+  onSendSms(announcement: Announcement) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Confirm SMS Broadcast',
+        message: 'Are you sure you want to send this announcement via SMS to all verified residents?',
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.announcementService.sendSmsBroadcast(announcement).subscribe({
+          next: (response: any) => {
+            this.snackbarService.success(response.message || 'SMS broadvast send successfully!');
+          },
+          error: (err) => {
+            this.snackbarService.error('Failed to send SMS broadcast.');
+          }
+        })
+      }
     })
   }
 }

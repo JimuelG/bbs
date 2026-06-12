@@ -74,4 +74,47 @@
     }
     </table>
   </div>
+  <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="text-[13px] text-slate-500 font-medium">
+        Showing 
+        <span class="text-slate-900 font-bold">{{ (certificateParams.pageIndex - 1) * certificateParams.pageSize + 1 }}</span> 
+        to 
+        <span class="text-slate-900 font-bold">
+          {{ mathMin(certificateParams.pageIndex * certificateParams.pageSize, totalCount) }}
+        </span> 
+        of 
+        <span class="text-slate-900 font-bold">{{ totalCount }}</span> entries
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-1">
+          <button 
+            [disabled]="certificateParams.pageIndex === 1"
+            (click)="updatePage(certificateParams.pageIndex - 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          <div class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-100">
+            {{ certificateParams.pageIndex }}
+          </div>
+
+          <button 
+            [disabled]="certificateParams.pageIndex * certificateParams.pageSize >= totalCount"
+            (click)="updatePage(certificateParams.pageIndex + 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <div class="h-8 w-px bg-slate-200 mx-1"></div>
+        <select 
+          (change)="onPageSizeChange($event)"
+          class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{ size }} / page</option>
+          }
+        </select>
+      </div>
+    </div>
 </div>

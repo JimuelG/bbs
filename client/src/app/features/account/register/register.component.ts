@@ -5,6 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { of, switchMap } from 'rxjs';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-register',
@@ -21,6 +22,7 @@ export class RegisterComponent {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
+  private snackbarService = inject(SnackbarService);
 
   registerForm: FormGroup;
   loading = false;
@@ -29,10 +31,12 @@ export class RegisterComponent {
   constructor() {
     this.registerForm = this.fb.group({
       firstName: ['', Validators.required],
+      middleName: [''],
       lastName: ['', Validators.required],
-      purok: ['', Validators.required],
-      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       email: ['', [Validators.required, Validators.email]],
+      purok: ['', Validators.required],
+      civilStatus: ['', Validators.required],
+      phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     })
   }
@@ -41,16 +45,10 @@ export class RegisterComponent {
     if (this.registerForm.valid) {
       this.loading = true;
 
-      const credentials = {
-        email: this.registerForm.value.email,
-        password: this.registerForm.value.password
-      };
-
       this.accountService.register(this.registerForm.value).pipe(
-        switchMap(() => this.accountService.login(credentials)),
         switchMap(() => {
           if (this.selectedFile) {
-            return this.accountService.uploadIdCard(this.selectedFile);
+            return this.accountService.uploadIdCard(this.registerForm.value.email, this.selectedFile);
           }
           return of(null);
         })
@@ -63,7 +61,8 @@ export class RegisterComponent {
 
   private completeRegistration() {
     this.loading = false;
-    this.router.navigateByUrl('/');
+    this.snackbarService.success('Account successfully created. You can login your account.');
+    this.router.navigateByUrl('/login');
   }
 
   onFileSelected(event: any) {
