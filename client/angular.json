@@ -28,16 +28,14 @@
           "builder": "@angular/build:application",
           "options": {
             "outputPath": {
-              "base": "../API/wwwroot",
+              "base": "dist/browser",
               "browser": ""
             },
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+              "src/assets",
+              "public"
             ],
             "styles": [
               "src/material-theme.scss",

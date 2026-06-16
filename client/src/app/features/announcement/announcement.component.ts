@@ -32,7 +32,6 @@ export class AnnouncementComponent implements OnInit{
   loadAnnouncements() {
     this.announcementService.getAllAnnouncements(this.announcementParams).subscribe({
       next: (response) => {
-        console.log('API RESPONSE:', response);
         this.announcements = [...this.announcements, ...response.data];
         this.totalCount = response.count;
       }

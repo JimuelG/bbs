@@ -20,7 +20,7 @@ namespace Infrastructure.Services
 
             using var smtp = new SmtpClient();
             await smtp.ConnectAsync(_settings.SmtpServer, _settings.SmtpPort, SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_settings.SenderEmail, _settings.SenderPassword);
+            await smtp.AuthenticateAsync(_settings.SenderLogin, _settings.SenderPassword);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
         }

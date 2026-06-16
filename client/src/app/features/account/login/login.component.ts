@@ -11,8 +11,8 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    MatIconModule
-  ],
+    MatIconModule,
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -44,5 +44,10 @@ export class LoginComponent {
           this.loading = false
         }
       });
+  }
+
+  hasError(control: string, error: string) {
+    const c = this.loginForm.get(control);
+    return c?.touched && c?.hasError(error);
   }
 }

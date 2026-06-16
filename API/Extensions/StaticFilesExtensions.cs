@@ -4,27 +4,41 @@ namespace API.Extensions;
 
 public static class StaticFilesExtensions
 {
-    public static IApplicationBuilder UseCustomStaticFiles(this IApplicationBuilder app, string rootPath)
+    public static IApplicationBuilder UseCustomStaticFiles(this IApplicationBuilder app, IWebHostEnvironment env)
     {
-        var certFolder = Path.Combine(rootPath, "wwwroot", "certificates");
-        var idsFolder = Path.Combine(rootPath, "wwwroot", "images", "ids");
-        var corcernsFolder = Path.Combine(rootPath, "wwwroot", "images", "concerns");
-        var profilesFolder = Path.Combine(rootPath, "wwwroot", "images", "profiles");
-        var officialsFolder = Path.Combine(rootPath, "wwwroot", "images", "officials");
-        var logosFolder = Path.Combine(rootPath, "wwwroot", "images", "logos");
-        var signaturesFolder = Path.Combine(rootPath, "wwwroot", "images", "signatures");
-        var audioFolder = Path.Combine(rootPath, "wwwroot", "audio");
+        var webRoot = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+        var contentRoot = env.ContentRootPath;
 
-        if (!Directory.Exists(certFolder)) Directory.CreateDirectory(certFolder);
-        if (!Directory.Exists(idsFolder)) Directory.CreateDirectory(idsFolder);
-        if (!Directory.Exists(corcernsFolder)) Directory.CreateDirectory(corcernsFolder);
-        if (!Directory.Exists(profilesFolder)) Directory.CreateDirectory(profilesFolder);
-        if (!Directory.Exists(officialsFolder)) Directory.CreateDirectory(officialsFolder);
-        if (!Directory.Exists(logosFolder)) Directory.CreateDirectory(logosFolder);
-        if (!Directory.Exists(signaturesFolder)) Directory.CreateDirectory(signaturesFolder);
-        if (!Directory.Exists(audioFolder)) Directory.CreateDirectory(audioFolder);
+        Directory.CreateDirectory(webRoot);
 
-        app.UseStaticFiles();
+        var uploadsRoot = Path.Combine(contentRoot, "uploads");
+
+        var certFolder = Path.Combine(uploadsRoot, "certificates");
+        var idsFolder = Path.Combine(uploadsRoot, "images", "ids");
+        var concernsFolder = Path.Combine(uploadsRoot, "images", "concerns");
+        var profilesFolder = Path.Combine(uploadsRoot, "images", "profiles");
+        var officialsFolder = Path.Combine(uploadsRoot, "images", "officials");
+        var signaturesFolder = Path.Combine(uploadsRoot, "images", "signatures");
+        var audioFolder = Path.Combine(uploadsRoot, "audio");
+
+        var logosFolder = Path.Combine(webRoot, "public", "images", "logos");
+
+        Directory.CreateDirectory(certFolder);
+        Directory.CreateDirectory(idsFolder);
+        Directory.CreateDirectory(concernsFolder);
+        Directory.CreateDirectory(profilesFolder);
+        Directory.CreateDirectory(officialsFolder);
+        Directory.CreateDirectory(signaturesFolder);
+        Directory.CreateDirectory(audioFolder);
+
+        if (Directory.Exists(logosFolder))
+        {
+            app.UseStaticFiles(new StaticFileOptions
+            {
+               FileProvider = new PhysicalFileProvider(logosFolder),
+               RequestPath = "/api/images/logos" 
+            });
+        }
 
         app.UseStaticFiles(new StaticFileOptions
         {
@@ -40,7 +54,7 @@ public static class StaticFilesExtensions
 
         app.UseStaticFiles(new StaticFileOptions
         {
-            FileProvider = new PhysicalFileProvider(corcernsFolder),
+            FileProvider = new PhysicalFileProvider(concernsFolder),
             RequestPath = "/api/images/concerns"
         });
 
@@ -68,11 +82,7 @@ public static class StaticFilesExtensions
             RequestPath = "/api/audio"
         });
 
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            FileProvider = new PhysicalFileProvider(logosFolder),
-            RequestPath = "/api/images/logos"
-        });
+        app.UseStaticFiles();
 
         return app;
     }

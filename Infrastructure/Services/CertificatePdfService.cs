@@ -26,8 +26,8 @@ public class CertificatePdfService : ICertificatePdfService
     };
     public CertificatePdfService(IConfiguration config, IUnitOfWork unit)
     {
-        _pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "certificates");
-        _logoFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images/logos");
+        _pdfFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "certificates");
+        _logoFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "public", "images", "logos");
 
         if (!Directory.Exists(_pdfFolder)) Directory.CreateDirectory(_pdfFolder);
         
@@ -41,7 +41,7 @@ public class CertificatePdfService : ICertificatePdfService
         
         var fileName = $"{certificate.ReferenceNumber}.pdf";
         var filePath = Path.Combine(_pdfFolder, fileName);
-        var signaturePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "signatures", "current.png");
+        var signaturePath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "images", "signatures", "current.png");
         var officials = await _unit.Repository<BarangayOfficial>().ListAllAsync();
         if (!_layouts.TryGetValue(certificate.CertificateType, out var layout))
         {

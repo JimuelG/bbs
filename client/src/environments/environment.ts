@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    apiUrl: '/api'
+    apiUrl: 'https://api.ugnaybarangay.com/api',
+    hubUrl: 'https://api.ugnaybarangay.com/api/hubs'
 }

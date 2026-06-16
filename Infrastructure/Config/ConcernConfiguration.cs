@@ -9,5 +9,6 @@ public class ConcernConfiguration : IEntityTypeConfiguration<Concern>
     {
         builder.Property(c => c.Type).HasConversion<string>();
         builder.Property(c => c.Status).HasConversion<string>();
+        builder.HasQueryFilter(c => c.Resident != null && !c.Resident.IsDeleted);
     }
 }

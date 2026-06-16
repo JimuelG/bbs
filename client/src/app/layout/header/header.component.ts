@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from "@angular/router";
 import { AccountService } from '../../core/services/account.service';
 import { MatMenuModule } from '@angular/material/menu';
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 
 @Component({

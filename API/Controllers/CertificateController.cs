@@ -127,7 +127,7 @@ public class CertificateController(IUnitOfWork unit,
         if (file == null || file.Length == 0)
             return BadRequest("Invalid file.");
 
-        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "signatures");
+        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "images", "signatures");
 
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);

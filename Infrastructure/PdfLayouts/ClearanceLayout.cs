@@ -33,7 +33,7 @@ public class ClearanceLayout : ICertificateLayout
                     text.Span($"{certificate.BirthDate:MMMM dd, yyyy}").Bold();
                     text.Span($", ");
                     text.Span($"{certificate.CivilStatus.ToLower()}").Bold();
-                    text.Span(", is a bona fide resident of ");
+                    text.Span(", is a bonafide resident of ");
                     text.Span($"{certificate.Purok} Barangay Guevara, Lapaz, Tarlac.").Bold();
                 });
 

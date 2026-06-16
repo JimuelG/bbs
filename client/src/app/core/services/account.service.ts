@@ -7,6 +7,7 @@ import { RegisterWithOtpRequest } from '../../shared/models/RegisterWithOtpReque
 import { ChangePassword } from '../../shared/models/changePassword';
 import { Resident } from '../../shared/models/residents';
 import { RegisterAccount } from '../../shared/models/registerAccount';
+import { ResetPassword } from '../../shared/models/resetPassword';
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,10 @@ export class AccountService {
 
   register(payload: RegisterAccount): Observable<any> {
     return this.http.post(`${this.baseUrl}/account/register`, payload);
+  }
+
+  checkEmailExists(email: string) {
+    return this.http.get<boolean>(`${this.baseUrl}/account/email-exists`, { params: { email } });
   }
 
   uploadIdCard(email: string,file: File) {
@@ -64,6 +69,14 @@ export class AccountService {
 
   getResidentDetails(id: string) {
     return this.http.get<Resident>(`${this.baseUrl}/account/resident-details/${id}`);
+  }
+
+  sendForgotPasswordOtp(email: string) {
+    return this.http.post(`${this.baseUrl}/account/send-otp`, { email });
+  }
+
+  resetPassword(resetPassword: ResetPassword) {
+    return this.http.patch(`${this.baseUrl}/account/reset-password`, resetPassword)
   }
 
   changePassword(userId: string, payload: ChangePassword) {

@@ -5,6 +5,7 @@ export interface RegisterAccount {
     email: string;
     purok: string;
     civilStatus: string;
+    birthDate: string;
     phoneNumber: string;
     password: string;
 }

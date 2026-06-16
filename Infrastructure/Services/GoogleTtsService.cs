@@ -11,7 +11,7 @@ public class GoogleTtsService : ITtsService
     private readonly string _audioFolder;
     public GoogleTtsService()
     {
-        _audioFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "audio");
+        _audioFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audio");
 
         if (!Directory.Exists(_audioFolder))
             Directory.CreateDirectory(_audioFolder);

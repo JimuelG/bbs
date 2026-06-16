@@ -21,6 +21,18 @@
               class="appearance-none block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-xl placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
               placeholder="name@example.com">
           </div>
+          @if (hasError('email', 'required')) {
+            <p class="text-xs text-red-500 mt-1">
+              Email is required.
+            </p>
+          }
+          
+          @if (hasError('email', 'email')) {
+            <p class="text-xs text-red-500 mt-1">
+              Enter a valid email address.
+            </p>
+          }
+
         </div>
 
         <div>
@@ -36,6 +48,11 @@
               <mat-icon class="text-sm h-auto w-auto">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
           </div>
+          @if (hasError('password', 'required')) {
+            <p class="text-xs text-red-500 mt-1">
+              Password is required.
+            </p>
+          }
         </div>
       </div>
 
@@ -44,12 +61,14 @@
           <input type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded">
           <label class="ml-2 block text-slate-700">Remember me</label>
         </div>
-        <a href="#" class="font-medium text-blue-600 hover:text-blue-500">Forgot password?</a>
+        <a href="/account/forgot-password" class="font-medium text-blue-600 hover:text-blue-500">Forgot password?</a>
       </div>
 
       <div>
-        <button type="submit" [disabled]="loginForm.invalid || loading"
-          class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50">
+        <button type="submit"
+          (click)="onSubmit()"
+          [disabled]="loginForm.invalid || loading"
+          class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
           
           @if (loading) {
             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

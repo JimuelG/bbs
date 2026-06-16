@@ -102,7 +102,7 @@ public class ConcernsController(IUnitOfWork unit, IMapper mapper) : BaseApiContr
         if (!allowedExtensions.Contains(extension))
             return BadRequest(new { message = "Invalid file type. Only JPG and PNG are allowed." });
 
-        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "concerns");
+        var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "images", "concerns");
 
         if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 

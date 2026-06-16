@@ -103,7 +103,7 @@ public class BarangayOfficialController(IUnitOfWork unit, IMapper mapper) : Base
         if (file == null || file.Length == 0) return BadRequest("No file uploaded");
 
         var folderName = type == "signature" ? "signatures" : "officials";
-        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", folderName);
+        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "images", folderName);
 
         if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
 

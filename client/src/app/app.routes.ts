@@ -26,6 +26,8 @@ import { ClearanceComponent } from './features/certificates/clearance/clearance.
 import { ConcernComponent } from './features/concern/concern.component';
 import { AdminConcernsComponent } from './features/admin/admin-concerns/admin-concerns.component';
 import { AdminConcernsDetailsComponent } from './features/admin/admin-concerns-details/admin-concerns-details.component';
+import { ForgotPasswordComponent } from './features/account/forgot-password/forgot-password.component';
+import { verficationPendingGuard } from './core/guards/verfication-pending-guard';
 
 export const routes: Routes = [
     {path: 'admin/login', component: AdminLoginComponent},
@@ -61,7 +63,8 @@ export const routes: Routes = [
             {path: 'report-concern', component: ConcernComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},
-            {path: 'account/verification-pending', component: VerificationStatusComponent},
+            {path: 'account/forgot-password', component: ForgotPasswordComponent},
+            {path: 'account/verification-pending', component: VerificationStatusComponent, canActivate: [verficationPendingGuard]},
             {path: 'my-profile', component: MyProfileComponent, canActivate:[authGuard]},
             {path: '**', redirectTo: '', pathMatch: 'full'},
         ]
