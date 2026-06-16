@@ -491,3 +491,15 @@ API/wwwroot/audio/60417a726411c6d4233c07c1d8efcadf7fc5d69b5d8b46102f6700d4c94762
 client/package-lock.json
 API/Program.cs
 client/package-lock.json
+
+# Deployment output
+deploy/
+API/publish/
+**/publish/
+
+# Secrets
+*.p12
+*.pem
+*.key
+*service-account*.json
+project-*.json
