@@ -12,7 +12,10 @@
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <mat-icon class="text-slate-400 text-sm">search</mat-icon>
             </div>
-            <input type="text" (keyup.enter)="onSearch($event)"
+            <input 
+              type="text"
+              [(ngModel)]="announcementParams.search"
+              (input)="onSearchChange()"
               class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-lg py-2.5" 
               placeholder="Search news...">
           </div>

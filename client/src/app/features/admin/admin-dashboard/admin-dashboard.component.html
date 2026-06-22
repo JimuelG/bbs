@@ -31,7 +31,7 @@
       <div>
         <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Pending Certs</p>
         <h2 class="text-3xl font-black text-gray-800">{{ stats.pendingCertificates }}</h2>
-        <a routerLink="/request-certificates" class="text-xs text-amber-600 mt-1 font-medium hover:underline cursor-pointer">
+        <a routerLink="/admin/certificates" class="text-xs text-amber-600 mt-1 font-medium hover:underline cursor-pointer">
           Needs Action
         </a>
       </div>
@@ -44,7 +44,7 @@
       <div>
         <p class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-1">Active Concerns</p>
         <h2 class="text-3xl font-black text-gray-800">{{ stats.activeConcerns }}</h2>
-        <a routerLink="/report-concern" class="text-xs text-red-600 mt-1 font-medium hover:underline cursor-pointer">
+        <a routerLink="/admin/concerns" class="text-xs text-red-600 mt-1 font-medium hover:underline cursor-pointer">
           Review Reports
         </a>
       </div>
@@ -74,14 +74,14 @@
           <h3 class="font-bold text-gray-800 flex items-center">
             <mat-icon class="mr-2 text-blue-600">pending_actions</mat-icon> Recent Certificate Requests
           </h3>
-          <a routerLink="/request-certificates" class="text-sm text-blue-600 font-medium hover:underline">View All</a>
+          <a routerLink="/admin/certificates" class="text-sm text-blue-600 font-medium hover:underline">View All</a>
         </div>
         <div class="divide-y divide-gray-50">
           @for (req of recentRequests; track req.id) {
             <div class="p-4 hover:bg-gray-50 flex items-center justify-between transition-colors">
               <div>
                 <p class="font-bold text-gray-900">{{ req.name }}</p>
-                <p class="text-sm text-gray-500">{{ req.type }} • <span class="text-xs">{{ req.date }}</span></p>
+                <p class="text-sm text-gray-500">{{ req.type }} • <span class="text-xs">{{ req.date | date: 'mediumDate' }}</span></p>
               </div>
               <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
                 {{ req.status }}
@@ -96,7 +96,7 @@
           <h3 class="font-bold text-gray-800 flex items-center">
             <mat-icon class="mr-2 text-red-600">assignment_late</mat-icon> Urgent Concerns
           </h3>
-          <a routerLink="/report-concern" class="text-sm text-blue-600 font-medium hover:underline">View All</a>
+          <a routerLink="/admin/concerns" class="text-sm text-blue-600 font-medium hover:underline">View All</a>
         </div>
         <div class="divide-y divide-gray-50">
           @for (concern of recentConcerns; track concern.id) {
@@ -107,10 +107,21 @@
                 </div>
                 <div>
                   <p class="font-bold text-gray-900">{{ concern.title }}</p>
-                  <p class="text-sm text-gray-500">{{ concern.purok }} • Priority: <span class="text-red-600 font-medium">{{ concern.priority }}</span></p>
+                  <p class="text-sm text-gray-500">{{ concern.purok }} • 
+                    Priority: 
+                    @if (concern.priority == "P1") {
+                      <span class="text-red-600 font-bold bg-red-50 px-2 py-1 rounded-full"> CRITICAL </span>
+                    }
+                    @if (concern.priority == "P2") {
+                      <span class="text-orange-600 font-bold bg-orange-50 px-2 py-1 rounded-full"> URGENT </span>
+                    }
+                    @if (concern.priority == "P3") {
+                      <span class="text-yellow-500 font-bold bg-yellow-50 px-2 py-1 rounded-full"> NORMAL </span>
+                    }
+                  </p>
                 </div>
               </div>
-              <button class="text-sm text-blue-600 font-medium hover:underline">Resolve</button>
+              <button routerLink="/admin/concerns/{{concern.id}}" class="text-sm text-blue-600 font-medium hover:underline">Resolve</button>
             </div>
           }
         </div>
@@ -126,10 +137,10 @@
           </h3>
         </div>
         <div class="p-6 space-y-4">
-          @for (official of officials; track official.name) {
+          @for (official of officials; track official.id) {
             <div class="flex items-center gap-4">
-              @if (official.imageUrl) {
-                <img [src]="official.imageUrl" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-slate-600 object-cover">
+              @if (official.officeImage) {
+                <img [src]="getOfficialImage(official.officeImage)" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-slate-600 object-cover">
               } @else {
                 <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold border-2 border-slate-600">
                   {{ official.name[0] }}
@@ -141,7 +152,7 @@
               </div>
             </div>
           }
-          <button class="w-full mt-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-medium transition-colors">
+          <button routerLink="/admin/barangay-officials" class="w-full mt-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm font-medium transition-colors">
             Manage Officials
           </button>
         </div>
@@ -152,18 +163,18 @@
           <mat-icon class="mr-2 text-green-600">bolt</mat-icon> Quick Actions
         </h3>
         <div class="space-y-2">
-          <button routerLink="/account/register" class="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors group border border-transparent hover:border-gray-200">
+          <button routerLink="/admin/residents" class="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors group border border-transparent hover:border-gray-200">
             <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mr-3">
               <mat-icon class="text-sm">person_add</mat-icon>
             </div>
             <span class="font-medium text-sm">Register New Resident</span>
           </button>
-          <button class="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors group border border-transparent hover:border-gray-200">
+          <!-- <button class="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 text-gray-700 transition-colors group border border-transparent hover:border-gray-200">
             <div class="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mr-3">
               <mat-icon class="text-sm">print</mat-icon>
             </div>
             <span class="font-medium text-sm">Generate Reports</span>
-          </button>
+          </button> -->
         </div>
       </div>
 

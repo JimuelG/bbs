@@ -3,7 +3,7 @@ import { AccountService } from '../../core/services/account.service';
 import { MatIcon } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import * as signalR from '@microsoft/signalr';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment.development';
 import { SnackbarService } from '../../core/services/snackbar.service';
 
 @Component({

@@ -40,7 +40,6 @@
           <span class="material-icons mr-2 text-blue-600">person</span>
           Personal Information
         </h2>
-        
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
             <label class="text-xs font-bold text-gray-400 uppercase">First Name</label>
@@ -61,21 +60,74 @@
         </div>
       </div>
 
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-        <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-          <span class="material-icons mr-2 text-blue-600">badge</span>
-          Submitted Identification
-        </h2>
-        @if (user?.idUrl) {
-          <div class="rounded-lg border-2 border-dashed border-gray-200 p-2 overflow-hidden">
-             <img [src]="baseApiUrl + user?.idUrl" alt="Resident ID" class="w-full h-auto rounded-md max-h-64 object-contain bg-gray-50">
-          </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+      <h2 class="text-lg font-bold text-gray-800 flex items-center">
+        <span class="material-icons mr-2 text-blue-600">folder</span>
+        Resident Records
+      </h2>
+      <span class="text-xs font-bold text-gray-400 uppercase">
+        Certificates & Concerns
+      </span>
+    </div>
+
+    <div class="overflow-x-auto">
+      @if (residentRecords.length > 0) {
+        <table class="w-full text-sm">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase">Type</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase">Record</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase">Reference</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-bold text-gray-400 uppercase">Date</th>
+            </tr>
+          </thead>
+        <tbody class="divide-y divide-gray-100">
+          @for (record of residentRecords; track record.type + '-' + record.id) {
+            <tr class="hover:bg-gray-50 transition-colors">
+              <td class="px-6 py-4">
+                <span 
+                  class="px-2 py-1 rounded-lg text-[10px] font-black uppercase"
+                  [ngClass]="{
+                    'bg-blue-50 text-blue-600': record.type === 'Certificate',
+                    'bg-red-50 text-red-600': record.type === 'Concern'
+                  }">
+                  {{ record.type }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4">
+                <p class="font-bold text-gray-800">{{ record.title }}</p>
+                @if (record.description) {
+                  <p class="text-xs text-gray-400 line-clamp-1">{{ record.description }}</p>
+                }
+              </td>
+
+              <td class="px-6 py-4 text-gray-500 font-medium">
+                {{ record.referenceNumber || 'N/A' }}
+              </td>
+
+              <td class="px-6 py-4">
+                <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-lg text-[10px] font-black uppercase">
+                  {{ record.status }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4 text-gray-500">
+                {{ record.createdAt | date:'mediumDate' }}
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
         } @else {
-          <div class="p-8 text-center bg-gray-50 rounded-lg">
-            <span class="material-icons text-gray-300 text-5xl mb-2">file_upload</span>
-            <p class="text-gray-500">No ID document uploaded yet.</p>
+          <div class="p-12 text-center bg-gray-50">
+            <span class="material-icons text-gray-300 text-5xl mb-2">folder_open</span>
+            <p class="text-gray-500">No certificate requests or concerns found yet.</p>
           </div>
         }
+        </div>
       </div>
     </div>
 
@@ -86,6 +138,16 @@
           <button (click)="openChangePasswordDialog()" class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-amber-50 text-amber-600 transition-colors group">
             <span class="font-medium">Change Password</span>
             <span class="material-icons text-sm group-hover:translate-x-1 transition-transform">lock</span>
+          </button>
+        </div>
+        <div class="space-y-2">
+          <button 
+            type="button"
+            (click)="viewSubmittedId()"
+            [disabled]="!user?.idUrl || user?.idUrl === 'N/A'"
+            class="w-full flex items-center justify-between p-3 rounded-xl hover:bg-blue-50 text-blue-600 transition-colors group disabled:opacity-40 disabled:cursor-not-allowed">
+            <span class="font-medium">View Submitted ID</span>
+            <span class="material-icons text-sm group-hover:translate-x-1 transition-transform">badge</span>
           </button>
         </div>
       </div>

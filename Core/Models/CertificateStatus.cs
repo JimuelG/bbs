@@ -8,4 +8,5 @@ public static class CertificateStatus
     public const string Approved = "Approved";
     public const string Printed = "Printed";
     public const string Released = "Released";
+    public const string Denied = "Denied";
 }

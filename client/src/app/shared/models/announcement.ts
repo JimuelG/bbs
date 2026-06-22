@@ -8,4 +8,5 @@ export interface Announcement {
     expireAt?: string;
     isEmergency: boolean;
     isPlayed: boolean;
+    manualTriggerActive: boolean;
 }

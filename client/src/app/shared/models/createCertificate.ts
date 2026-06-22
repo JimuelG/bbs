@@ -1,7 +1,8 @@
 export interface CreateCertificate {
     fullName: string;
     address: string;
-    birthDate: string;
+    birthDate?: string;
+    age?: number;
     certificateType: number;
     purpose: string;
     fee: number;

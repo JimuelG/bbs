@@ -67,13 +67,13 @@
               </select>
             </div>
 
-            <div>
+            <!-- <div>
               <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Assign Official</label>
               <select formControlName="assignedOfficialId" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 appearance-none">
                 <option [ngValue]="null">Unassigned</option>
                 <option value="1">Kagawad Juan Dela Cruz (Peace & Order)</option>
               </select>
-            </div>
+            </div> -->
 
             <div>
               <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Resolution Remarks</label>
@@ -81,10 +81,17 @@
                         class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500 resize-y"></textarea>
             </div>
 
-            <button type="submit" [disabled]="loading" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95 flex justify-center items-center gap-2">
-              <mat-icon class="text-sm">save</mat-icon>
-              Save Changes
-            </button>
+            @if (!isConcernClosed) {
+              <button type="submit" [disabled]="loading" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-sm shadow-md transition-all active:scale-95 flex justify-center items-center gap-2">
+                <mat-icon class="text-sm">save</mat-icon>
+                Save Changes
+              </button>
+            } @else {
+              <div class="w-full py-3 bg-slate-100 text-slate-500 rounded-xl font-bold text-sm flex justify-center items-center gap-2">
+                <mat-icon class="text-sm">lock</mat-icon>
+                Concern Closed
+              </div>
+            }
           </div>
         </form>
       </div>

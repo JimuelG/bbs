@@ -1,7 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { Concern } from '../../shared/models/concern';
+import { ConcernParms } from '../../shared/models/concernParams';
+import { Pagination } from '../../shared/models/pagination';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,26 @@ export class ConcernService {
 
   createConcern(dto: any) {
     return this.http.post<{ message: string, id: number }>(`${this.baseUrl}/concerns`, dto);
+  }
+
+  getAllConcerns(concernParams: ConcernParms) {
+    let params = new HttpParams()
+      .set('pageSize', concernParams.pageSize)
+      .set('pageIndex', concernParams.pageIndex)
+
+    if (concernParams.sort) {
+      params = params.append('sort', concernParams.sort);
+    }
+
+    if (concernParams.priority) {
+      params = params.append('priority', concernParams.priority);
+    }
+
+    if (concernParams.search) {
+      params = params.append('search', concernParams.search);
+    }
+
+    return this.http.get<Pagination<Concern>>(`${this.baseUrl}/concerns`, { params });
   }
 
   uploadPhoto(concernId: number, file: File) {

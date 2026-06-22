@@ -35,10 +35,8 @@ public class MappingProfiles : Profile
         CreateMap<Concern, ConcernDto>()
             .ForMember(d => d.Type, o => o.MapFrom(s => s.Type.ToString()))
             .ForMember(d => d.Status, o => o.MapFrom(s => s.Status.ToString()))
-            .ForMember(d => d.ReporterName, o => o.MapFrom(s => $"{s.Resident.FirstName} {s.Resident.FirstName} {s.Resident.LastName}"))
-            .ForMember(d => d.AssignedOfficialName, o => o.MapFrom(s => s.AssignedOfficial != null ? $"{s.AssignedOfficial.FirstName} {s.AssignedOfficial.LastName}" : null));
+            .ForMember(d => d.ReporterName, o => o.MapFrom(s => $"{s.Resident.FirstName} {s.Resident.LastName}"));
 
-        CreateMap<CreateConcernDto, Concern>()
-            .ForMember(d => d.Type, o => o.MapFrom(s => Enum.Parse<ConcernType>(s.Type)));
+        CreateMap<CreateConcernDto, Concern>();
     }
 }

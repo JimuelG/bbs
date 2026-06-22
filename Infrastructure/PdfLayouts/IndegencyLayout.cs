@@ -30,12 +30,12 @@ public class IndegencyLayout : ICertificateLayout
                     text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
                     text.Span("This is to certify that ");
                     text.Span(certificate.FullName.ToUpper()).Bold();
-                    text.Span($", of legal age, born on ");
-                    text.Span($"{certificate.BirthDate:MMMM dd, yyyy}").Bold();
                     text.Span($", ");
+                    text.Span($"{certificate.Age}").Bold();
+                    text.Span($" years old, ");
                     text.Span($"{certificate.CivilStatus.ToLower()}").Bold();
-                    text.Span(", is a bona fide resident of ");
-                    text.Span($"Purok {certificate.Purok} Barangay Guevara, Lapaz, Tarlac.").Bold();
+                    text.Span(", is a bonafide resident of ");
+                    text.Span($"{certificate.Purok} Barangay Guevara, Lapaz, Tarlac.").Bold();
                 });
 
                 col.Item().PaddingBottom(10).Text(text =>
@@ -65,13 +65,16 @@ public class IndegencyLayout : ICertificateLayout
                     text.Span("We are very grateful and thankful for the help you extend to her/his family.");
                 });
 
+                var issuedDate = certificate.IssuedAt 
+                    ?? throw new Exception("Issued date is required before generating the certificate PDF.");
+
                 col.Item().PaddingTop(15).Text(text =>
                 {
                     text.Justify();
 
                     text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
                     text.Span("ISSUED this ");
-                    text.Span(GetDayWithSuffix(certificate.IssuedAt.Day) + " day").Bold();
+                    text.Span(GetDayWithSuffix(issuedDate.Day) + " day").Bold();
                     text.Span(" of ");
                     text.Span($"{certificate.IssuedAt:MMMM yyyy}").Bold();
                     text.Span(", here at Barangay Guevara, La Paz, Tarlac.");

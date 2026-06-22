@@ -57,13 +57,16 @@ public class ClearanceLayout : ICertificateLayout
                     text.Span(" only.");
                 });
 
+                var issuedDate = certificate.IssuedAt 
+                    ?? throw new Exception("Issued date is required before generating the certificate PDF."); 
+
                 col.Item().PaddingTop(15).Text(text =>
                 {
                     text.Justify();
 
                     text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
                     text.Span("ISSUED this ");
-                    text.Span(GetDayWithSuffix(certificate.IssuedAt.Day) + " day").Bold();
+                    text.Span(GetDayWithSuffix(issuedDate.Day) + " day").Bold();
                     text.Span(" of ");
                     text.Span($"{certificate.IssuedAt:MMMM yyyy}").Bold();
                     text.Span(", here at Barangay Guevara, La Paz, Tarlac.");

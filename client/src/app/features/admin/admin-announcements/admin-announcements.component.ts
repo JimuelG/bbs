@@ -12,6 +12,7 @@ import { Pagination } from '../../../shared/models/pagination';
 import { AnnouncementParams } from '../../../shared/models/announcementParams';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment.development';
+import { AnnouncementStats } from '../../../shared/models/announcementStats';
 
 @Component({
   selector: 'app-admin-announcements',
@@ -38,6 +39,29 @@ export class AdminAnnouncementsComponent implements OnInit {
   previewing = false;
   rpiStatus?: { isOnline: boolean, lastSeen: Date};
   baseApiUrl = environment.apiUrl;
+  stats?: AnnouncementStats;
+  broadcastingAnnouncementId: number | null = null;
+  stoppingRpi = false;
+
+  private apiOrigin = environment.apiUrl.replace(/\/api\/?$/, '');
+
+  private getPublicFileUrl(path: string): string {
+    if (!path) return '';
+
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path.replace('/api/api/', '/api/');
+    }
+
+    let normalizedPath = path.startsWith('/') ? path : `/${path}`;
+
+    normalizedPath = normalizedPath.replace('/api/api/', '/api/');
+
+    if (!normalizedPath.startsWith('/api/')) {
+      normalizedPath = `/api${normalizedPath}`;
+    }
+
+    return `${this.apiOrigin}${normalizedPath}`.replace('/api/api/', '/api/');
+  }
 
   playingAudioUrl: string | null = null;
   currentAudio: HTMLAudioElement | null = null;
@@ -49,7 +73,7 @@ export class AdminAnnouncementsComponent implements OnInit {
       return;
     }
 
-    const fullUrl = `${this.baseApiUrl}${audioUrl}`;
+    const fullUrl = this.getPublicFileUrl(audioUrl);
 
     if (this.currentAudio) {
       this.currentAudio.pause();
@@ -77,6 +101,7 @@ export class AdminAnnouncementsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAnnouncements();
+    this.loadStats();
     this.checkStatus();
   }
 
@@ -86,6 +111,17 @@ export class AdminAnnouncementsComponent implements OnInit {
         this.announcementPagination = response;
         this.announcements = response.data;
         this.totalCount = response.count;
+      }
+    })
+  }
+
+  loadStats() {
+    this.announcementService.getStats().subscribe({
+      next: (stats) => {
+        this.stats = stats;
+      },
+      error: () => {
+        this.snackbarService.error('Failed to load announcement statistics');
       }
     })
   }
@@ -104,6 +140,10 @@ export class AdminAnnouncementsComponent implements OnInit {
   onPageSizeChange(event: Event) {
     const select = event.target as HTMLSelectElement;
     this.announcementParams.pageSize = parseInt(select.value);
+    this.loadAnnouncements();
+  }
+
+  onSortChange() {
     this.announcementParams.pageIndex = 1;
     this.loadAnnouncements();
   }
@@ -112,14 +152,37 @@ export class AdminAnnouncementsComponent implements OnInit {
     return Math.min(a, b);
   }
 
+  onSearchChange() {
+    this.announcementParams.pageIndex = 1;
+    this.loadAnnouncements();
+  }
+
   onTriggerRPi(id: number)  {
     this.announcementService.triggerManual(id).subscribe({
       next: () => {
+        this.broadcastingAnnouncementId = id;
         this.snackbarService.success('Broadcast signal sent! RPi is responding...');
         this.loadAnnouncements();
       },
       error: (err) => {
         this.snackbarService.error('Failed to communicate with the broadcast system');
+      }
+    })
+  }
+
+  onStopRPi() {
+    this.stoppingRpi = true;
+
+    this.announcementService.stopRpiAudio().subscribe({
+      next: () => {
+        this.broadcastingAnnouncementId = null;
+        this.stoppingRpi = false;
+        this.snackbarService.success('Broadcast stopped.');
+        this.loadAnnouncements();
+      },
+      error: () => {
+        this.stoppingRpi = false;
+        this.snackbarService.error('Failed to stop the broadcast system');
       }
     })
   }
@@ -133,7 +196,11 @@ export class AdminAnnouncementsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) this.loadAnnouncements();
+      if (result) {
+        this.loadAnnouncements();
+        this.loadStats();
+        this.checkStatus();
+      } 
     });
   }
 

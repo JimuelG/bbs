@@ -5,13 +5,15 @@ import { Announcement } from '../../shared/models/announcement';
 import { DatePipe } from '@angular/common';
 import { Pagination } from '../../shared/models/pagination';
 import { AnnouncementParams } from '../../shared/models/announcementParams';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-announcement',
   standalone: true,
   imports: [
     MatIcon,
-    DatePipe
+    DatePipe,
+    FormsModule
   ],
   templateUrl: './announcement.component.html',
   styleUrl: './announcement.component.scss',
@@ -32,7 +34,8 @@ export class AnnouncementComponent implements OnInit{
   loadAnnouncements() {
     this.announcementService.getAllAnnouncements(this.announcementParams).subscribe({
       next: (response) => {
-        this.announcements = [...this.announcements, ...response.data];
+        this.announcementPagination = response;
+        this.announcements = response.data;
         this.totalCount = response.count;
       }
     })
@@ -43,12 +46,11 @@ export class AnnouncementComponent implements OnInit{
     this.loadAnnouncements();
   }
 
-  onSearch(event: any) {
-    this.announcementParams.search = event.target.value;
+  onSearchChange() {
     this.announcementParams.pageIndex = 1;
-    this.announcements = [];
     this.loadAnnouncements();
   }
+
 
   resetFilters() {
     this.announcementParams = new AnnouncementParams();

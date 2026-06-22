@@ -25,7 +25,6 @@ export class AdminConcernsDetailsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private snackbarService = inject(SnackbarService);
 
-
   concern: Concern | null = null;
   updateForm!: FormGroup;
   officials: any[] = [];
@@ -62,7 +61,15 @@ export class AdminConcernsDetailsComponent implements OnInit {
     });
   }
 
+  get isConcernClosed(): boolean {
+    return this.concern?.status === 'Resolved' || this.concern?.status === 'Dismissed';
+  }
+
   onSubmit() {
+    if (this.isConcernClosed) {
+      this.snackbarService.error('This concern is already closed and cannot be updated. ');
+    }
+    
     if (this.updateForm.invalid || !this.concern) return;
 
     this.loading = true;

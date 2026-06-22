@@ -15,7 +15,7 @@ public class Concern : BaseEntity
     public DateTime DateReported { get; set; } = DateTime.UtcNow;
     public DateTime? DateResolved { get; set; }
     public string? ResolutionRemarks { get; set; }
-
+    public ConcernPriority Priority { get; set; } = ConcernPriority.P3;
     public int ResidentId { get; set; }
     public Resident Resident { get; set; } = null!;
 

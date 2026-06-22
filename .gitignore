@@ -496,6 +496,8 @@ client/package-lock.json
 deploy/
 API/publish/
 **/publish/
+google-tts.json
+secrets/
 
 # Secrets
 *.p12

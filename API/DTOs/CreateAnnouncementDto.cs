@@ -6,6 +6,7 @@ public class CreateAnnouncementDto
     public string Message { get; set; } = string.Empty;
     public string LanguageCode { get; set; } = "fil-PH";
     public string AudioUrl { get; set; } = string.Empty;
+    public DateTime CreateAt { get; set; }
     public DateTime ScheduledAt { get; set; }
     public DateTime? ExpireAt { get; set; }
     public bool IsEmergency { get; set; }

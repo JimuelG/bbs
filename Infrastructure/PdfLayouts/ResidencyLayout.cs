@@ -34,7 +34,7 @@ public class ResidencyLayout : ICertificateLayout
                     text.Span($", ");
                     text.Span($"{certificate.CivilStatus.ToLower()}").Bold();
                     text.Span(", is a bona fide resident of ");
-                    text.Span($"Purok {certificate.Purok} Barangay Guevara, Lapaz, Tarlac.").Bold();
+                    text.Span($"{certificate.Purok} Barangay Guevara, Lapaz, Tarlac.").Bold();
 
                 });
 
@@ -58,13 +58,16 @@ public class ResidencyLayout : ICertificateLayout
                     text.Span(" and for whatever legal purpose it may serve.");
                 });
 
+                var issuedDate = certificate.IssuedAt 
+                    ?? throw new Exception("Issued date is required before generating the certificate PDF.");
+
                 col.Item().PaddingTop(15).Text(text =>
                 {
                     text.Justify();
 
                     text.Span("\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0");
                     text.Span("ISSUED this ");
-                    text.Span(GetDayWithSuffix(certificate.IssuedAt.Day) + " day").Bold();
+                    text.Span(GetDayWithSuffix(issuedDate.Day) + " day").Bold();
                     text.Span(" of ");
                     text.Span($"{certificate.IssuedAt:MMMM yyyy}").Bold();
                     text.Span(", here at Barangay Guevara, La Paz, Tarlac.");

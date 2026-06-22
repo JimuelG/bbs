@@ -21,10 +21,6 @@ export class CertificatesService {
     return this.http.get(`${this.baseUrl}/certificate/${referenceNumber}/generate-pdf`, { responseType: 'blob' });
   }
 
-  printCertificate(id: number) {
-    return this.http.get(`${this.baseUrl}/certificate/${id}/generate-pdf`);
-  }
-
   getAllCertificates(certificateParams: CertificateParams) {
     let params = new HttpParams()
       .set('pageSize', certificateParams.pageSize)
@@ -32,6 +28,9 @@ export class CertificatesService {
 
     if (certificateParams.sort) {
       params = params.append('sort', certificateParams.sort);
+    }
+    if (certificateParams.status) {
+      params = params.append('status', certificateParams.status)
     }
 
     if (certificateParams.search) {
@@ -43,5 +42,19 @@ export class CertificatesService {
 
   updateCertificate(id: number, data: any) {
     return this.http.put(`${this.baseUrl}/certificate/${id}`, data);
+  }
+
+  updateCertificateStatus(id: number, status: string) {
+    return this.http.patch<{ message: string; status: string; issuedAt: string }>(
+      `${this.baseUrl}/certificate/${id}/status`, { status }
+    )
+  }
+
+  previewCertficatePdf(referenceNumber: string) {
+    return this.http.get(`${this.baseUrl}/certificate/${referenceNumber}/preview-pdf`, { responseType: 'blob' });
+  }
+
+  printCertificate(referenceNumber: string) {
+    return this.http.post<{ pdfUrl: string; issuedAt: string; status: string }>(`${this.baseUrl}/certificate/${referenceNumber}/print`, {});
   }
 }

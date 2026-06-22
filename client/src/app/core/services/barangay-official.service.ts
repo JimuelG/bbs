@@ -1,7 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { BarangayOfficial } from '../../shared/models/barangayOfficial';
+import { BarangayOfficialParams } from '../../shared/models/barangayOfficialParams';
+import { Pagination } from '../../shared/models/pagination';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +14,22 @@ export class BarangayOfficialService {
 
   getBarangayOfficials() {
     return this.http.get<BarangayOfficial[]>(`${this.baseUrl}/barangayofficial`);
+  }
+
+  getAllOfficials(officialParams: BarangayOfficialParams) {
+    let params = new HttpParams()
+      .set('pageSize', officialParams.pageSize)
+      .set('pageIndex', officialParams.pageIndex)
+
+    if (officialParams.sort) {
+      params = params.append('sort', officialParams.sort);
+    }
+
+    if (officialParams.search) {
+      params = params.append('search', officialParams.search);
+    }
+
+    return this.http.get<Pagination<BarangayOfficial>>(`${this.baseUrl}/barangayofficial`, { params });
   }
 
   getOfficialById(id: number) {

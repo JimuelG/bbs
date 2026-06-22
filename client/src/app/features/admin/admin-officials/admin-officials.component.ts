@@ -1,9 +1,8 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { MatCard } from '@angular/material/card';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { BarangayOfficial } from '../../../shared/models/barangayOfficial';
 import { BarangayOfficialService } from '../../../core/services/barangay-official.service';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { OfficialAddEditModalComponent } from '../../../shared/components/official-add-edit-modal/official-add-edit-modal.component';
@@ -11,6 +10,8 @@ import { environment } from '../../../../environments/environment.development';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SnackbarService } from '../../../core/services/snackbar.service';
 import { RouterLink } from '@angular/router';
+import { Pagination } from '../../../shared/models/pagination';
+import { BarangayOfficialParams } from '../../../shared/models/barangayOfficialParams';
 
 @Component({
   selector: 'app-admin-officials',
@@ -29,7 +30,12 @@ export class AdminOfficialsComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackbarService = inject(SnackbarService);
 
-  officials = signal<BarangayOfficial[]>([]);
+  officials: BarangayOfficial[] = [];
+  officialPagination?: Pagination<BarangayOfficial>;
+  officialParams = new BarangayOfficialParams();
+  totalCount = 0;
+  pageSizeOptions = [10,20,30];
+  
 
   ngOnInit() {
     this.loadOfficials();
@@ -47,14 +53,44 @@ export class AdminOfficialsComponent implements OnInit {
   }
 
   loadOfficials() {
-    this.barangayOfficialService.getBarangayOfficials().subscribe({
-      next: (officials) => {
-        this.officials.set(officials);
-      },
-      error: (error) => {
-        console.error('Error loading officials:', error);
+    this.barangayOfficialService.getAllOfficials(this.officialParams).subscribe({
+      next: (response) => {
+        this.officialPagination = response;
+        this.officials = response.data;
+        this.totalCount = response.count;
       }
-    });
+    })
+  }
+
+  onPageChange(event: any) {
+    this.officialParams.pageIndex = event.pageIndex + 1;
+    this.officialParams.pageSize = event.pageSize;
+    this.loadOfficials();
+  }
+
+  updatePage(newPageIndex: number) {
+    this.officialParams.pageIndex = newPageIndex;
+    this.loadOfficials();
+  }
+
+  onPageSizeChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.officialParams.pageSize = parseInt(select.value);
+    this.loadOfficials();
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  onSearchChange() {
+    this.officialParams.pageIndex = 1;
+    this.loadOfficials();
+  }
+
+  onSortChange() {
+    this.officialParams.pageIndex = 1;
+    this.loadOfficials();
   }
 
   onDelete(id: number) {
@@ -80,4 +116,12 @@ export class AdminOfficialsComponent implements OnInit {
     });
   }
 
+    getOfficeImage(officeImage: string): string {
+    
+    if (!officeImage || officeImage === "N/A") {
+      return '/public/images/default-avatar.png';
+    }
+    
+    return this.baseApiUrl + officeImage;
+  }
 }

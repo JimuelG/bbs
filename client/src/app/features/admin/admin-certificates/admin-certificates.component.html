@@ -1,94 +1,186 @@
-<div class="p-8 bg-slate-50 min-h-screen">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Document Requests</h1>
-      <p class="text-slate-500 text-sm">Manage, approve, and print Barangay Certificates and Clearances.</p>
+<div class="p-4 sm:p-5 md:p-8 bg-slate-50 min-h-screen">
+
+  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 md:mb-8 gap-4">
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
+        Document Requests
+      </h1>
+      <p class="text-slate-500 text-sm">
+        Manage, approve, and print Barangay Certificates and Clearances.
+      </p>
     </div>
 
-    <div class="flex gap-3">
-      <div class="relative">
-        <mat-icon class="absolute left-3 top-2.5 text-slate-400 text-sm">search</mat-icon>
-        <input type="text" placeholder="Search resident..." 
-          class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none w-64 transition-all">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+
+      <div class="relative w-full sm:w-80 lg:w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+          search
+        </mat-icon>
+
+        <input
+          type="text"
+          placeholder="Search resident..."
+          [(ngModel)]="certificateParams.search"
+          (input)="onSearchChange()"
+          class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
       </div>
-      
-      <button (click)="openCertificateModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-semibold shadow-md transition-all flex items-center gap-2 text-sm">
+
+      <button
+        (click)="openCertificateModal()"
+        class="w-full sm:w-auto justify-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md transition-all flex items-center gap-2 text-sm active:scale-95">
         <mat-icon>add</mat-icon>
         New Request
       </button>
+
     </div>
   </div>
 
-  <div class="flex gap-4 mb-6">
-    <button class="px-4 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold uppercase tracking-wider">All</button>
-    <button class="px-4 py-1.5 rounded-full bg-white text-slate-500 border border-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-colors">Pending</button>
-    <button class="px-4 py-1.5 rounded-full bg-white text-slate-500 border border-slate-200 text-xs font-bold uppercase tracking-wider hover:bg-slate-50 transition-colors">Released</button>
+  <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-6">
+    <span class="text-xs font-bold text-slate-400 uppercase whitespace-nowrap">
+      Sort By:
+    </span>
+
+    <select
+      [(ngModel)]="certificateParams.status"
+      (change)="onStatusChange()"
+      class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+      <option value="All">All</option>
+      <option value="Approved">Approved</option>
+      <option value="Pending">Pending</option>
+      <option value="Printed">Printed</option>
+      <option value="Released">Released</option>
+      <option value="Denied">Denied</option>
+    </select>
   </div>
 
-  <div class="bg-white rounded-lg border border-slate-100 shadow-sm overflow-hidden">
-    <table class="w-full text-left">
-      
-      <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 text-xs uppercase font-bold">
+  <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+
+    <div class="w-full overflow-x-auto">
+      <table class="min-w-[950px] w-full text-left">
+
+        <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
           <tr>
-            <th class="px-6 py-4">Resident Name</th>
-            <th class="px-6 py-4">Document Type</th>
-            <th class="px-6 py-4">Purpose</th>
-            <th class="px-6 py-4 text-center">Date Requested</th>
-            <th class="px-6 py-4 text-center">Status</th>
-            <th class="px-6 py-4 text-right">Actions</th>
+            <th class="px-4 md:px-6 py-4 whitespace-nowrap">Resident Name</th>
+            <th class="px-4 md:px-6 py-4 whitespace-nowrap">Document Type</th>
+            <th class="px-4 md:px-6 py-4 whitespace-nowrap">Purpose</th>
+            <th class="px-4 md:px-6 py-4 text-center whitespace-nowrap">Date Requested</th>
+            <th class="px-4 md:px-6 py-4 text-center whitespace-nowrap">Status</th>
+            <th class="px-4 md:px-6 py-4 text-right whitespace-nowrap">Actions</th>
           </tr>
         </thead>
-        @for (cert of certificates; track cert.id) {
+
         <tbody class="divide-y divide-slate-100">
-          <tr class="hover:bg-slate-50/50 transition-colors">
-            <td class="px-6 py-4">
-              <div class="flex flex-col">
-                <span class="font-bold text-slate-800">{{cert.fullName}}</span>
-                <span class="text-xs text-slate-400 font-medium">{{cert.address}}</span>
-              </div>
-            </td>
-            <td class="px-6 py-4">
-              <span class="text-sm font-medium text-slate-700">{{cert.certificateType | certificateType}}</span>
-            </td>
-            <td class="px-6 py-4">
-              <span class="text-sm text-slate-500 italic">{{cert.purpose}}</span>
-            </td>
-            <td class="px-6 py-4 text-center">
-              <span class="text-xs text-slate-600 italic">{{cert.issuedAt}}</span>
-            </td>
-            <td class="px-6 py-4 text-center">
-              <span class="px-3 py-1 text-[10px] font-black uppercase rounded-full bg-amber-100 text-amber-700">{{cert.status ? cert.status : 'pending'}}</span>
-            </td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex justify-end gap-2">
-                <button (click)="printCert(cert)" title="Print Certificate" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                  <mat-icon>print</mat-icon>
-                </button>
-                <button (click)="editCert(cert)" title="Edit Details" class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-                  <mat-icon>edit</mat-icon>
-                </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
+          @for (cert of certificates; track cert.id) {
+            <tr class="hover:bg-slate-50/50 transition-colors">
+
+              <td class="px-4 md:px-6 py-4">
+                <div class="flex flex-col min-w-0">
+                  <span class="font-bold text-slate-800 truncate max-w-[220px]">
+                    {{ cert.fullName }}
+                  </span>
+                  <span class="text-xs text-slate-400 font-medium truncate max-w-[220px]">
+                    {{ cert.address || 'No address provided' }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                <span class="text-sm font-medium text-slate-700">
+                  {{ cert.certificateType | certificateType }}
+                </span>
+              </td>
+
+              <td class="px-4 md:px-6 py-4">
+                <span class="block text-sm text-slate-500 italic truncate max-w-[260px]">
+                  {{ cert.purpose || 'N/A' }}
+                </span>
+              </td>
+
+              <td class="px-4 md:px-6 py-4 text-center whitespace-nowrap">
+                <span class="text-xs text-slate-600">
+                  {{ cert.requestDate ? (cert.requestDate | date:'MMM d, y') : (cert.issuedAt | date:'MMM d, y') }}
+                </span>
+              </td>
+
+              <td class="px-4 md:px-6 py-4 text-center whitespace-nowrap">
+                @if (editingStatusId === cert.id) {
+                  <select
+                    [ngModel]="cert.status"
+                    (ngModelChange)="changeStatus(cert, $event)"
+                    (blur)="editingStatusId = null"
+                    class="px-3 py-1 text-[10px] font-black uppercase rounded-full border border-slate-200 bg-white text-slate-700 outline-none focus:ring-2 focus:ring-blue-500">
+                    @for (status of getAvailableStatuses(cert); track status) {
+                      <option [value]="status">{{ status }}</option>
+                    }
+                  </select>
+                } @else {
+                  <button
+                    type="button"
+                    (click)="startEditStatus(cert)"
+                    class="px-3 py-1 text-[10px] font-black uppercase rounded-full cursor-pointer transition-colors"
+                    [ngClass]="{
+                      'bg-amber-100 text-amber-700': cert.status === 'Pending',
+                      'bg-blue-100 text-blue-700': cert.status === 'Approved',
+                      'bg-purple-100 text-purple-700': cert.status === 'Printed',
+                      'bg-green-100 text-green-700': cert.status === 'Released',
+                      'bg-red-100 text-red-700': cert.status === 'Denied'
+                    }">
+                    {{ cert.status || 'Pending' }}
+                  </button>
+                }
+              </td>
+
+              <td class="px-4 md:px-6 py-4 text-right whitespace-nowrap">
+                <div class="flex justify-end items-center gap-2">
+                  <button
+                    (click)="previewCert(cert)"
+                    title="Preview Certificate"
+                    class="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+
+                  <button
+                    (click)="printCert(cert)"
+                    title="Print Certificate"
+                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                    <mat-icon>print</mat-icon>
+                  </button>
+                </div>
+              </td>
+
+            </tr>
+          }
+        </tbody>
+
+      </table>
+    </div>
+
+    @if (certificates.length === 0) {
+      <div class="p-12 text-center text-slate-400">
+        No certificate requests found.
+      </div>
     }
-    </table>
-  </div>
-  <div class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-      <div class="text-[13px] text-slate-500 font-medium">
-        Showing 
-        <span class="text-slate-900 font-bold">{{ (certificateParams.pageIndex - 1) * certificateParams.pageSize + 1 }}</span> 
-        to 
+
+    <div class="px-4 md:px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
+
+      <div class="text-[13px] text-slate-500 font-medium text-center lg:text-left">
+        Showing
+        <span class="text-slate-900 font-bold">
+          {{ totalCount === 0 ? 0 : (certificateParams.pageIndex - 1) * certificateParams.pageSize + 1 }}
+        </span>
+        to
         <span class="text-slate-900 font-bold">
           {{ mathMin(certificateParams.pageIndex * certificateParams.pageSize, totalCount) }}
-        </span> 
-        of 
-        <span class="text-slate-900 font-bold">{{ totalCount }}</span> entries
+        </span>
+        of
+        <span class="text-slate-900 font-bold">{{ totalCount }}</span>
+        entries
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-3 sm:gap-4">
+
         <div class="flex items-center gap-1">
-          <button 
+          <button
             [disabled]="certificateParams.pageIndex === 1"
             (click)="updatePage(certificateParams.pageIndex - 1)"
             class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
@@ -99,7 +191,7 @@
             {{ certificateParams.pageIndex }}
           </div>
 
-          <button 
+          <button
             [disabled]="certificateParams.pageIndex * certificateParams.pageSize >= totalCount"
             (click)="updatePage(certificateParams.pageIndex + 1)"
             class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
@@ -107,14 +199,16 @@
           </button>
         </div>
 
-        <div class="h-8 w-px bg-slate-200 mx-1"></div>
-        <select 
+        <select
           (change)="onPageSizeChange($event)"
-          class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+          class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
           @for (size of pageSizeOptions; track size) {
             <option [value]="size">{{ size }} / page</option>
           }
         </select>
+
       </div>
     </div>
+
+  </div>
 </div>

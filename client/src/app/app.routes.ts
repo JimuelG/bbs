@@ -28,6 +28,7 @@ import { AdminConcernsComponent } from './features/admin/admin-concerns/admin-co
 import { AdminConcernsDetailsComponent } from './features/admin/admin-concerns-details/admin-concerns-details.component';
 import { ForgotPasswordComponent } from './features/account/forgot-password/forgot-password.component';
 import { verficationPendingGuard } from './core/guards/verfication-pending-guard';
+import { CertificateRequestComponent } from './features/certificates/certificate-request/certificate-request.component';
 
 export const routes: Routes = [
     {path: 'admin/login', component: AdminLoginComponent},
@@ -59,7 +60,7 @@ export const routes: Routes = [
             // {path: 'certificates', component: HomeComponent},
             {path: 'announcements', component: AnnouncementComponent},
             {path: 'request-certificates', component: CertificatesComponent, canActivate: [authGuard, verificationGuard]},
-            {path: 'request-certificates/:id', component: ClearanceComponent, canActivate: [authGuard, verificationGuard]},
+            {path: 'request-certificates/:id', component: CertificateRequestComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'report-concern', component: ConcernComponent, canActivate: [authGuard, verificationGuard]},
             {path: 'account/login', component: LoginComponent},
             {path: 'account/register', component: RegisterComponent},

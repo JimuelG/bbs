@@ -39,9 +39,9 @@ export class ClearanceComponent implements OnInit {
       fullName: ['', [Validators.required, Validators.minLength(5)]],
       address: ['', Validators.required],
       birthDate: ['', Validators.required],
-      certificateType: [typeId ? parseInt(typeId) : 0, Validators.required], // 0 = Barangay Clearance
+      certificateType: [typeId ? parseInt(typeId) : 0, Validators.required],
       purpose: ['', Validators.required],
-      fee: [0, Validators.required], // Default fee
+      fee: [0, Validators.required],
       civilStatus: ['Single', Validators.required],
       stayDuration: ['', Validators.required],
       purok: ['', Validators.required]
@@ -59,17 +59,15 @@ export class ClearanceComponent implements OnInit {
 
   this.certificateService.createCertificate(formData).subscribe({
     next: (response) => {
-      // Show success notification
+
       this.snackbarService.success(
         `Application Submitted! Ref: ${response.data.referenceNumber}`
       )
 
-      // Open the generated PDF in a new tab if it exists
       if (response.pdfUrl) {
         window.open(response.pdfUrl, '_blank');
       }
 
-      // Navigate to a status or "Thank You" page
       this.router.navigate(['/request-status']);
     },
     error: (err) => {
@@ -80,7 +78,6 @@ export class ClearanceComponent implements OnInit {
   });
   }
 
-  // Helper to check validation in HTML
   isInvalid(controlName: string): boolean {
     const control = this.certificateForm.get(controlName);
     return !!(control && control.invalid && (control.dirty || control.touched));

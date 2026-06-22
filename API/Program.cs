@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using API.Extensions;
 using API.Hubs;
 using API.Services;
@@ -11,6 +12,7 @@ using Infrastructure.Services;
 using Infrastructure.Services.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +32,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.WithOrigins("https://ugnaybarangay.com", "http://localhost:4200", "https://localhost:4200")
+        policy.WithOrigins("https://ugnaybarangay.com", "https://www.ugnaybarangay.com", "http://localhost:4200", "https://localhost:4200")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -48,10 +50,17 @@ builder.Services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
 builder.Services.AddScoped<ITtsService, GoogleTtsService>();
 builder.Services.AddScoped<ICertificatePdfService, CertificatePdfService>();
 builder.Services.AddSingleton<IOtpService, OtpService>();
+builder.Services.AddScoped<IConcernPriorityService, ConcernPriorityService>();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.Configure<SemaphoreOptions>(
     builder.Configuration.GetSection(SemaphoreOptions.SectionName));
 builder.Services.AddHttpClient<ISmsService, SemaphoreSmsService>();
 builder.Services.AddHttpClient();
+builder.Services.AddHostedService<ScheduledAnnouncementService>();
 builder.Services.AddHostedService<FailoverService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -64,10 +73,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true; 
 });
 
-Environment.SetEnvironmentVariable(
-    "GOOGLE_APPLICATION_CREDENTIALS",
-    Path.Combine(Directory.GetCurrentDirectory(), "project-73902aa4-ac75-493d-b36-72b44044258a.json")
-);
 
 
 var app = builder.Build();
@@ -77,22 +82,22 @@ if (!app.Environment.IsDevelopment())
     
 }
 
+app.UseRouting();
 app.UseCors("CorsPolicy");
 
-app.UseCustomStaticFiles(app.Environment);
-
-app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseDefaultFiles();
 
+app.UseCustomStaticFiles(app.Environment);
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<AppUser>();
 app.MapHub<VerificationHub>("/api/hubs/verification");
-app.MapFallbackToController("Index", "Fallback");
+app.MapHub<DeviceHub>("/api/hubs/device").AllowAnonymous();
 
+app.MapFallbackToFile("index.html");
 
 try
 {

@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.RequestHelpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -12,13 +13,25 @@ namespace API.Controllers;
 public class BarangayOfficialController(IUnitOfWork unit, IMapper mapper) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<BarangayOfficialDto>>> GetBarangayOfficials()
+    public async Task<ActionResult<IReadOnlyList<BarangayOfficialDto>>> GetBarangayOfficials([FromQuery] BarangayOfficialSpecParams specParams)
     {
-        var officials = await unit.Repository<BarangayOfficial>().ListAllAsync();
+        var spec = new BarangayOfficialSpecification(specParams);
+        var countSpec = new BarangayOfficialSpecification(specParams);
+
+        var totalItems = await unit.Repository<BarangayOfficial>().CountAsync(countSpec);
+        
+        var officials = await unit.Repository<BarangayOfficial>().ListAsync(spec);
 
         var sorted = officials.OrderBy(o => o.Rank).ToList();
 
-        return Ok(mapper.Map<IReadOnlyList<BarangayOfficial>, IReadOnlyList<BarangayOfficialDto>>(sorted));
+        var data = mapper.Map<IReadOnlyList<BarangayOfficial>, IReadOnlyList<BarangayOfficialDto>>(sorted);
+
+        return Ok(new Pagination<BarangayOfficialDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalItems,
+            data
+        ));
     }
 
     [HttpGet("{id}")]

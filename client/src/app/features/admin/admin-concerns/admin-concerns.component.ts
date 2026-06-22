@@ -4,6 +4,11 @@ import { Concern } from '../../../shared/models/concern';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { SnackbarService } from '../../../core/services/snackbar.service';
+import { Pagination } from '../../../shared/models/pagination';
+import { ConcernParms } from '../../../shared/models/concernParams';
+import { environment } from '../../../../environments/environment.development';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin-concerns',
@@ -11,22 +16,76 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     DatePipe,
     RouterLink,
-    MatIconModule
+    MatIconModule,
+    FormsModule
   ],
   templateUrl: './admin-concerns.component.html',
   styleUrl: './admin-concerns.component.scss',
 })
 export class AdminConcernsComponent implements OnInit{
   private concernService = inject(ConcernService);
-  concerns: Concern[] = [];
+  private snackbarService = inject(SnackbarService);
   
+  concerns: Concern[] = [];
+  concernPagination?: Pagination<Concern>;
+  concernParams = new ConcernParms();
+  totalCount = 0;
+  pageSizeOptions = [10,20,30];
+  baseApiUrl = environment.apiUrl;
 
   ngOnInit() {
-    this.concernService.getConcerns().subscribe({
-      next: (data) => {
-        this.concerns = data;
+    this.loadConcerns();
+  }
+
+  loadConcerns() {
+    this.concernService.getAllConcerns(this.concernParams).subscribe({
+      next: (response) => {
+        this.concernPagination = response;
+        this.concerns = response.data;
+        this.totalCount = response.count;
       }
-    });
+    })
+  }
+
+  onPageChange(event: any) {
+    this.concernParams.pageIndex = event.pageIndex + 1;
+    this.concernParams.pageSize = event.pageSize;
+    this.loadConcerns();
+  }
+
+  updatePage(newPageIndex: number) {
+    this.concernParams.pageIndex = newPageIndex;
+    this.loadConcerns();
+  }
+
+  onPageSizeChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.concernParams.pageSize = parseInt(select.value);
+    this.loadConcerns();
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  onSearchChange() {
+    this.concernParams.pageIndex = 1;
+    this.loadConcerns();
+  }
+
+  onSortChange() {
+    this.concernParams.pageIndex = 1;
+    this.loadConcerns();
+  }
+
+  onStatusChange() {
+    this.concernParams.pageIndex = 1;
+    this.loadConcerns();
+  }
+
+  onPriorityChange() {
+    this.concernParams.pageIndex = 1;
+    this.loadConcerns();
   }
 
   getStatusClass(status: string): string {

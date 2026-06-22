@@ -8,6 +8,9 @@ import { ChangePassword } from '../../shared/models/changePassword';
 import { Resident } from '../../shared/models/residents';
 import { RegisterAccount } from '../../shared/models/registerAccount';
 import { ResetPassword } from '../../shared/models/resetPassword';
+import { ResidentRecord } from '../../shared/models/residentRecord';
+import { ResidentParams } from '../../shared/models/residentParams';
+import { Pagination } from '../../shared/models/pagination';
 
 @Injectable({
   providedIn: 'root',
@@ -63,8 +66,8 @@ export class AccountService {
     return this.http.put(`${this.baseUrl}/account/verify/${id}`, {});
   }
 
-  getVerifiedResident() {
-    return this.http.get<Resident[]>(`${this.baseUrl}/account/residents/verified`)
+  getResidentRecords(id: string) {
+    return this.http.get<ResidentRecord[]>(`${this.baseUrl}/account/residents/${id}/records`);
   }
 
   getResidentDetails(id: string) {
@@ -91,8 +94,24 @@ export class AccountService {
     return this.http.get<{isAuthenticated: boolean}>(`${this.baseUrl}/account/auth-status`);
   }
 
-  getAllResidents() {
-    return this.http.get<Resident[]>(`${this.baseUrl}/account/residents`);
+  getAllResidents(residentParams: ResidentParams) {
+    let params = new HttpParams()
+      .set('pageSize', residentParams.pageSize)
+      .set('pageIndex', residentParams.pageIndex);
+
+    if (residentParams.sort) {
+      params = params.append('sort', residentParams.sort);
+    }
+
+    if (residentParams.isIdVerified !== null) {
+      params = params.append('isIdVerified', residentParams.isIdVerified);
+    }
+
+    if (residentParams.search) {
+      params = params.append('search', residentParams.search);
+    }
+
+    return this.http.get<Pagination<Resident>>(`${this.baseUrl}/account/residents`, { params } );
   }
 
   adminLogin(credentials: {email: string; password: string;}) {

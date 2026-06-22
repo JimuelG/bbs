@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConcernService } from '../../core/services/concern.service';
 import { SnackbarService } from '../../core/services/snackbar.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    MatIconModule
+    MatIconModule,
+    RouterLink
   ],
   templateUrl: './concern.component.html',
   styleUrl: './concern.component.scss',
@@ -26,8 +27,6 @@ export class ConcernComponent {
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
   loading = false;
-
-  currentResident = 1;
 
   constructor() {
     this.concernForm = this.fb.group({
@@ -63,8 +62,7 @@ export class ConcernComponent {
     this.loading = true;
 
     const dto = {
-      ...this.concernForm.value,
-      residentId: this.currentResident
+      ...this.concernForm.value
     };
 
     this.concernService.createConcern(dto).subscribe({

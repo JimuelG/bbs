@@ -6,6 +6,7 @@ import { MatIcon } from "@angular/material/icon";
 import { MatList, MatListItem } from '@angular/material/list';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-layout',
@@ -16,7 +17,8 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     MatList,
     MatListItem,
     RouterOutlet,
-    RouterLink
+    RouterLink,
+    CommonModule
 ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.scss',

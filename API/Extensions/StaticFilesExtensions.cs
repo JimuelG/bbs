@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 
 namespace API.Extensions;
@@ -76,10 +77,15 @@ public static class StaticFilesExtensions
             RequestPath = "/api/images/signatures"
         });
 
+        var provider = new FileExtensionContentTypeProvider();
+        provider.Mappings[".mp3"] = "audio/mpeg";
+        provider.Mappings[".wav"] = "audio/wav";
+
         app.UseStaticFiles(new StaticFileOptions
         {
             FileProvider = new PhysicalFileProvider(audioFolder),
-            RequestPath = "/api/audio"
+            RequestPath = "/api/audio",
+            ContentTypeProvider = provider
         });
 
         app.UseStaticFiles();

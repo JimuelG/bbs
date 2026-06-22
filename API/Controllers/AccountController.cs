@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using API.DTOs;
 using API.Extensions;
 using API.Hubs;
+using API.RequestHelpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -77,6 +79,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             MiddleName = registerDto.MiddleName,
             LastName = registerDto.LastName,
             Purok = registerDto.Purok,
+            BirthDate = registerDto.BirthDate,
             PictureUrl = registerDto.PictureUrl,
             IsHeadOfFamily = false,
             CivilStatus = registerDto.CivilStatus,
@@ -169,38 +172,76 @@ public class AccountController(SignInManager<AppUser> signInManager,
         return Ok(new { message = "Password changed successfully!" });
     }
 
-    // [Authorize(Roles = "Admin, Staff")]
+    [Authorize(Roles = "Admin,Staff")]
     [HttpGet("residents")]
-    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetResidents()
+    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetResidents([FromQuery] ResidentSpecParams specParams)
     {
-        var users = await userManager.Users.Include(u => u.Resident)
+        var query = userManager.Users
+            .Include(u => u.Resident)
+            .Where(u => u.Resident != null && !u.Resident.IsDeleted)
+            .AsQueryable();
+        
+        if (specParams.IsIdVerified.HasValue)
+        {
+            query = query.Where(u => u.IsIdVerified == specParams.IsIdVerified.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(specParams.Search))
+        {
+            var search = specParams.Search.ToLower();
+
+            query = query.Where(u => 
+                u.Email!.ToLower().Contains(search) ||
+                u.Resident!.FirstName.ToLower().Contains(search) ||
+                u.Resident.LastName.ToLower().Contains(search) ||
+                u.Resident.Purok.ToLower().Contains(search)
+            );
+
+        }
+
+        var totalCount = await query.CountAsync();
+
+        var users = await query
+            .OrderBy(u => u.Resident!.LastName)
+            .ThenBy(u => u.Resident!.LastName)
+            .Skip(specParams.PageSize * (specParams.PageIndex - 1))
+            .Take(specParams.PageSize)
             .ToListAsync();
 
-        var userInfos = new List<UserInfoDto>();
+        var data = new List<UserInfoDto>();
 
         foreach (var user in users)
         {
+            var resident = user.Resident;
+
+            if (resident == null) continue;
+
             var roles = await userManager.GetRolesAsync(user);
 
-            userInfos.Add(new UserInfoDto
+            data.Add(new UserInfoDto
             {
                 Id = user.Id,
                 Email = user.Email!,
-                FirstName = user.Resident?.FirstName ?? "N/A",
-                MiddleName = user.Resident?.MiddleName ?? "N/A",
-                LastName = user.Resident?.LastName ?? "N/A",
+                FirstName = resident.FirstName ?? "N/A",
+                MiddleName = resident.MiddleName ?? "N/A",
+                LastName = resident.LastName ?? "N/A",
                 PhoneNumber = user.PhoneNumber ?? "N/A",
-                BirthDate = user.Resident!.BirthDate,
-                PictureUrl = user.Resident?.PictureUrl ?? "N/A",
-                Purok = user.Resident?.Purok ?? "N/A",
-                CivilStatus = user.Resident?.CivilStatus ?? "N/A",
+                BirthDate = resident.BirthDate,
+                PictureUrl = resident.PictureUrl ?? "N/A",
+                Purok = resident.Purok ?? "N/A",
+                CivilStatus = resident.CivilStatus ?? "N/A",
                 IdUrl = user.IdUrl ?? "N/A",
                 IsIdVerified = user.IsIdVerified,
                 Role = roles.FirstOrDefault() ?? "Resident"
-            });
+            });  
         }
 
-        return Ok(userInfos);
+       return Ok(new Pagination<UserInfoDto>(
+            specParams.PageIndex,
+            specParams.PageSize,
+            totalCount,
+            data
+       ));
     }
 
     [HttpGet("resident-details/{id}")]
@@ -221,6 +262,7 @@ public class AccountController(SignInManager<AppUser> signInManager,
             FirstName = user.Resident?.FirstName ?? "N/A",
             MiddleName = user.Resident?.MiddleName ?? "N/A",
             LastName = user.Resident?.LastName ?? "N/A",
+            CivilStatus = user.Resident?.CivilStatus ?? "N/A",
             BirthDate = user.Resident?.BirthDate ?? DateTime.MinValue,
             PhoneNumber = user.PhoneNumber ?? "N/A",
             Purok = user.Resident?.Purok ?? "N/A",
@@ -230,16 +272,6 @@ public class AccountController(SignInManager<AppUser> signInManager,
             ResidentId = user.Resident?.Id ?? 0,
             Role = roles.FirstOrDefault() ?? "Resident"
         });
-    }
-
-    [HttpGet("residents/verified")]
-    public async Task<ActionResult<IEnumerable<UserInfoDto>>> GetVerifiedResidents()
-    {
-        var spec = new VerifiedResidentsWithUserSpecification();
-
-        var residents = await unit.Repository<Resident>().ListAsync(spec);
-
-        return Ok(mapper.Map<IEnumerable<UserInfoDto>>(residents));
     }
 
     [Authorize]
@@ -442,6 +474,105 @@ public class AccountController(SignInManager<AppUser> signInManager,
             return BadRequest("Failed to update account information.");
 
         return Ok(new { message = "Profile updated successfully" });
+    }
+
+    [Authorize(Roles = "Admin,Staff")]
+    [HttpGet("residents/{id}/records")]
+    public async Task<ActionResult<IReadOnlyList<ResidentRecordDto>>> GetResidentsRecords(string id)
+    {
+        var records = new List<ResidentRecordDto>();
+
+        var residents = await unit.Repository<Resident>().ListAllAsync();
+
+        var resident = residents.FirstOrDefault(x => x.AppUserId == id);
+
+        if (resident == null) return NotFound("Resident profile not found");
+
+        var certificates = await unit.Repository<BarangayCertificate>().ListAllAsync();
+
+        records.AddRange(certificates
+            .Where(x => x.ResidentId == resident.Id)
+            .Select(x => new ResidentRecordDto
+            {
+                Id = x.Id,
+                Type = "Certificate",
+                ReferenceNumber = x.ReferenceNumber,
+                Description = "Requested barangay certificate",
+                Title = x.CertificateType.ToString(),
+                CreatedAt = x.RequestDate,
+                Status = x.Status
+            })
+        );
+
+        var concerns = await unit.Repository<Concern>().ListAllAsync();
+
+        records.AddRange(concerns
+            .Where(x => x.ResidentId == resident.Id)
+            .Select(x => new ResidentRecordDto
+            {
+                Id = x.Id,
+                Type = "Concern",
+                Title = x.Title,
+                Description = x.Description,
+                ReferenceNumber = null,
+                CreatedAt = x.DateReported,
+                Status = x.Status.ToString(),
+            })
+        );
+
+        return Ok(records.OrderByDescending(x => x.CreatedAt));
+    }
+
+    [HttpGet("me/records")]
+    public async Task<ActionResult<IReadOnlyList<ResidentRecordDto>>> GetRecidentRecords()
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+
+        if (string.IsNullOrEmpty(email)) return Unauthorized("User email claim not found.");
+
+        var user = await userManager.Users
+            .Include(x => x.Resident)
+            .FirstOrDefaultAsync(x => x.Email == email);
+        
+        if (user == null) return Unauthorized("User not found");
+
+        if (user.Resident == null) return BadRequest("No resident profile is linked to this account.");
+
+        var records = new List<ResidentRecordDto>();
+
+        var certificates = await unit.Repository<BarangayCertificate>().ListAllAsync();
+
+        records.AddRange(certificates
+            .Where(x => x.ResidentId == user.Resident.Id)
+            .Select(x => new ResidentRecordDto
+            {
+                Id = x.Id,
+                Type = "Certificate",
+                ReferenceNumber = x.ReferenceNumber,
+                Description = "Requested barangay certificate",
+                Title = x.CertificateType.ToString(),
+                CreatedAt = x.RequestDate,
+                Status = x.Status
+            })
+        );
+
+        var concerns = await unit.Repository<Concern>().ListAllAsync();
+
+        records.AddRange(concerns
+            .Where(x => x.ResidentId == user.Resident.Id)
+            .Select(x => new ResidentRecordDto
+            {
+                Id = x.Id,
+                Type = "Concern",
+                Title = x.Title,
+                Description = x.Description,
+                ReferenceNumber = null,
+                CreatedAt = x.DateReported,
+                Status = x.Status.ToString(),
+            })
+        );
+
+        return Ok(records.OrderByDescending(x => x.CreatedAt));
     }
 
     private string GenerateSecureRegistrationPassword()

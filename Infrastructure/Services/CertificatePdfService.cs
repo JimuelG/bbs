@@ -5,7 +5,6 @@ using Core.Interfaces;
 using Infrastructure.PdfLayouts;
 using Infrastructure.Services.Interface;
 using Microsoft.Extensions.Configuration;
-using QRCoder;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -23,6 +22,10 @@ public class CertificatePdfService : ICertificatePdfService
         { CertificateType.Residency, new ResidencyLayout() },
         { CertificateType.Clearance, new ClearanceLayout() },
         { CertificateType.Indigency, new IndegencyLayout() },
+        { CertificateType.FirstTimeJobSeeker, new FirstTimeJpbSeekerLayout() },
+        { CertificateType.GoodMoral, new GoodMoralLayout() },
+        { CertificateType.SmallBusiness, new SmallBusinessLayout() },
+
     };
     public CertificatePdfService(IConfiguration config, IUnitOfWork unit)
     {
@@ -57,5 +60,25 @@ public class CertificatePdfService : ICertificatePdfService
         });
 
         return $"/api/certificates/{fileName}";
+    }
+
+    public async Task<byte[]> GenerateCertificatePdfBytesAsync(BarangayCertificate certificate)
+    {
+        QuestPDF.Settings.License = LicenseType.Community;
+        
+        var officials = await _unit.Repository<BarangayOfficial>().ListAllAsync();
+
+        if (!_layouts.TryGetValue(certificate.CertificateType, out var layout))
+        {
+            throw new Exception($"Layout for {certificate.CertificateType} is not yet implemented");
+        }
+
+        return await Task.Run(() =>
+        {
+           return Document.Create(container =>
+           {
+               layout.Compose(container, certificate, _logoFolder, officials);
+           }).GeneratePdf();
+        });
     }
 }

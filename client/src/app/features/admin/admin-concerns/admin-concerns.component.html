@@ -1,51 +1,202 @@
-<div class="p-8 bg-slate-50 min-h-screen">
-  <div class="mb-8 flex justify-between items-end">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Concern Management</h1>
-      <p class="text-sm text-slate-500 mt-1">Review and action community reports and requests.</p>
+<div class="p-4 sm:p-5 md:p-8 bg-slate-50 min-h-screen">
+
+  <div class="mb-6 md:mb-8 flex flex-col lg:flex-row lg:justify-between lg:items-end gap-4">
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
+        Concern Management
+      </h1>
+      <p class="text-sm text-slate-500 mt-1">
+        Review and action community reports and requests.
+      </p>
+    </div>
+
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+
+      <div class="relative w-full sm:w-80 lg:w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+          search
+        </mat-icon>
+
+        <input
+          type="text"
+          placeholder="Search resident..."
+          [(ngModel)]="concernParams.search"
+          (input)="onSearchChange()"
+          class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+      </div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+        <span class="text-xs font-bold text-slate-400 uppercase whitespace-nowrap">
+          Sort By:
+        </span>
+
+        <select
+          [(ngModel)]="concernParams.priority"
+          (change)="onPriorityChange()"
+          class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+          <option [ngValue]="null">All</option>
+          <option value="P1">Critical</option>
+          <option value="P2">Emergency</option>
+          <option value="P3">Normal</option>
+        </select>
+      </div>
+
     </div>
   </div>
 
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
+
+    <div class="w-full overflow-x-auto">
+      <table class="min-w-[900px] w-full text-left border-collapse">
+
         <thead>
           <tr class="bg-slate-50/50 border-b border-slate-100">
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Date</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Reporter</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Issue / Type</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
-            <th class="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+            <th class="px-4 md:px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+              Date
+            </th>
+            <th class="px-4 md:px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+              Reported
+            </th>
+            <th class="px-4 md:px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+              Issue / Type
+            </th>
+            <th class="px-4 md:px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+              Status
+            </th>
+            <th class="px-4 md:px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
+              Priority
+            </th>
+            <th class="px-4 md:px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right whitespace-nowrap">
+              Actions
+            </th>
           </tr>
         </thead>
+
         <tbody class="divide-y divide-slate-50">
           @for (concern of concerns; track concern.id) {
             <tr class="hover:bg-slate-50/50 transition-colors group">
-              <td class="px-6 py-4 text-sm text-slate-600">
+
+              <td class="px-4 md:px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
                 {{ concern.dateReported | date:'MMM d, y, h:mm a' }}
               </td>
-              <td class="px-6 py-4">
-                <div class="text-sm font-semibold text-slate-800">{{ concern.reporterName }}</div>
-                <div class="text-xs text-slate-500">{{ concern.purok || 'Unknown Location' }}</div>
+
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-semibold text-slate-800">
+                  {{ concern.reporterName }}
+                </div>
+                <div class="text-xs text-slate-500">
+                  {{ concern.purok || 'Unknown Location' }}
+                </div>
               </td>
-              <td class="px-6 py-4">
-                <div class="text-sm font-bold text-slate-700">{{ concern.title }}</div>
-                <div class="text-[11px] font-semibold text-indigo-500 uppercase tracking-wider">{{ concern.type }}</div>
+
+              <td class="px-4 md:px-6 py-4">
+                <div class="max-w-[280px]">
+                  <div class="text-sm font-bold text-slate-700 truncate">
+                    {{ concern.title }}
+                  </div>
+                  <div class="text-[11px] font-semibold text-indigo-500 uppercase tracking-wider truncate">
+                    {{ concern.type }}
+                  </div>
+                </div>
               </td>
-              <td class="px-6 py-4">
-                <span [class]="getStatusClass(concern.status)" class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full border">
+
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                <span
+                  [class]="getStatusClass(concern.status)"
+                  class="px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full border">
                   {{ concern.status }}
                 </span>
               </td>
-              <td class="px-6 py-4 text-right">
-                <button [routerLink]="['/admin/concerns', concern.id]" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                @if (concern.priority == "P1") {
+                  <span class="inline-flex items-center text-red-600 font-bold bg-red-50 px-3 py-1 rounded-full text-xs">
+                    Critical
+                  </span>
+                }
+
+                @if (concern.priority == "P2") {
+                  <span class="inline-flex items-center text-orange-600 font-bold bg-orange-50 px-3 py-1 rounded-full text-xs">
+                    Urgent
+                  </span>
+                }
+
+                @if (concern.priority == "P3") {
+                  <span class="inline-flex items-center text-yellow-600 font-bold bg-yellow-50 px-3 py-1 rounded-full text-xs">
+                    Normal
+                  </span>
+                }
+              </td>
+
+              <td class="px-4 md:px-6 py-4 text-right whitespace-nowrap">
+                <button
+                  [routerLink]="['/admin/concerns', concern.id]"
+                  class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                   <mat-icon class="text-sm">visibility</mat-icon>
                 </button>
               </td>
+
             </tr>
           }
         </tbody>
+
       </table>
     </div>
+
+    @if (concerns.length === 0) {
+      <div class="p-12 text-center text-slate-400">
+        No concerns found.
+      </div>
+    }
+
+    <div class="px-4 md:px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
+
+      <div class="text-[13px] text-slate-500 font-medium text-center lg:text-left">
+        Showing
+        <span class="text-slate-900 font-bold">
+          {{ totalCount === 0 ? 0 : (concernParams.pageIndex - 1) * concernParams.pageSize + 1 }}
+        </span>
+        to
+        <span class="text-slate-900 font-bold">
+          {{ mathMin(concernParams.pageIndex * concernParams.pageSize, totalCount) }}
+        </span>
+        of
+        <span class="text-slate-900 font-bold">{{ totalCount }}</span>
+        entries
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-3 sm:gap-4">
+
+        <div class="flex items-center gap-1">
+          <button
+            [disabled]="concernParams.pageIndex === 1"
+            (click)="updatePage(concernParams.pageIndex - 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          <div class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-100">
+            {{ concernParams.pageIndex }}
+          </div>
+
+          <button
+            [disabled]="concernParams.pageIndex * concernParams.pageSize >= totalCount"
+            (click)="updatePage(concernParams.pageIndex + 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <select
+          (change)="onPageSizeChange($event)"
+          class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{ size }} / page</option>
+          }
+        </select>
+
+      </div>
+    </div>
+
   </div>
 </div>

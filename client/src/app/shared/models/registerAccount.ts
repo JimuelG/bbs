@@ -2,10 +2,10 @@ export interface RegisterAccount {
     firstName: string;
     middleName?: string;
     lastName: string;
-    email: string;
+    birthDate: string;
     purok: string;
     civilStatus: string;
-    birthDate: string;
     phoneNumber: string;
+    email: string;
     password: string;
 }

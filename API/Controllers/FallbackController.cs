@@ -7,7 +7,17 @@ public class FallbackController : Controller
 {
     public IActionResult Index()
     {
-        return PhysicalFile(Path.Combine(Directory.GetCurrentDirectory(),
-            "wwwroot", "index.html"), "text/HTML");
+        var indexPath = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "wwwroot",
+            "index.html"
+        );
+
+        if (!System.IO.File.Exists(indexPath))
+        {
+            return NotFound($"index.html not found at: {indexPath}");
+        }
+
+        return PhysicalFile(indexPath, "text/html");
     }
 }

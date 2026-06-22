@@ -1,20 +1,42 @@
-using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using System.Text;
 using Core.Interfaces;
+using Google.Apis.Auth.OAuth2;
 using Google.Cloud.TextToSpeech.V1;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services;
 
 public class GoogleTtsService : ITtsService
 {
     private readonly string _audioFolder;
-    public GoogleTtsService()
+    private readonly GoogleCredential _googleCredential;
+    public GoogleTtsService(IConfiguration config)
     {
         _audioFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads", "audio");
+        
+        Directory.CreateDirectory(_audioFolder);
 
-        if (!Directory.Exists(_audioFolder))
-            Directory.CreateDirectory(_audioFolder);
+        var credentialsPath = 
+            Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS")
+            ??config["GoogleCloud:CredentialsPath"]
+            ?? throw new Exception("GoogleCloud:CredentialsPath is missing.");
+
+        if (!File.Exists(credentialsPath))
+        {
+            throw new FileNotFoundException(
+                $"Google credentials file not found: {credentialsPath}"
+            );
+        }
+
+        using var stream = File.OpenRead(credentialsPath);
+
+        var serviceAccountCredential =
+            ServiceAccountCredential.FromServiceAccountData(stream);
+
+        _googleCredential = GoogleCredential
+            .FromServiceAccountCredential(serviceAccountCredential)
+            .CreateScoped(TextToSpeechClient.DefaultScopes);
     }
 
     public async Task<string> GenerateSpeechAsync(string text, bool isEmergency, string languageCode = "fil-PH")
@@ -40,7 +62,10 @@ public class GoogleTtsService : ITtsService
             return $"/audio/{fileName}";
         }
 
-        var client = await TextToSpeechClient.CreateAsync();
+        var client = await new TextToSpeechClientBuilder
+        {
+            GoogleCredential = _googleCredential
+        }.BuildAsync();
 
         var input = new SynthesisInput
         {

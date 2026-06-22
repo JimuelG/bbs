@@ -1,3 +1,5 @@
+using Core.Enums;
+
 namespace API.DTOs;
 
 public class ConcernDto
@@ -10,6 +12,7 @@ public class ConcernDto
     public string? IncidentLocation { get; set; }
     public string? Purok { get; set; }
     public string? PhotoUrl { get; set; }
+    public ConcernPriority Priority { get; set; }
     public DateTime DateReported { get; set; }
     public DateTime? DateResolved { get; set; }
     public string? ResolutionRemarks { get; set; }

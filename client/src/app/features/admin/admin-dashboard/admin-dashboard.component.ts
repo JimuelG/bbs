@@ -1,7 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { DashboardService } from '../../../core/services/dashboard.service';
+import { SnackbarService } from '../../../core/services/snackbar.service';
+import { environment } from '../../../../environments/environment.development';
+import { DashboardOfficial, RecentCertificatesRequest, UrgentConcern } from '../../../shared/models/dashboard';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -14,35 +18,46 @@ import { RouterLink } from '@angular/router';
   styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent implements OnInit {
+  private dashboardService = inject(DashboardService);
+  private snackbardService = inject(SnackbarService);
+
+  baseApiUrl = environment.apiUrl.replace('/api', '');
   
   stats = {
-    totalResidents: 1245,
-    verifiedResidents: 980,
-    pendingCertificates: 12,
-    activeConcerns: 5,
-    activeAnnouncements: 3
+    totalResidents: 0,
+    verifiedResidents: 0,
+    pendingCertificates: 0,
+    activeConcerns: 0,
+    activeAnnouncements: 0
   };
 
-  // Mock Data Arrays for Dashboard Widgets
-  recentRequests = [
-    { id: 'REQ-001', name: 'Juan Dela Cruz', type: 'Barangay Clearance', status: 'Pending', date: 'Today, 9:00 AM' },
-    { id: 'REQ-002', name: 'Maria Santos', type: 'Certificate of Indigency', status: 'Processing', date: 'Today, 8:30 AM' },
-    { id: 'REQ-003', name: 'Pedro Reyes', type: 'Business Clearance', status: 'Pending', date: 'Yesterday' }
-  ];
-
-  recentConcerns = [
-    { id: 'CON-101', title: 'Broken Streetlight', purok: 'Purok 1', priority: 'High', status: 'Unresolved' },
-    { id: 'CON-102', title: 'Noise Complaint', purok: 'Purok 3', priority: 'Medium', status: 'In Progress' }
-  ];
-
-  officials = [
-    { name: 'Hon. Roberto Garcia', position: 'Punong Barangay', imageUrl: null },
-    { name: 'Hon. Elena Castro', position: 'Kagawad - Health', imageUrl: null },
-    { name: 'Hon. Miguel Torres', position: 'Kagawad - Peace & Order', imageUrl: null }
-  ];
+  recentRequests: RecentCertificatesRequest[] = [];
+  recentConcerns: UrgentConcern[] = [];
+  officials: DashboardOfficial[] = [];
 
   ngOnInit(): void {
-    // Inject your services here to load real data
-    // this.loadDashboardStats();
+    this.loadDashboard();
+  }
+
+  loadDashboard() {
+    this.dashboardService.getDashboard().subscribe({
+      next: (dashboard) => {
+        this.stats = dashboard.stats;
+        this.recentRequests = dashboard.recentRequest;
+        this.recentConcerns = dashboard.recentConcern;
+        this.officials = dashboard.officials;
+      },
+      error: () => {
+        this.snackbardService.error('Failed to load dashboard data');
+      }
+    });
+  }
+
+  getOfficialImage(imageUrl?: string): string {
+    if(!imageUrl || imageUrl === 'N/A') {
+      return '/public/images/default-avatar.png';
+    }
+
+    return environment.apiUrl + imageUrl;
   }
 }

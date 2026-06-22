@@ -20,5 +20,7 @@ public class RegisterDto
     public string PhoneNumber { get; set; } = string.Empty;
     [Required]
     public string Purok { get; set; } = string.Empty;
+    [Required]
+    public DateTime BirthDate { get; set; }
     public string? IdUrl { get; set; }
 }

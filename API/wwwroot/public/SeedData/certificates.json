@@ -1,0 +1,77 @@
+[
+  {
+    "type": 0,
+    "name": "Barangay Clearance",
+    "isOpen": false,
+    "description": "Certifies that a resident has good moral character, is law-abiding, and has no pending barangay case or derogatory record.",
+    "fields": [
+      "fullName",
+      "civilStatus",
+      "age",
+      "birthDate",
+      "purok",
+      "purpose"
+    ]
+  },
+  {
+    "type": 1,
+    "name": "Certificate of Residency",
+    "description": "Certifies that a person is a bona fide resident of the barangay and may be used for residency verification or legal purposes.",
+    "fields": [
+      "fullName",
+      "birthDate",
+      "civilStatus",
+      "purok",
+      "stayDuration"
+    ]
+  },
+  {
+    "type": 2,
+    "name": "Barangay Indigency",
+    "isOpen": false,
+    "description": "Certifies that a resident or family belongs to an indigent household and may be used to request assistance or support.",
+    "fields": [
+      "fullName",
+      "age",
+      "civilStatus",
+      "purok",
+      "purpose"
+    ]
+  },
+  {
+    "type": 3,
+    "name": "First Time Job Seeker",
+    "isOpen": false,
+    "description": "Certifies that the applicant is a first-time job seeker and may avail benefits under the First Time Jobseekers Assistance Act.",
+    "fields": [
+      "fullName",
+      "birthDate",
+      "purok",
+      "gender",
+      "placeOfBirth",
+      "civilStatus"
+    ]
+  },
+  {
+    "type": 4,
+    "name": "Good Moral",
+    "isOpen": false,
+    "description": "Certifies that a resident is law-abiding, has good moral character, and has no record of unlawful activity in the barangay.",
+    "fields": [
+      "fullName",
+      "purok",
+      "purpose"
+    ]
+  },
+  {
+    "type": 5,
+    "name": "Small Business",
+    "isOpen": false,
+    "description": "Certifies that a resident owns or operates a small livelihood or business within the barangay.",
+    "fields": [
+      "fullName",
+      "civilStatus",
+      "purok"
+    ]
+  }
+]

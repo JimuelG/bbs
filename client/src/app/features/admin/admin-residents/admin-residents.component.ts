@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Resource } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { AccountService } from '../../../core/services/account.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
@@ -9,25 +9,34 @@ import { CreateEditResidentComponent } from '../../../shared/components/create-e
 import { RouterLink } from "@angular/router";
 import { environment } from '../../../../environments/environment.development';
 import { forkJoin, map, of, switchMap } from 'rxjs';
+import { Pagination } from '../../../shared/models/pagination';
+import { ResidentParams } from '../../../shared/models/residentParams';
+import { FormsModule } from '@angular/forms';
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: 'app-admin-residents',
   imports: [
     MatIcon,
-    RouterLink
+    RouterLink,
+    FormsModule,
+    NgClass
 ],
   templateUrl: './admin-residents.component.html',
   styleUrl: './admin-residents.component.scss',
 })
 export class AdminResidentsComponent implements OnInit {
-  baseUrl = environment.apiUrl;
+  baseApiUrl = environment.apiUrl;
   private accountService = inject(AccountService);
   private snackbarService = inject(SnackbarService);
   private dialog = inject(MatDialog);
 
   residents: Resident[] = [];
+  residentPagination?: Pagination<Resident>;
+  residentParams = new ResidentParams();
+  totalCount = 0;
+  pageSizeOptions = [10,20,30];
   loading = false;
-
 
   ngOnInit(): void {
     this.loadResidents();
@@ -35,10 +44,11 @@ export class AdminResidentsComponent implements OnInit {
 
   loadResidents() {
     this.loading = true;
-    this.accountService.getAllResidents().subscribe({
-      next: (data) => {
-        this.residents = data;
+    this.accountService.getAllResidents(this.residentParams).subscribe({
+      next: (response) => {
+        this.residents = response.data;
         this.loading = false;
+        this.totalCount = response.count;
       },
       error: () => this.loading = false
     });
@@ -75,11 +85,15 @@ export class AdminResidentsComponent implements OnInit {
   }
 
   verifiedResidents() {
-    this.accountService.getVerifiedResident().subscribe({
-      next: (data) => {
-        this.residents = data
-      }
-    })
+    this.residentParams.pageIndex = 1;
+    this.residentParams.isIdVerified = true;
+    this.loadResidents();
+  }
+
+  showAllResidents() {
+    this.residentParams.pageIndex = 1;
+    this.residentParams.isIdVerified = null;
+    this.loadResidents();
   }
 
   editResident(resident: Resident) {
@@ -173,5 +187,38 @@ export class AdminResidentsComponent implements OnInit {
       })
 
     })
+  }
+
+  getProfileImage(pictureUrl: string): string {
+    
+    if (!pictureUrl || pictureUrl === "N/A") {
+      return '/public/images/default-avatar.png';
+    }
+    
+    return this.baseApiUrl + pictureUrl;
+  }
+
+  onPageChange(event: any) {
+    this.residentParams.pageIndex = event.pageIndex + 1;
+    this.residentParams.pageSize = event.PageSize;
+    this.loadResidents();
+  }
+
+  updatePage(newPageIndex: number) {
+    this.residentParams.pageIndex = newPageIndex;
+    this.loadResidents();
+  }
+
+  onPageSizeChange(event: Event) {
+    this.loadResidents();
+  }
+
+  mathMin(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  onSearchChange() {
+    this.residentParams.pageIndex = 1;
+    this.loadResidents();
   }
 }

@@ -1,109 +1,221 @@
-<div class="p-8 bg-slate-50 min-h-screen">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Resident Directory</h1>
-      <p class="text-slate-500 text-sm">Manage resident profiles, verify accounts, and view community demographics.</p>
+<div class="p-4 sm:p-5 md:p-8 bg-slate-50 min-h-screen">
+
+  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 md:mb-8 gap-4">
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">
+        Resident Directory
+      </h1>
+      <p class="text-slate-500 text-sm">
+        Manage resident profiles, verify accounts, and view community demographics.
+      </p>
     </div>
 
-    <div class="flex items-center gap-3">
-      <div class="relative">
-        <mat-icon class="absolute left-3 top-2.5 text-slate-400 text-sm">search</mat-icon>
-        <input type="text" placeholder="Find a resident..." 
-          class="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none w-72 transition-all">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
+      <div class="relative w-full sm:w-80 lg:w-72">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+          search
+        </mat-icon>
+
+        <input
+          (input)="onSearchChange()"
+          [(ngModel)]="residentParams.search"
+          type="text"
+          placeholder="Find a resident..."
+          class="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all">
       </div>
-      
-      <button (click)="createResident()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
+
+      <button
+        (click)="createResident()"
+        class="w-full sm:w-auto justify-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-semibold shadow-md flex items-center gap-2 text-sm transition-all active:scale-95">
         <mat-icon>person_add</mat-icon>
         Add Resident
       </button>
     </div>
   </div>
 
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-    <div class="flex gap-2">
-      <button (click)="loadResidents()" class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">All Residents</button>
-      <button (click)="verifiedResidents()" class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">Verified Only</button>
-      <!-- <button class="px-4 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50">Heads of Family</button> -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+    <div class="flex flex-wrap gap-2">
+      <button
+        (click)="showAllResidents()"
+        class="px-4 py-1.5 rounded-lg border text-xs font-bold transition-colors"
+        [ngClass]="residentParams.isIdVerified === null
+          ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+        All Residents
+      </button>
+
+      <button
+        (click)="verifiedResidents()"
+        class="px-4 py-1.5 rounded-lg border text-xs font-bold transition-colors"
+        [ngClass]="residentParams.isIdVerified === true
+          ? 'bg-green-600 text-white border-green-600 shadow-sm'
+          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+        Verified Only
+      </button>
     </div>
-    
+
     <div class="text-xs font-medium text-slate-400">
-      Showing <strong>{{residents.length}}</strong> total residents
+      Showing <strong>{{ residents.length }}</strong> of <strong>{{ totalCount }}</strong> residents
     </div>
   </div>
 
   <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-    <table class="w-full text-left">
-      <thead class="bg-slate-50/50 border-b border-slate-100 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
-        <tr>
-          <th class="px-6 py-4">Full Name</th>
-          <th class="px-6 py-4">Purok</th>
-          <th class="px-6 py-4">Verification</th>
-          <th class="px-6 py-4 text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-50">
-        @for (res of residents; track res.id) {
-          <tr class="hover:bg-slate-50/50 transition-colors" [class.bg-amber-50/20]="!res.isIdVerified">
-            <td routerLink="/admin/residents/{{res.id}}" class="px-6 py-4">
-              <div class="flex items-center gap-3">
-                <div  [class]="res.isIdVerified ? 'bg-slate-100 text-slate-500' : 'bg-amber-100 text-amber-600 border-amber-200'" 
-                     class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs border">
-                  {{res.firstName[0]}}{{res.lastName[0]}}
-                </div>
-                <div class="flex flex-col">
-                  <span class="font-bold text-slate-800" [class.italic]="!res.isIdVerified">{{res.firstName}} {{res.lastName}}</span>
-                  <span class="text-[10px] text-slate-400 uppercase font-bold tracking-tight">
-                    {{ res.isIdVerified ? 'ID: #RES-' + res.id.slice(0,4) : 'Pending Approval' }}
-                  </span>
-                </div>
-              </div>
-            </td>
-            <td class="px-6 py-4 text-sm text-slate-600">Purok {{res.purok}}</td>
-            <td class="px-6 py-4">
-              @if (res.isIdVerified) {
-                <div class="flex items-center gap-1.5 text-green-600">
-                  <mat-icon class="text-lg">verified</mat-icon>
-                  <span class="text-xs font-bold uppercase">Verified</span>
-                </div>
-              } @else {
-                <div class="flex items-center gap-1.5 text-amber-500">
-                  <mat-icon class="text-lg">hourglass_empty</mat-icon>
-                  <span class="text-xs font-bold uppercase tracking-tighter">Needs Review</span>
-                </div>
-              }
-            </td>
-            <td class="px-6 py-4 text-right">
-              <div class="flex justify-end gap-1">
-                @if (!res.isIdVerified) {
-                  <button (click)="verifyResident(res.id)" class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm transition-all mr-2">
-                    Verify Now
-                  </button>
-                }
-                <button (click)="viewId(res)" title="View ID Profile" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                  <mat-icon>visibility</mat-icon>
-                </button>
-                <button (click)="editResident(res)" title="Edit" class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
-                  <mat-icon>edit</mat-icon>
-                </button>
-              </div>
-            </td>
+
+    <div class="w-full overflow-x-auto">
+      <table class="min-w-[780px] w-full text-left">
+        <thead class="bg-slate-50/50 border-b border-slate-100 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
+          <tr>
+            <th class="px-4 md:px-6 py-4">Full Name</th>
+            <th class="px-4 md:px-6 py-4">Purok</th>
+            <th class="px-4 md:px-6 py-4">Verification</th>
+            <th class="px-4 md:px-6 py-4 text-right">Actions</th>
           </tr>
-        }
-      </tbody>
-    </table>
-    
+        </thead>
+
+        <tbody class="divide-y divide-slate-50">
+          @for (res of residents; track res.id) {
+            <tr
+              class="hover:bg-slate-50/50 transition-colors"
+              [class.bg-amber-50/20]="!res.isIdVerified">
+
+              <!-- Name -->
+              <td
+                routerLink="/admin/residents/{{res.id}}"
+                class="px-4 md:px-6 py-4 cursor-pointer">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div
+                    [class]="res.isIdVerified
+                      ? 'bg-slate-100 text-slate-500'
+                      : 'bg-amber-100 text-amber-600 border-amber-200'"
+                    class="h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs border overflow-hidden shrink-0">
+
+                    <img
+                      [src]="getProfileImage(res.pictureUrl)"
+                      alt="avatar"
+                      class="object-cover w-full h-full">
+                  </div>
+
+                  <div class="flex flex-col min-w-0">
+                    <span
+                      class="font-bold text-slate-800 truncate max-w-[220px]"
+                      [class.italic]="!res.isIdVerified">
+                      {{ res.firstName }} {{ res.lastName }}
+                    </span>
+
+                    <span class="text-[10px] text-slate-400 uppercase font-bold tracking-tight truncate max-w-[220px]">
+                      {{ res.isIdVerified ? 'ID: #RES-' + res.id.slice(0,4) : 'Pending Approval' }}
+                    </span>
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-4 md:px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
+                {{ res.purok }}
+              </td>
+
+              <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                @if (res.isIdVerified) {
+                  <div class="flex items-center gap-1.5 text-green-600">
+                    <mat-icon class="text-lg">verified</mat-icon>
+                    <span class="text-xs font-bold uppercase">Verified</span>
+                  </div>
+                } @else {
+                  <div class="flex items-center gap-1.5 text-amber-500">
+                    <mat-icon class="text-lg">hourglass_empty</mat-icon>
+                    <span class="text-xs font-bold uppercase tracking-tighter">Needs Review</span>
+                  </div>
+                }
+              </td>
+
+              <td class="px-4 md:px-6 py-4 text-right whitespace-nowrap">
+                <div class="flex justify-end items-center gap-1">
+                  @if (!res.isIdVerified) {
+                    <button
+                      (click)="verifyResident(res.id)"
+                      class="bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm transition-all mr-2">
+                      Verify Now
+                    </button>
+                  }
+
+                  <button
+                    (click)="viewId(res)"
+                    title="View ID Profile"
+                    class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+
+                  <button
+                    (click)="editResident(res)"
+                    title="Edit"
+                    class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
     @if (loading) {
-      <div class="p-12 text-center text-slate-400">Processing...</div>
+      <div class="p-12 text-center text-slate-400">
+        Processing...
+      </div>
     } @else if (residents.length === 0) {
-      <div class="p-12 text-center text-slate-400">No residents found.</div>
+      <div class="p-12 text-center text-slate-400">
+        No residents found.
+      </div>
     }
 
-    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/30 flex justify-between items-center text-xs text-slate-500 font-medium">
-      <span>Showing {{residents.length}} residents</span>
-      <div class="flex gap-2">
-        <button class="px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 disabled:opacity-50" disabled>Previous</button>
-        <button class="px-3 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50">Next</button>
+    <div class="px-4 md:px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4">
+
+      <div class="text-[13px] text-slate-500 font-medium text-center lg:text-left">
+        Showing
+        <span class="text-slate-900 font-bold">
+          {{ totalCount === 0 ? 0 : (residentParams.pageIndex - 1) * residentParams.pageSize + 1 }}
+        </span>
+        to
+        <span class="text-slate-900 font-bold">
+          {{ mathMin(residentParams.pageIndex * residentParams.pageSize, totalCount) }}
+        </span>
+        of
+        <span class="text-slate-900 font-bold">{{ totalCount }}</span>
+        entries
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-end gap-3 sm:gap-4">
+
+        <div class="flex items-center gap-1">
+          <button
+            [disabled]="residentParams.pageIndex === 1"
+            (click)="updatePage(residentParams.pageIndex - 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+
+          <div class="px-4 py-2 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-100">
+            {{ residentParams.pageIndex }}
+          </div>
+
+          <button
+            [disabled]="residentParams.pageIndex * residentParams.pageSize >= totalCount"
+            (click)="updatePage(residentParams.pageIndex + 1)"
+            class="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
+        <select
+          (change)="onPageSizeChange($event)"
+          class="w-full sm:w-auto bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{ size }} / page</option>
+          }
+        </select>
+
       </div>
     </div>
+
   </div>
 </div>

@@ -33,6 +33,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("AudioUrl")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<DateTime?>("ExpireAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -158,7 +161,10 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<DateTime>("BirthDate")
+                    b.Property<int?>("Age")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("BirthDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("CertificateType")
@@ -177,17 +183,23 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("Gender")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsPaid")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime>("IssuedAt")
+                    b.Property<DateTime?>("IssuedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("IssuedBy")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PlaceOfBirth")
                         .HasColumnType("text");
 
                     b.Property<string>("Purok")
@@ -206,6 +218,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<int?>("ResidentId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text");
@@ -222,6 +237,8 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("ReferenceNumber")
                         .IsUnique();
+
+                    b.HasIndex("ResidentId");
 
                     b.ToTable("BarangayCertificates");
                 });
@@ -315,6 +332,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("PhotoUrl")
                         .HasColumnType("text");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Purok")
                         .HasColumnType("text");
@@ -609,6 +629,16 @@ namespace Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Core.Entities.BarangayCertificate", b =>
+                {
+                    b.HasOne("Core.Entities.Resident", "Resident")
+                        .WithMany()
+                        .HasForeignKey("ResidentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Resident");
                 });
 
             modelBuilder.Entity("Core.Entities.BarangayOfficial", b =>

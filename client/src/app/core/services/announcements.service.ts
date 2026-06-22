@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Announcement } from '../../shared/models/announcement';
 import { AnnouncementParams } from '../../shared/models/announcementParams';
 import { Pagination } from '../../shared/models/pagination';
+import { AnnouncementStats } from '../../shared/models/announcementStats';
 
 @Injectable({
   providedIn: 'root',
@@ -37,6 +38,10 @@ export class AnnouncementsService {
     return this.http.get<Pagination<Announcement>>(`${this.baseUrl}/announcement`, { params });
   }
 
+  getAnnouncements() {
+    return this.http.get<Announcement[]>(`${this.baseUrl}/announcement/all`);
+  }
+
   deleteAnnouncement(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/announcement/${id}`);
   }
@@ -45,11 +50,19 @@ export class AnnouncementsService {
     return this.http.post(`${this.baseUrl}/announcement/trigger/${id}`, {});
   }
 
+  stopRpiAudio() {
+    return this.http.post(`${this.baseUrl}/announcement/stop-rpi`, {});
+  }
+
   getRPiStatus(): Observable<{isOnline: boolean, lastSeen: Date}> {
     return this.http.get<{isOnline: boolean, lastSeen: Date}>(`${this.baseUrl}/announcement/rpi-status`);
   }
 
   sendSmsBroadcast(announcement: Announcement) {
     return this.http.post(`${this.baseUrl}/announcement/sms-broadcast`, announcement);
+  }
+
+  getStats() {
+    return this.http.get<AnnouncementStats>(`${this.baseUrl}/announcement/stats`);
   }
 }

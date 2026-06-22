@@ -6,6 +6,7 @@ export interface Concern {
     status: string;
     incidentLocation?: string;
     purok?: string;
+    priority: string;
     photoUrl?: string;
     dateReported: string;
     dateResolved?: string;

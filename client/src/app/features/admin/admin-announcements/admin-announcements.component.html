@@ -48,7 +48,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Broadcasts Sent</p>
-        <h2 class="text-2xl font-black text-slate-800">128</h2>
+        <h2 class="text-2xl font-black text-slate-800">{{ stats?.broadcastsSent ?? 0 }}</h2>
       </div>
     </div>
 
@@ -58,7 +58,7 @@
       </div>
       <div>
         <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">Scheduled</p>
-        <h2 class="text-2xl font-black text-slate-800">3</h2>
+        <h2 class="text-2xl font-black text-slate-800">{{ stats?.scheduled ?? 0 }}</h2>
       </div>
     </div>
 
@@ -68,7 +68,7 @@
       </div>
       <div>
         <p class="text-xs text-red-500 font-bold uppercase tracking-wider">Emergencies</p>
-        <h2 class="text-2xl font-black text-red-600">1</h2>
+        <h2 class="text-2xl font-black text-red-600">{{ stats?.emergencies ?? 0 }}</h2>
       </div>
     </div>
   </div>
@@ -81,7 +81,7 @@
         <input 
           type="text" 
           placeholder="Search by title or message..." 
-          (keyup.enter)="loadAnnouncements()"
+          (input)="onSearchChange()"
           [(ngModel)]="announcementParams.search"
           class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
         />
@@ -91,7 +91,7 @@
         <span class="text-xs font-bold text-slate-400 uppercase">Sort by:</span>
         <select 
           [(ngModel)]="announcementParams.sort"
-          (change)="loadAnnouncements()"
+          (change)="onSortChange()"
           class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-600 outline-none focus:ring-2 focus:ring-blue-500">
           <option value="dateDesc">Newest First</option>
           <option value="dateAsc">Oldest First</option>
@@ -142,11 +142,22 @@
                     <mat-icon class="text-xl">sms</mat-icon> 
                   </button>
 
-                  <button (click)="onTriggerRPi(announcement.id)" 
-                    class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all" 
-                    title="Broadcast Now (RPi)">
-                    <mat-icon class="text-xl">podcasts</mat-icon> 
-                  </button>
+                  @if (broadcastingAnnouncementId === announcement.id || announcement.manualTriggerActive) {
+                    <button
+                      (click)="onStopRPi()"
+                      [disabled]="stoppingRpi"
+                      class="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all disabled:opacity-40"
+                      title="Stop RPi Broadcast">
+                      <mat-icon class="text-xl">stop_circle</mat-icon>
+                    </button>
+                  } @else {
+                    <button
+                      (click)="onTriggerRPi(announcement.id)"
+                      class="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all"
+                      title="Broadcast Now (RPi)">
+                      <mat-icon class="text-xl">podcasts</mat-icon>
+                    </button>
+                  }
 
                   <button (click)="onPreview(announcement.audioUrl)" 
                     class="p-2 rounded-lg transition-all"
